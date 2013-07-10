@@ -39,8 +39,14 @@
             || actionCodeText.indexOf('Suspension') >= 0
             || actionCodeText.indexOf('OOS') >= 0
             ) && (parseInt(actionDuration) === 0 || actionDuration === "")) {
-            $j('#add_action_button').hide();
-            $j('#actionDuration').addClass('error').focus(); 
+                $j('#add_action_button').hide();
+                if ($j('#actionDuration').val() === "") {
+                    $j('#actionDuration').addClass('error').focus(); 
+                }
+                if ($j('#actionBeginDate').val() === "") {
+                    $j('#actionBeginDate').addClass('error').focus();
+                }
+                
         }
         else
         {
@@ -104,13 +110,11 @@
         }
         var actualDuration = $j('#actionActualDuration').val();
         if (actualDuration <= 10) {
-            $j('#durationCodesSelect option').filter( function() {
-                return this.text == 'Short Term';
-            }).attr('selected', true);
+            var setVal = $j('#durationCodesSelect option').filter( function() {return this.text == 'Short Term';}).val();
+            $j('#durationCodesSelect').val(setVal).change();
         } else {
-            $j('#durationCodesSelect option').filter( function() {
-                return this.text == 'Long Term';
-            }).attr('selected', true);
+            var setVal = $j('#durationCodesSelect option').filter( function() {return this.text == 'Long Term';}).val();
+            $j('#durationCodesSelect').val(setVal).change();
         }
     };
 </script>
