@@ -1,0 +1,11 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+$j('div.box-round table:first').after('<table class="linkDescList">'
+    +'<thead><tr class="headerRow"><th>Child Nutrition</th><th>Description</th></tr></thead>'
+    +'<tbody>'
+    +'<tr><td><a href="/admin/cas/reports/child_nutrition/1509_Linker_rephub.html">1509 Linker File</a></td><td>Child Nutrition 1509 Linker File</td></tr>'
+    +'<tr><td><a href="/admin/cas/reports/child_nutrition/1708_Linker_rephub.html">1708 Linker File</a></td><td>Child Nutrition 1708 Linker File</td></tr>'
+    +'</tbody>'
+    +'</table>');
+});
+</script>
