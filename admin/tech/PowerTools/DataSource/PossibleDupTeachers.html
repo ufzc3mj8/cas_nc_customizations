@@ -1,0 +1,58 @@
+<table id="tabledata">
+<thead>
+	<th>DCID 1</th>
+	<th>Teacher 1</th>
+	<th>School</th>
+	<th>Status1</th>
+	<th>DCID 2</th>
+	<th>Teacher 2</th>
+	<th>School</th>
+	<th>Status2</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+		SELECT t1.dcid
+		, t1.lastfirst
+		, s1.name
+		, CASE
+			WHEN t1.status = 1
+			THEN 'Current'
+			WHEN t1.status = 2
+			THEN 'No longer here'
+			ELSE 'Unknown'
+		END Status1
+		, t2.dcid
+		, t2.lastfirst
+		, s2.name
+		, CASE
+			WHEN t2.status = 1
+			THEN 'Current'
+			WHEN t2.status = 2
+			THEN 'No longer here'
+			ELSE 'Unknown'
+		END Status2
+		FROM ps.teachers t1
+		INNER JOIN ps.teachers t2
+		ON t1.lastfirst = t2.lastfirst
+		AND t1.ssn = t2.ssn
+		AND t1.dcid < t2.dcid
+		INNER JOIN ps.schools s1
+		ON t1.schoolid = s1.school_number
+		INNER JOIN ps.schools s2
+		ON t2.schoolid = s2.school_number
+		WHERE t1.staffstatus = 1
+		ORDER BY t1.lastfirst
+	]
+	<tr class="~[evenoddrow]">
+		<td>~(t1.dcid;t)</td>
+		<td>~(t1.lastfirst;t)</td>
+		<td>~(s1.name;t)</td>
+		<td>~(t1.status;t)</td>
+		<td>~(t2.dcid;t)</td>
+		<td>~(t2.lastfirst;t)</td>
+		<td>~(s2.name;t)</td>
+		<td>~(t2.status;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

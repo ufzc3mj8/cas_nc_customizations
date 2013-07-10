@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Athletic Eligibility Team Member Management - ~[gpv:name]</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "manage.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var pageconfig = {
+      teamid : "~[gpv:id]",
+      teamname : "~[gpv:name]"
+    };
+  </script>
+  ~[wc:CAS]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+  <style>
+    #addStudent {
+      float    : left;
+      margin   : 10px;
+      position : relative;
+      z-index  : 1000;
+      }
+  </style>
+</head>
+
+<body>
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_attendance_preferences.home.start_page]</a> &gt; <a href="/admin/schoolsetup/home.html"
+                                                                                                                                                                  target="_top">~[text:psx.html.admin_attendance_preferences.home.school_setup]</a>
+&gt; <a href="/admin/cas/athletic_eligibility" target="_top">Athletic Eligibility</a> &gt; Team Member Management - ~[gpv:name]<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>Athletic Eligibility Team Member Management - ~[gpv:name]</h1><!-- start of content and bounding box -->
+<div class="box-round">
+  <form action="/admin/cas/athletic_eligibility/teams/manage.html?id=~[gpv:id]&name=~[gpv:name]" method="POST">
+    <p>To add a student to the ~[gpv:name] team, select the student from the drop down and click "Add Student".</p>
+
+    <p><b>Note:</b> Students already on the team will not be displayed on the dropdown list.</p>
+    <div id="addStudent">
+      <label for="studentlist">Select Student: </label><select id="studentlist" name="CF-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:-1]studentid">
+        <option value="" selected>&nbsp;</option>
+      </select>
+
+        <button name="btnSubmit" id="btnSubmit" type="submit" disabled=true>Add Student</button>
+    </div>
+    <input type="hidden" name="CF-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:-1]teamid" value="~[gpv:id]">
+    <input type="hidden" name="ac" value="prim">
+  </form>
+  <table class="linkDescList">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Student Number</th>
+        <th>Eligible?</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="memberlist"></tbody>
+  </table>
+</div>
+<!-- TODO Finish Eligibility section once calculations are complete -->
+<br>
+<!-- end of content of bounding box -->
+~[wc:admin_footer_css]
+
+</body>
+  <script type="text/javascript" src="js/manageTeams.js"></script>
+</html><!-- non framed -->

@@ -1,0 +1,22 @@
+<table id="tabledata">
+<thead>
+	<th>Course Number</th>
+	<th>Count</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+	SELECT course_number
+	, count(id)
+	FROM ps.courses
+	GROUP BY course_number
+	HAVING COUNT(id)>1
+	ORDER BY course_number
+  ]
+
+	<tr>
+		<td>~(course_number;t)</a></td>
+		<td>~(count;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

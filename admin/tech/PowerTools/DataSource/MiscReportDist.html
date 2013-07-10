@@ -1,0 +1,482 @@
+<table id="tabledata">
+<thead>
+	<th>Report</th>
+	<th>Count</th>
+</thead>
+<tbody>
+	<tr>
+		<td><b>Grading Tools</b></td><td><b>Count</b></td>
+	</tr>
+~[if.~[displaypref:PowerTools-Hide-Blank-Stored-Grades]<1]
+	<tr>
+		<td><a href="BlankStoredGrades.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Blank Stored Grades *</a></td>
+		<td><a href="BlankStoredGrades.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT COUNT(*)
+				FROM ps.storedgrades s1
+				WHERE grade IS NULL
+				AND percent = 0
+				AND comment_value IS NULL
+				~[if#curyearblank.~(gpv.curyearonly)=1]AND trunc(s1.termid/100) = trunc(~[v.curtermid]/100)[/if#curyearblank]
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+[/if]
+	<tr>
+		<td><a href="GradeScaleDupCutoff.html">Duplicate Grade Scale Cutoff Percentages</a></td>
+		<td><a href="GradeScaleDupCutoff.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM (
+				SELECT g1.gradescaleid
+				, g1.cutoffpercentage
+				, count(*) countitem
+				FROM ps.gradescaleitem g1
+				WHERE g1.gradescaleid != -1
+				GROUP BY g1.gradescaleid
+				, g1.cutoffpercentage
+				HAVING COUNT(*) > 1) g3
+				LEFT JOIN ps.gradescaleitem g2
+				ON g3.gradescaleid = g2.dcid
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+~[if.~[displaypref:PowerTools-Hide-Duplicate-Stored-Grades]<1]
+	<tr>
+		<td><a href="DupStoredGrades.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Duplicate Stored Grades *</a></td>
+		<td><a href="DupStoredGrades.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT COUNT(*)
+				FROM (
+					SELECT s2.dcid
+					, s2.lastfirst
+					, s1.course_number
+					, s1.course_name
+					, s1.storecode
+					, s1.termid
+					FROM ps.storedgrades s1
+					INNER JOIN ps.students s2
+					ON s1.studentid = s2.id
+					~[if#curyearduplicate.~(gpv.curyearonly)=1]AND trunc(s1.termid/100) = trunc(~[v.curtermid]/100)[/if#curyearduplicate]
+					GROUP BY s2.dcid
+					, s2.lastfirst
+					, s1.course_number
+					, s1.course_name
+					, s1.storecode
+					, s1.termid
+					HAVING COUNT(*) > 1
+				)
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+[/if]
+	<tr>
+		<td><a href="IncorrectStoredGrades.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Incorrect Stored Grades *</a></td>
+		<td><a href="IncorrectStoredGrades.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT COUNT(*)
+					FROM ps.storedgrades s1
+					LEFT JOIN ps.gradescaleitem g1
+					ON s1.gradescale_name = g1.Name
+					AND g1.gradescaleid = '-1'
+					LEFT JOIN ps.gradescaleitem g2
+					ON g1.id = g2.gradescaleid
+					AND g2.name = s1.grade
+					LEFT JOIN ps.students s2
+					ON s1.studentid = s2.id
+					LEFT JOIN ps.schools s3
+					ON s1.schoolid = s3.school_number
+					WHERE (s1.gpa_points != g2.grade_points
+					OR s1.grade != (SELECT name
+					  FROM ps.gradescaleitem
+					  WHERE gradescaleid = g1.id
+					  AND cutoffpercentage = (
+						SELECT max(cutoffpercentage)
+						FROM ps.gradescaleitem
+						WHERE gradescaleid = g1.id
+						AND cutoffpercentage <= s1.percent
+						AND teacherscale = '1')))
+					~[if.~(gpv.curyearonly)=1]AND trunc(s1.termid/100) = trunc(~[v.curtermid]/100)[/if]
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="MisalignedStandards.html">Misaligned Standards</a></td>
+		<td><a href="MisalignedStandards.html">
+			~[tlist_sql;
+				SELECT COUNT(*)
+				FROM (
+					SELECT dcid
+					, identifier
+					, calculationparent
+					, listparent
+					, CASE
+					WHEN calculationparent NOT IN (
+					  SELECT identifier
+					  FROM ps.standards)
+					THEN 'Calculation Parent does not exist'
+					WHEN listparent NOT IN (
+					  SELECT identifier
+					  FROM ps.standards)
+					THEN 'List Parent does not exist'
+					WHEN calculationparent = identifier
+					THEN 'Calculation Parent cannot match identifier'
+					WHEN listparent = identifier
+					THEN 'List Parent cannot match identifier'
+					END issue
+					FROM ps.standards
+					WHERE Calculationparent NOT IN (
+					  SELECT identifier
+					  FROM ps.standards)
+					OR listparent NOT IN (
+					  SELECT identifier
+					  FROM ps.standards)
+					OR calculationparent = identifier
+					OR listparent = identifier
+				)
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="StdConversionLongGrade.html">Standard Conversion Scales Having Grades Over 8 Characters</a></td>
+		<td><a href="StdConversionLongGrade.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.gen g1
+				WHERE g1.cat = 'stdconv'
+				AND length(g1.value) > 8
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>	
+	<tr>
+		<td><b>Attendance Tools</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="DupAttendance.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Duplicate Attendance Records *</a></td>
+		<td><a href="DupAttendance.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.attendance a1
+				, ps.attendance a2
+				WHERE (lower(a1.att_mode_code) = 'att_modemeeting' or lower(a1.att_mode_code) = 'att_modedaily')
+				~[if.~(gpv.curyearonly)=1]AND a1.yearid = trunc(~[v.curtermid]/100)[/if]
+				AND a1.att_date = a2.att_date
+				AND a1.studentid = a2.studentid
+				AND a1.ccid = a2.ccid
+				AND a1.periodid = a2.periodid
+				AND a1.dcid > a2.dcid
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="NonInSessionAttendance.html?curyearonly=?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)\">Non-Session Attendance *</a></td>
+		<td><a href="NonInSessionAttendance.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.attendance a1
+				INNER JOIN ps.students s1
+				ON a1.studentid = s1.id
+				LEFT JOIN ps.schools s2
+				ON a1.schoolid = s2.school_number
+				LEFT JOIN ps.attendance_code a2
+				ON a1.attendance_codeid = a2.id
+				LEFT JOIN ps.calendar_day c1
+				ON a1.att_date = c1.date_value
+				AND a1.schoolid = c1.schoolid
+				LEFT JOIN ps.cc c2
+				ON a1.ccid = c2.id
+				LEFT JOIN ps.cycle_day c3
+				ON c1.cycle_day_id = c3.id
+				WHERE a2.att_code IS NOT NULL
+				~[if.~(gpv.curyearonly)=1]AND a1.yearid = trunc(~[v.curtermid]/100)[/if]
+				AND (
+					lower(a1.att_mode_code) like 'att_modemeeting'
+					AND (
+						c3.letter NOT IN (
+							SELECT cycle_day_letter
+							FROM ps.section_meeting s2
+							WHERE s2.sectionid = ABS(c2.sectionid)
+						)
+						OR (
+							a1.periodid NOT IN (
+								SELECT p1.id
+								FROM ps.period p1
+								, ps.section_meeting s2
+								WHERE s2.sectionid = ABS(c2.sectionid)
+								AND s2.period_number = p1.period_number
+								AND s2.schoolid = p1.schoolid
+							)
+						)
+						OR (
+							a1.periodid NOT IN (
+								SELECT period_id 
+								FROM ps.bell_schedule_items b1
+								WHERE b1.bell_schedule_id = c1.bell_schedule_id
+							)
+						)
+						OR (
+							a1.att_date < c2.dateenrolled
+							OR a1.att_date > c2.dateleft
+						)
+					)
+					OR (
+						lower(a1.att_mode_code) = 'att_modedaily'
+						AND (
+							a1.att_date < s1.entrydate
+							OR a1.att_date >= s1.exitdate
+						)
+						AND NOT EXISTS (
+							SELECT *
+							FROM ps.reenrollments r1
+							WHERE a1.studentid = r1.studentid
+							AND a1.att_date > r1.entrydate
+							AND r1.exitdate > a1.att_date
+						)
+					)
+					OR c1.insession = 0
+					OR (
+						c1.insession IS NULL
+						AND a2.att_code IS NOT NULL
+					)
+				)
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="MissingFTEStudent.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Students with no Full Time Equivalencies *</a></td>
+		<td><a href="MissingFTEStudent.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT SUM(count)
+				FROM (
+					SELECT count(*) as count
+					FROM ps.students s1
+					LEFT JOIN ps.fte f1
+					ON s1.fteid = f1.id
+					WHERE (f1.schoolid != s1.schoolid
+					OR s1.fteid = 0)
+					~[if#curyearonly.~(gpv.curyearonly)=1]AND s1.entrydate >= (SELECT FIRSTDAY
+						FROM ps.terms
+						WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+						AND Schoolid=s1.schoolid)
+						AND (s1.exitdate-1) <= (SELECT LastDay
+						FROM ps.terms
+						WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+						AND Schoolid=s1.schoolid)
+					[/if#curyearonly]
+					AND s1.schoolid != 999999
+					UNION ALL
+					SELECT count(*) as count
+					FROM ps.reenrollments r1
+					LEFT JOIN ps.fte f1
+					ON r1.fteid = f1.id
+					WHERE (f1.schoolid != r1.schoolid
+					OR r1.FTEID =0)
+					~[if#curyearonly.~(gpv.curyearonly)=1]AND r1.entrydate >= (SELECT FIRSTDAY
+						FROM ps.terms
+						WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+						AND Schoolid=r1.schoolid)
+						AND (r1.exitdate-1) <= (SELECT LastDay
+						FROM ps.terms
+						WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+						AND Schoolid=r1.schoolid)
+					[/if#curyearonly]
+					AND r1.schoolid != 999999
+				)
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	
+	<tr>
+		<td><b>Scheduling Tools</b></td><td><b>Count</b></td>
+	</tr>
+	
+	<tr>
+		<td><a href="IncompleteSched.html">Students with Incomplete Scheduling Setup</a></td>
+		<td><a href="IncompleteSched.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM PS.students s1
+				LEFT JOIN ps.schools s2
+				ON s1.schoolid = s2.school_number
+				WHERE s1.Sched_Scheduled = 1
+				AND (
+				  s1.next_school NOT IN 
+					( 
+					SELECT school_number
+					FROM ps.schools)
+				  OR s1.sched_yearofgraduation = 0
+				  OR (
+					s1.sched_nextyeargrade < 
+					  (
+					  SELECT low_grade
+					  FROM ps.schools
+					  WHERE school_number = s1.next_school)
+					)
+				  OR (
+					s1.sched_nextyeargrade >
+					  (
+					  SELECT high_grade
+					  FROM ps.schools
+					  WHERE school_number = s1.next_school)
+					)
+				  )
+				AND s1.id NOT IN (
+				  SELECT id
+				  FROM ps.students
+				  WHERE next_school = '999999'
+				  AND sched_nextyeargrade = '99'
+				  AND sched_yearofgraduation != 0)
+				ORDER BY s1.lastfirst
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+
+	<tr>
+		<td><a href="SectionInvalidSM.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Sections Missing Section Meeting Records *</a></td>
+		<td><a href="SectionInvalidSM.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.sections s2
+				WHERE s2.ID NOT IN (
+					SELECT SectionID
+					FROM ps.section_meeting s1
+					LEFT JOIN ps.period p1
+					ON s1.schoolid = p1.schoolid
+					AND s1.year_id = p1.year_id
+					WHERE s1.period_number = p1.period_number
+				)
+				~[if.~(gpv.curyearonly)=1]AND trunc(s2.termid/100) = trunc(~[v.curtermid]/100)[/if]
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	
+	<tr>
+		<td><b>Transaction Tools</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="InvalidLunch.html">Invalid Meal Transactions</a></td>
+		<td><a href="InvalidLunch.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.GLDetail g1
+				, ps.students s1
+				WHERE g1.studentid = s1.id
+				AND g1.studentid > 0
+				AND ((
+				alacarte = 0
+				AND transtype = 'A')
+				OR REGEXP_LIKE(transtype, 'FF|FR|FE')
+				OR transtype LIKE '%MLF%'
+				OR REGEXP_LIKE(transtype, 'G|C'))
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	
+	<tr>
+		<td><a href="IncorrectLunchBal.html">Incorrect Lunch Balances</a></td>
+		<td><a href="IncorrectLunchBal.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.students s1
+				WHERE s1.balance1 - s1.balance2 != (
+					SELECT SUM(neteffect)
+					FROM ps.gldetail g1
+					WHERE g1.studentid = s1.id)
+				OR s1.balance1 != s1.balance2
+				AND NOT EXISTS (
+					SELECT *
+					FROM ps.gldetail g1
+					WHERE g1.studentid = s1.id
+				)
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Reports Tools</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="ReportsWithSpaces.html">Reports Ending in a Space</a></td>
+		<td><a href="ReportsWithSpaces.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.reports r1
+				WHERE r1.name like '% '
+				ORDER BY r1.name
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><b>School Setup Tools</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="ActivitiesWithSpaces.html">Activities with Spaces</a></td>
+		<td><a href="ActivitiesWithSpaces.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.gen
+				WHERE lower(cat) = 'activity'
+				AND value like '% %'
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="CourseGroupsWithSpaces.html">Course Groups Ending in a Space</a></td>
+		<td><a href="CourseGroupsWithSpaces.html">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.gen g1
+				WHERE lower(cat) = 'coursegroups'
+				AND name like '% '
+				]
+				~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+</tbody>
+</table>

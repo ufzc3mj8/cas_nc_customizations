@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>Orphaned Sections Record Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned Sections Record Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned Sections Record Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Removing orphaned Sections records in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to remove orphaned Sections Records. This process will delete all Sections records where the course, teacher, ~[if.district.office]school, [/if]or term does not exist, based off the options selected.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+var BadCourse = new Array()
+var BadTeacher = new Array()
+var BadSchool = new Array()
+var BadTerm = new Array()
+~[tlist_sql;
+SELECT rownum
+, s1.dcid
+, CASE
+  WHEN c1.course_number IS NULL
+  THEN '1'
+  ELSE '0'
+  END CourseCheck
+, CASE
+  WHEN t1.id IS NULL
+  THEN '1'
+  ELSE '0'
+  END TeacherCheck
+, CASE
+  WHEN s2.school_number IS NULL
+  THEN '1'
+  ELSE '0'
+  END SchoolCheck
+, CASE
+  WHEN t2.id IS NULL
+  THEN '1'
+  ELSE '0'
+  END TermCheck
+FROM ps.sections s1
+LEFT JOIN ps.courses c1
+ON s1.course_number = c1.course_number
+LEFT JOIN ps.teachers t1
+ON s1.teacher = t1.id
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+LEFT JOIN ps.terms t2
+ON s1.termid = t2.id
+AND s1.schoolid = t2.schoolid
+WHERE (c1.course_number IS NULL
+OR t1.id IS NULL
+OR s2.school_number IS NULL)
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.ID
+	]
+BadDCID[~(rownum)] = '~(baddcid)';
+BadCourse[~(rownum)] = '~(badstudent)';
+BadTeacher[~(rownum)] = '~(badsection)';
+BadSchool[~(rownum)] = '~(badschool)';
+BadTerm[~(rownum)] = '~(badterm)';
+[/tlist_sql]
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = "There are no orphaned Section records.";
+	}
+else
+	{
+// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' orphaned Section record to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' orphaned Section records to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<b>Remove orphaned records where the following conditions exist:</b><br>\
+		<table>\
+		<tr><td><input type=\"checkbox\" id=\"NoCourse\">Course does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoTeacher\"><font color="red">Teacher does not exist</font></td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoTerm\">Term does not exist</td></tr>\
+		<tr id=\"SchoolCheck\"><td><input type=\"checkbox\" id=\"NoSchool\">School does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"CheckAll\" onClick=\"SelectAll()\;\">Select / Deselect All</td></tr>\
+		</table>\
+		<p><font color="red">Use caution when using the "Teacher does not exist" option, as you may wish to keep these records and assign them to a different teacher.</font></p>\
+		<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to delete the orphaned Section records\"  enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	if (Schoolid > 0)
+		{
+		document.getElementById("SchoolCheck").style.visibility="collapse";
+		};
+	};
+function SelectAll()
+	{
+	if (document.getElementById('CheckAll').checked == true)
+		{
+		document.getElementById('NoCourse').checked = true;
+		document.getElementById('NoTeacher').checked = true;
+		document.getElementById('NoTerm').checked = true;
+		if (Schoolid == 0)
+			{
+			document.getElementById('NoSchool').checked = true;
+			};
+		}
+	else
+		{
+		document.getElementById('NoCourse').checked = false;
+		document.getElementById('NoTeacher').checked = false;
+		document.getElementById('NoTerm').checked = false;
+		document.getElementById('NoSchool').checked = false	;
+		};
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById("CorrectButton").value="Correcting Records";
+	document.getElementById("CorrectButton").disabled=true;
+	document.getElementById("NoCourse").disabled=true;
+	document.getElementById("NoTeacher").disabled=true;
+	document.getElementById("NoTerm").disabled=true;
+	document.getElementById("NoSchool").disabled=true;
+	document.getElementById("CheckAll").disabled=true;
+	document.getElementById('iframe').innerHTML = ('<iframe onload=\'RecordCheck()\' src=\'/admin/tech/home.html?opname=setglobalnonatomicsync&p1=&p2=&code=&ac=specop&x=23&y=11\'>');
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if ((document.getElementById('NoCourse').checked == true && BadCourse[i] == '1') || (document.getElementById('NoTeacher').checked == true && BadTeacher[i] == '1') || (document.getElementById('NoSchool').checked == true && BadSchool[i] == '1') || (document.getElementById('NoTerm').checked == true && BadTerm[i] == '1'))
+			{
+			document.getElementById('iframe').innerHTML = ("<iframe  onload=\"displayNext()\" src=\"/admin/tech/usm/selectiondeleted.html?ac=prim&DR-003" + BadDCID[i] + "=delete\">");
+			}
+		else
+			{
+			i++
+			ProgressDisplay();
+			RecordCheck();
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		document.getElementById('iframe').innerHTML = ('<iframe src=\'/admin/tech/home.html?opname=setglobalatomicsync&p1=&p2=&code=&ac=specop&x=23&y=19\'>');
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All orphaned Section records removed with the options selected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

@@ -1,0 +1,67 @@
+<div class="grouptitle">CREDIT HISTORY</div>
+{{#emptyArrayCheck this.length}}
+<table class="gradelisting">
+  <thead>
+    <tr>
+      <th class="courseheader tableheader"><br>Course</th>
+      <th class="cellspacing">&nbsp;</th>
+      <th class="lettergrade tableheader"><br>Mark</th>
+      <th class="cellspacing">&nbsp;</th>
+      <th class="weightedpoints tableheader"><br>Weighted</th>
+      <th class="cellspacing">&nbsp;</th>
+      <th class="unweightedpoints tableheader"><br>Unweighted</th>
+      <th class="cellspacing">&nbsp;</th>
+      <th class="credithours tableheader">Earned Credits</th>
+      <th class="cellspacing">&nbsp;</th>
+      ~[if.~[gpv:report_name]=transcript_existing]
+      <th class="credithours tableheader">Previous School</th>
+      <th class="cellspacing">&nbsp;</th>
+      [/if]
+      <th class="flag tableheader"><br>Flags</th>
+    </tr>
+  </thead>
+  {{#each this}}
+  {{#newgrade}}
+  <tr>
+    <td colspan="3" class="gradeyear"><span class="gyspan">Grade:&nbsp;&nbsp;{{gradelevel}}</span><span class="gyspan">{{termid}}</span></td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="lettergrade topborder">&nbsp;</td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="weightedpoints topborder">&nbsp;</td>
+    <td class="cellspacing topborder">&nbsp;</td>
+    <td class="unweightedpoints topborder">&nbsp;</td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="credithours topborder">&nbsp;</td>
+    <td class="cellspacing">&nbsp;</td>
+    ~[if.~[gpv:report_name]=transcript_existing]
+    <td class="credithours topborder">&nbsp;</td>
+    <td class="cellspacing">&nbsp;</td>
+    [/if]
+    <td class="flag topborder">&nbsp;</td>
+  </tr>
+  {{/newgrade}}
+  {{#if gradelevel}}
+  <tr>
+    <td class="coursenumber">&nbsp;{{coursenumber}}</td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="coursename">{{coursename}}</td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="lettergrade">{{lettergrade}}</td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="weightedpoints">{{#if weighted}}{{toFixed weighted 3}}{{else}}&nbsp;{{/if}}</td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="unweightedpoints">{{#if unweighted}}{{toFixed unweighted 3}}{{else}}&nbsp;{{/if}}</td>
+    <td class="cellspacing">&nbsp;</td>
+    <td class="credithours">{{#if credithours}}{{toFixed credithours 2}}{{else}}&nbsp;{{/if}}</td>
+    <td class="cellspacing">&nbsp;</td>
+    ~[if.~[gpv:report_name]=transcript_existing]
+    <td class="credithours">{{previousschool}}</td>
+    <td class="cellspacing">&nbsp;</td>
+    [/if]
+    <!-- TODO Flags section must be created -->
+    <td class="flag">&nbsp;{{#if excludegpa}}}{{excludegpa}}{{/if}}{{#if noncredit}}{{noncredit}}{{/if}}{{#if currentcourse}}}{{currentcourse}}{{/if}}{{#if scheduledcourse}}{{scheduledcourse}}{{/if}}</td>
+  </tr>
+  {{/if}}
+  {{/each}}
+</table>
+{{/emptyArrayCheck}}

@@ -1,0 +1,44 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>Student</th>
+	<th>School Name</th>
+	<th>Date</th>
+	<th>Transtype</th>
+	<th>Starting Balance</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT s1.dcid 
+, s1.lastfirst
+, s2.name
+, to_char(g1.Date_Value, 'MM/DD/YYYY') date_value
+, g1.Transtype
+, s1.balance1
+FROM ps.GLDetail g1
+LEFT JOIN ps.schools s2
+ON g1.schoolid = s2.school_number
+INNER JOIN ps.students s1
+ON g1.studentid = s1.id
+WHERE g1.studentid > 0
+AND ((
+alacarte = 0
+AND transtype = 'A')
+OR REGEXP_LIKE(transtype, 'FF|FR|FE')
+OR transtype LIKE '%MLF%'
+OR REGEXP_LIKE(transtype, 'G|C'))
+~[if.is.a.school]AND g1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+
+	<tr class="~[evenoddrow]">
+		<td>~(dcid;t)</td>
+		<td>~(lastfirst;t)</td>
+		<td>~(schoolname;t)</td>
+		<td>~(date)</td>
+		<td>~(transtype)</td>
+		<td>~(balance1)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>
+

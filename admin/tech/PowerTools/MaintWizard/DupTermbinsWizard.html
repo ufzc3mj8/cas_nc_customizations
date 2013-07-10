@@ -1,0 +1,105 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Duplicate Final Grade Setups Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Final Grade Setups Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Final Grade Setups Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate final grade setups in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to repair duplicate final grade setups. This process will remove the duplicate Final Grade Setup items.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+~[tlist_sql;
+SELECT rownum
+, t2.dcid BadDCID
+FROM ps.termbins t1
+JOIN ps.termbins t2
+ON t1.schoolid = t2.schoolid
+AND t1.termid = t2.termid
+AND t1.storecode = t2.storecode
+AND t1.dcid < t2.dcid
+WHERE t1.dcid = (
+	SELECT MIN(DCID)
+	FROM ps.termbins
+	WHERE schoolid = t2.schoolid
+	AND termid = t2.termid
+	AND storecode = t2.storecode)
+~[if.is.a.school]AND t1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY t2.termid
+]
+BadDCID[~(rownum)] = ~(result2);
+[/tlist_sql]
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = ('There are no duplicate Final Grade Setups.');
+	}
+else
+	{
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' duplicate final grade setup to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' duplicate final grade setups to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<p><input type=\'Submit\' id=\'CorrectButton\' value=\'Click here to delete the duplicate final grade setups\'  enabled=\'true\' onClick=\'ButtonClick()\;\'></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').value = 'Correcting Records';
+	document.getElementById('CorrectButton').disabled = true;	
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		document.getElementById('iframe').innerHTML = ('<iframe onload=\'deleteBadRecord()\' src=\'/admin/tech/usm/home.html?filenum=13\'>');
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All duplicate final grade setups have been corrected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+function deleteBadRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/tech/usm/home.html?ac=prim&DR-033" + BadDCID[i] + "=delete\">");
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

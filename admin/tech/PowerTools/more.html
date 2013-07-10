@@ -1,0 +1,30 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>PowerTools</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html"  target="_top">System Administrator</a> &gt; PowerTools
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; PowerTools<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>PowerTools</h1>
+<!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<center><img src="/images/PowerTools.gif" alt="If you are seeing this message, the images for PowerTools are not properly loaded. Although PowerTools will function properly without the images, it is recommended to install the images in order to enjoy the full PowerTools experience, based on the installation instructions on PowerSource." border="0" width="400"></center>
+<br /><H3><center><a href="changelog.html">Version 2.8.3</a></h3>
+
+<center>This is the PowerTools Diagnostic Utility, which can be used to identify many known issues from within the PowerSchool application.
+<p>
+<font color="red">PowerTools is privately developed and is not supported by Pearson or PowerSchool technical support.</font></br>
+To submit enhancements, or to report any discrepancies, please email <a href="mailto:PowerToolsforPowerSchool@gmail.com">PowerToolsforPowerSchool@gmail.com</a></center>
+~[x:insertfile;PowerToolsFooter.html]

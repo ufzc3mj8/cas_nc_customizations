@@ -1,0 +1,67 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Duplicate StoredGrades</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]<content tag="breadcrumbs"><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Stored Grades</content>~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Stored Grades<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Students with Duplicate Stored Grades in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This report selects any student who has duplicate stored grades for a course and term.
+<p>
+Selecting a record will take you to the students Historical Grades page, where the duplicate records can be deleted.
+<p>
+A duplicate storedgrade record is indicated by a student having two storedgrades with the same course number, termid, and storecode.
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+		YAHOO.widget.DataTable.Formatter.PreviousGrades = PowerTools.PreviousGradesLink; 
+       
+	   var myColumnDefs = [
+            {key:"Student", label:"Student", minWidth: 150,sortable:true,formatter: "PreviousGrades"},
+			{key:"CourseName", label:"Course Name", minWidth: 150,sortable:true},
+			{key:"CourseNumber", label:"Course Number", minWidth: 50,sortable:true},
+            {key:"Storecode", label:"Store Code", minWidth: 50,sortable:true},
+			{key:"TermID", label:"Term ID", minWidth: 50,sortable:true},
+            {key:"SchoolName", label:"School", minWidth: 200,sortable:true}
+			];
+		
+        var myDataSource = new YAHOO.util.DataSource("DataSource/DupStoredGrades.html?curyearonly=~(gpv.curyearonly)"); 
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","Student","SchoolName","CourseNumber","CourseName","Storecode","TermID"]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: ~(gpv.maxlines),
+					containers : ['top_container','bottom_container'],
+					template: PowerTools.templateCY()
+	                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+		
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+                
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

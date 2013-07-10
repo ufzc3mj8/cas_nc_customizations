@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html class="no-js">
+<!-- non framed -->
+<head>
+  <title>NC Athletic Eligibility</title>
+  <script type="text/javascript" src="/scripts/cas/modernizr-2.6.2.min.js"></script>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "nc_athletic_eligibility.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+<!--  ~[wc:CAS]-->
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.start_page]</a> &gt; <a href="/admin/functions.html"
+                                                                                                                                                                   target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.special_functions]</a>
+&gt; <a href="/admin/studentlist/functions.html">~[text:psx.html.admin_reports.studschedmatrixprefs.group_functions]</a> &gt; NC Athletic Eligibility<!-- breadcrumb end -->
+~[wc:admin_navigation_css]
+
+<h1>NC Athletic Eligibility Report</h1>
+<!-- start of content and bounding box -->
+<div class="box-round">
+  ~[x:insertfile;nc_athletic_eligibility_report_~[displayprefschool:schoolgroup].html]
+  <div class="button-row"></div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+
+</body>
+</html>
+<!-- non framed -->

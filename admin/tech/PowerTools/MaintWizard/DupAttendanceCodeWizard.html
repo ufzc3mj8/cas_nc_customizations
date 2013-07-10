@@ -1,0 +1,171 @@
+<html>
+<head>
+<title>Duplicate Attendance Code Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Attendance Code Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Attendance Code Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate attendance code records in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to repair duplicate attendance codes. This process will repair all attendance records, remove all attendance code categories from the duplicate attendance codes, then remove the duplicate attendance codes.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var GoodID = new Array()
+var BadID = new Array()
+var Count = new Array()
+var CategoryCount = new Array()
+~[tlist_sql;
+	SELECT rownum
+	, a1.id GoodID
+	, a2.id BadID
+	, (SELECT COUNT(*)
+		FROM ps.attendance
+		WHERE attendance_codeid = a2.id) FixCount
+	, (SELECT COUNT(*)
+		FROM ps.att_code_code_entity
+		WHERE attendance_codeid = a2.id) EntityCount
+	FROM ps.attendance_code a1
+	INNER JOIN ps.attendance_code a2
+	ON a1.schoolid = a2.schoolid
+	AND a1.yearid = a2.yearid
+	AND (
+		a1.att_code = a2.att_code
+		OR (
+			a1.att_Code IS NULL
+			AND a2.att_Code IS NULL)
+		)
+	AND a1.id < a2.id
+  WHERE a1.id = (
+    SELECT MIN(ID)
+    FROM ps.attendance_code
+    WHERE (att_code = a2.att_code
+      OR (att_code IS NULL
+        AND a2.att_code IS NULL)
+      )
+    AND schoolid = a1.schoolid
+    AND yearid = a2.yearid)
+	~[if.is.a.school]AND a2.Schoolid = ~[v.curschoolid][/if]
+	ORDER BY a2.id
+	]
+GoodID[~(rownum)] = '~(goodid)';
+BadID[~(rownum)] = '~(badid)';
+Count[~(rownum)] = '~(Fixcount)';
+CategoryCount[~(rownum)] = '~(EntityCount)';
+[/tlist_sql]
+var i=(1);
+var l=(GoodID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = "There are no duplicate attendance codes.";
+	}
+else
+	{
+	// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' duplicate attendance code to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' duplicate attendance codes to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to correct the duplicate attendance codes\" enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').value='Correcting records';
+	document.getElementById('CorrectButton').disabled=true;
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if (CategoryCount[i] > 0)
+			{
+			document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectBadEntity()\" src=\"/admin/tech/usm/home.html?filenum=163\">");
+			}
+		else
+			{
+			selectAttendanceTable();
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All duplicate attendance codes corrected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+function selectBadEntity()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"deleteBadEntity()\" src=\"/admin/tech/usm/home.html?fieldnum_1=1&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+	// Delete the attendance code category records for the bad attendance code
+function deleteBadEntity()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectAttendanceTable()\" src=\"/admin/tech/usm/home.html?&fieldnum=0&modifytext=&verifydelete=yes&delete=Delete+Selected+Records\">");
+	};
+function selectAttendanceTable()
+	{
+	if (Count[i] > 0)
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectIncorrectRecords()\" src=\"/admin/tech/usm/home.html?filenum=157\">");
+		}
+	else
+		{
+		selectAttCodeTable();
+		};
+	};
+function selectIncorrectRecords()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"CorrectAttRecord()\" src=\"/admin/tech/usm/home.html?fieldnum_1=2&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function CorrectAttRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectAttCodeTable()\" src=\"/admin/tech/usm/home.html?fieldnum=2&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function selectAttCodeTable()
+	{	
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectBadRecord()\" src=\"/admin/tech/usm/home.html?filenum=156\">");
+	};
+	// Select the bad attendance code record
+function selectBadRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"deleteBadRecord()\" src=\"/admin/tech/usm/home.html?fieldnum_1=1&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+// Delete the bad attendance code record
+function deleteBadRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/tech/usm/home.html?fieldnum=0&modifytext=&verifydelete=yes&delete=Delete+Selected+Records\">");
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

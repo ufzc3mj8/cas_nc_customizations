@@ -1,0 +1,353 @@
+<table id="tabledata">
+<thead>
+	<tr>Report</tr>
+	<tr>Count of Records</tr>
+</thead>
+<tbody>
+	<tr>
+		<td><a href="OrphanedAttendance.html">Orphaned Attendance Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.attendance a1
+LEFT JOIN ps.students s1
+ON a1.studentid = s1.id
+LEFT JOIN PS.attendance_code a2
+ON a1.attendance_codeid = a2.id
+LEFT JOIN ps.cc c1
+ON a1.ccid = c1.id
+LEFT JOIN ps.period p1
+ON a1.periodid = p1.id
+LEFT JOIN ps.schools s2
+ON a1.schoolid = s2.school_number
+LEFT JOIN ps.sections s3
+ON abs(c1.sectionid) = s3.id
+AND c1.sectionid != 0
+LEFT JOIN ps.courses c2
+ON c1.course_number = c2.course_number
+WHERE (s1.id IS NULL
+  OR a2.id IS NULL
+  OR (c1.id IS NULL
+    AND a1.ccid != 0)
+  OR (p1.id IS NULL
+    AND a1.periodid != 0)
+  OR s2.id IS NULL
+  OR (s3.ID IS NULL
+    AND abs(c1.sectionid) != 0)
+  OR (c2.course_number IS NULL
+    AND c1.course_number IS NOT NULL)
+)
+~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedAttendance.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+  ~[if.district.office]<tr>
+    <td><a href="OrphanedAttendanceTime.html">Orphaned Attendance_Time Records</a></td>
+    <td>~[tlist_sql;
+        SELECT count(*)
+        FROM attendance_time a1
+        LEFT JOIN attendance a2
+        ON a1.attendanceid = a2.id
+        WHERE a2.id IS NULL
+        ORDER BY a1.ID
+        ]
+      <a href="OrphanedAttendanceTime.html">~(count;t)</a>[/tlist_sql]
+    </td>
+  </tr>[/if]
+	<tr>
+		<td><a href="OrphanedCC.html">Orphaned CC Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.cc c1
+LEFT JOIN ps.students s1
+ON c1.studentid = s1.id
+LEFT JOIN ps.sections s2
+ON abs(c1.sectionid) = s2.id
+LEFT JOIN ps.schools s3
+ON c1.schoolid = s3.school_number
+LEFT JOIN ps.terms t1
+ON to_char(abs(c1.termid)) = t1.id
+AND c1.schoolid = t1.schoolid
+LEFT JOIN PS.courses c2
+ON s2.course_number = c2.course_number
+WHERE (s1.lastfirst IS NULL
+OR s2.ID IS NULL
+OR s3.school_number IS NULL
+OR c2.course_number IS NULL)
+~[if.is.a.school]AND c1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedCC.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedFeeTransaction.html">Orphaned Fee_Transaction Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM PS.fee_transaction f1
+LEFT JOIN ps.students s1
+ON f1.studentid = s1.id
+LEFT JOIN ps.fee f2
+ON f1.feeid = f2.id
+LEFT JOIN ps.schools s2
+ON f1.schoolid = s2.school_number
+WHERE (s1.id IS NULL
+OR f2.ID IS NULL
+OR s2.id IS NULL
+)
+~[if.is.a.school]AND f1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedFeeTransaction.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedHonorRoll.html">Orphaned HonorRoll Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.honorroll h1
+LEFT JOIN ps.students s1
+ON h1.studentid = s1.id
+LEFT JOIN ps.schools s2
+ON h1.schoolid = s2.school_number
+WHERE (s1.id IS NULL
+OR s2.ID IS NULL
+)
+~[if.is.a.school]AND h1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedHonorRoll.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedPGFinalGrades.html">Orphaned PGFinalGrades Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.pgfinalgrades p1
+LEFT JOIN ps.students s1
+ON p1.studentid = s1.id
+LEFT JOIN ps.sections s2
+ON p1.sectionid = s2.id
+LEFT JOIN ps.courses c1
+ON s2.course_number = c1.course_number
+WHERE (s1.id IS NULL
+OR s2.id IS NULL
+OR c1.course_number IS NULL
+)~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedPGFinalGrades.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedReenrollments.html">Orphaned Reenrollment Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.reenrollments r1
+LEFT JOIN ps.students s1
+ON r1.studentid = s1.id
+LEFT JOIN ps.schools s2
+ON r1.schoolid = s2.school_number
+WHERE (r1.schoolid NOT IN (
+  SELECT school_number
+  FROM ps.schools)
+OR (r1.grade_level < s2.low_grade
+  AND r1.schoolid != '999999')
+OR (
+  r1.grade_level > s2.high_grade
+  AND r1.schoolid != '999999')
+OR (
+  r1.grade_level != '99'
+  AND r1.schoolid = '999999'))
+OR (s1.id IS NULL
+OR s2.id IS NULL)
+~[if.is.a.school]AND r1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedReenrollments.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedSection.html">Orphaned Section Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.sections s1
+LEFT JOIN ps.courses c1
+ON s1.course_number = c1.course_number
+LEFT JOIN ps.teachers t1
+ON s1.teacher = t1.id
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+LEFT JOIN ps.terms t2
+ON s1.termid = t2.id
+AND s1.schoolid = t2.schoolid
+WHERE (c1.course_number IS NULL
+OR t1.id IS NULL
+OR s2.school_number IS NULL)
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedSection.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedSpEnrollments.html">Orphaned SpEnrollments Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.spenrollments s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.gen g1
+ON s1.programid = g1.id
+AND g1.CAT = 'specprog'
+LEFT JOIN ps.schools s3
+ON s1.schoolid = s3.school_number
+WHERE (s2.id IS NULL
+OR g1.name IS NULL
+OR s3.ID IS NULL)
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedSpEnrollments.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedStandardsGrades.html">Orphaned StandardsGrades Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.standardsgrades s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.standards s3
+ON s1.standardsid = s3.id
+LEFT JOIN ps.schools s4
+ON s1.schoolid = s4.school_number
+WHERE (s2.id IS NULL
+OR s3.id IS NULL
+OR s4.school_number IS NULL)
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedStandardsGrades.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedStoredGrades.html">Orphaned StoredGrades Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.storedgrades s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.sections s3
+ON s1.sectionid = s3.id
+LEFT JOIN ps.courses c1
+ON s3.course_number = c1.course_number
+WHERE (s2.id IS NULL
+OR (
+  s3.id IS NULL
+  AND s3.ID != 0)
+OR (c1.course_number IS NULL
+  AND s1.sectionid != 0))
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedStoredGrades.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedStudentRace.html">Orphaned StudentRace Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.studentrace s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.gen g1
+ON s1.racecd = g1.Name
+AND g1.cat = 'race'
+WHERE (s2.id IS NULL
+OR g1.Name IS NULL)
+~[if.is.a.school]AND s2.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedStudentRace.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+
+	<tr>
+		<td><a href="OrphanedStudents.html">Orphaned Student Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.students s1
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+WHERE (s1.schoolid NOT IN (
+  SELECT school_number
+  FROM ps.schools)
+OR (s1.grade_level < s2.low_grade
+  AND s1.schoolid != '999999')
+OR (
+  s1.grade_level > s2.high_grade
+  AND s1.schoolid != '999999')
+OR (
+  s1.grade_level != '99'
+  AND s1.schoolid = '999999'))
+AND s1.schoolid = s1.enrollment_schoolid
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.lastfirst
+]
+			<a href="OrphanedStudents.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+
+	<tr>
+		<td><a href="OrphanedStudentTestScore.html">Orphaned StudentTestScore Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.studenttestscore s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.testscore t1
+ON s1.testscoreid = t1.id
+LEFT JOIN ps.studenttest s3
+ON s1.studenttestid = s3.id
+LEFT JOIN ps.schools s4
+ON s3.schoolid = s4.school_number
+LEFT JOIN ps.test t2
+ON s3.testid = t2.id
+WHERE (s2.id IS NULL
+OR t1.ID IS NULL
+OR s3.id IS NULL
+OR t2.ID IS NULL
+OR (s4.name IS NULL
+	and s3.schoolid != 0))
+~[if.is.a.school]AND s2.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedStudentTestScore.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedTeacherRace.html">Orphaned TeacherRace Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.teacherrace t1
+LEFT JOIN ps.teachers t2
+ON t1.teacherid = t2.id
+LEFT JOIN ps.gen g1
+ON t1.racecd = g1.name
+AND g1.cat = 'race'
+WHERE (t2.ID IS NULL
+  OR g1.name IS NULL)
+~[if.is.a.school]AND t2.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedTeacherRace.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OrphanedTermBins.html">Orphaned TermBins Records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.termbins t1
+LEFT JOIN ps.terms t2
+ON t1.termid = t2.id
+AND t1.schoolid = t2.schoolid
+LEFT JOIN ps.schools s1
+ON t1.schoolid = s1.school_number
+WHERE (t2.id IS NULL
+OR s1.ID IS NULL)
+~[if.is.a.school]AND t1.schoolid = ~[v.curschoolid][/if.is.a.school]
+]
+			<a href="OrphanedTermBins.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+</tbody>
+</table>

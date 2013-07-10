@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Edit Athletic Eligibility Team Categories</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "edit.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+  <script type="text/javascript">
+    var pageData = {
+      "id" : "~[gpv:id]"
+    };
+    $j(document).ready(function() {
+      populateForm("/admin/cas/athletic_eligibility/categories/json/category.json.html?id=" + pageData.id);
+    });
+  </script>
+  <script src="/scripts/cas/extSchema.js"></script>
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form action="home.html" method="POST">
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_attendance_preferences.home.start_page]</a> &gt; <a href="/admin/schoolsetup/home.html"
+                                                                                                                                                                    target="_top">~[text:psx.html.admin_attendance_preferences.home.school_setup]</a>
+  &gt; <a href="/admin/cas/athletic_eligibility" target="_top">Athletic Eligibility</a> &gt; <a href="/admin/cas/athletic_eligibility/categories">Categories</a> &gt; Edit Category<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+  <h1>Edit Athletic Eligibility Team Categories</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th class="bold">Option</th>
+          <th class="bold">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr bgcolor="#edf3fe">
+          <td>Type Name</td>
+          <td><input type="text" name="CF-[:0.S_NC_AE_CATEGORIES.S_NC_AE_CATEGORIES:~[gpv:id]]Name" size="45" maxlength="50" id="name" class="required"></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="button-row"><input type="hidden" name="ac" value="prim">
+      ~[if.~[gpv:id]>0]
+      <button name="btnDelete" id="btnDelete" onclick="deleteRecord()">Delete</button>
+      [/if]
+      ~[submitbutton]
+    </div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+  ~[wc:admin_footer_css]
+</form>
+</body>
+</html><!-- non framed -->

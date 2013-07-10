@@ -1,0 +1,49 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>ID</th>
+	<th>Student</th>
+	<th>StudentID</th>
+	<th>Program Name</th>
+	<th>Program ID</th>
+	<th>School Name</th>
+	<th>School Number</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT s1.dcid
+, s1.id
+, s2.lastfirst
+, s1.studentid
+, g1.name
+, s1.programid
+, s3.name
+, s1.schoolid
+FROM ps.spenrollments s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.gen g1
+ON s1.programid = g1.id
+AND g1.CAT = 'specprog'
+LEFT JOIN ps.schools s3
+ON s1.schoolid = s3.school_number
+WHERE (s2.id IS NULL
+OR g1.name IS NULL
+OR s3.ID IS NULL)
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.ID
+	]
+
+	<tr>
+		<td>~(r1.dcid;t)</td>
+		<td>~(r1.id;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s1.studentid;t)</td>
+		<td>~(g1.name;t)</td>
+		<td>~(s1.programid;t)</td>
+		<td>~(s3.name;t)</td>
+		<td>~(s1.schoolid;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

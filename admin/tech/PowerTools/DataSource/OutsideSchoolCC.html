@@ -1,0 +1,71 @@
+<table id="tabledata">
+	<thead>
+		<tr>
+			<th>DCID</th>
+			<th>Student</th>
+			<th>School Name</th>
+			<th>Course Number</th>
+			<th>Section Number</th>
+			<th>Course Name</th>
+			<th>Date Enrolled</th>
+			<th>Date Left</th>
+		</tr>
+	</thead>
+	<tbody>
+~[tlist_sql;
+SELECT s1.dcid
+, s1.lastfirst
+, s2.name
+, c1.course_number
+, c1.section_number
+, c2.course_name
+, CASE
+  WHEN to_char(c1.dateenrolled, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+  ELSE to_char(c1.dateenrolled, 'MM/DD/YYYY') END
+, CASE
+  WHEN to_char(c1.dateleft, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+  ELSE to_char(c1.dateleft, 'MM/DD/YYYY') END
+FROM ps.cc c1
+INNER JOIN ps.students s1
+ON c1.studentid = s1.id
+LEFT JOIN ps.courses c2
+ON c1.course_number = c2.course_number
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.reenrollments r1
+  WHERE c1.dateenrolled >= r1.entrydate
+  AND c1.dateenrolled <= r1.exitdate
+  AND c1.dateleft >= r1.entrydate
+  AND c1.dateleft <= r1.exitdate
+  AND c1.studentid = r1.studentid)
+~[if.is.a.school]AND c1.schoolid = ~[v.curschoolid][/if.is.a.school]
+~[if.~(gpv.curyearonly)=1]AND trunc(abs(c1.termid)/100) = trunc(~[v.curtermid]/100)[/if]
+AND NOT EXISTS (
+  SELECT *
+  FROM ps.students s1
+  WHERE c1.dateenrolled >= s1.entrydate
+  AND c1.dateenrolled <= s1.exitdate
+  AND c1.dateleft >= s1.entrydate
+  AND c1.dateleft <= s1.exitdate
+  AND c1.studentid = s1.id)
+AND c1.dateleft >= c1.dateenrolled
+~[if.is.a.school]AND c1.schoolid = ~[v.curschoolid][/if.is.a.school]
+~[if.~(gpv.curyearonly)=1]AND trunc(abs(c1.termid)/100) = trunc(~[v.curtermid]/100)[/if]
+ORDER BY s1.lastfirst
+]
+
+	<tr>
+		<td>~(s1.dcid)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s2.name;t)</td>
+		<td>~(c1.Course_number;t)</td>
+		<td>~(c1.Section_number;t)</td>
+		<td>~(c2.course_name;t)</td>
+		<td>~(c1.dateenrolled;t)</td>
+		<td>~(c1.dateleft;t)</td>
+	</tr>
+	[/tlist_sql]
+</tbody>
+</table>

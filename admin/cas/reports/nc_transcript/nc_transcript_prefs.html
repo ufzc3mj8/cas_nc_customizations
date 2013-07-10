@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>NC Transcript</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "nc_transcript_prefs.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:ProjectName]
+  ~[wc:CAS]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form target="_blank" action="/admin/cas/reports/nc_transcript/nc_transcript.html" method="POST" class="noSubmitLoading">
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.start_page]</a> &gt; <a href="/admin/functions.html"
+                                                                                                                                                                     target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.special_functions]</a>
+  &gt; <a href="/admin/studentlist/functions.html">~[text:psx.html.admin_reports.studschedmatrixprefs.group_functions]</a> &gt; NC Transcript Existing<!-- breadcrumb end -->
+  ~[wc:admin_navigation_css]
+
+  <h1>NC Transcript Existing</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+
+    <table border="0" cellspacing="0" cellpadding="4">
+      <tr bgcolor="#f6f6f6">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.option]</td>
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.value]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">Transcript to Print</td>
+        <td>
+          <select id="layout" radioDivPre="pagelayout" name="report_name">
+            <option value="transcript_new">Standardized</option>
+            <option value="transcript_existing">Student</option>
+          </select>
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.students_to_scan]</td>
+        <td>~[x:dothisfor;selected;enrolled]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.sort_order]</td>
+        <td><input type="radio" name="[prefschool]nc_transcript_sort" value="lastfirst,gt,grade_level,gt" checked>~[text:psx.html.admin_reports.studschedmatrixprefs.last_name]<br>
+          <input type="radio" name="[prefschool]nc_transcript_sort" value="grade_level,gt,lastfirst,gt">~[text:psx.html.admin_reports.studschedmatrixprefs.grade_level]<br>
+          <input type="radio" name="[prefschool]nc_transcript_sort" value="home_room,gt,lastfirst,gt">~[text:psx.html.admin_reports.studschedmatrixprefs.homeroom]
+        </td>
+      </tr>
+    </table>
+    <br>
+
+    <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+
+  ~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <!-- Enter title here -->
+  <title>NC Report Card</title>
+  <script type="text/javascript" src="/scripts/cas/modernizr-2.6.2.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/images/cas/css/webreport.css" />
+  <script src="/scripts/cas/jquery.min.js"></script>
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "Report"                      : "NC Report Card",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var reportconfig = {
+      dothisfor          : "~[gpv:dothisfor]",
+      col1date           : "~[displayprefyearschool:nc_reportcard_col1date]",
+      col2Date           : "~[displayprefyearschool:nc_reportcard_col2date]",
+      col3Date           : "~[displayprefyearschool:nc_reportcard_col3date]",
+      col4Date           : "~[displayprefyearschool:nc_reportcard_col4date]",
+      col5Date           : "~[displayprefyearschool:nc_reportcard_col5date]",
+      col6Date           : "~[displayprefyearschool:nc_reportcard_col6date]",
+      col7Date           : "~[displayprefyearschool:nc_reportcard_col7date]",
+      col8Date           : "~[displayprefyearschool:nc_reportcard_col8date]",
+      teacherCommentTerm : "~[displayprefyearschool:nc_reportcard_commentterm]"
+    };
+  </script>
+    <script src="/scripts/requirejs/require.js"></script>
+<script type="text/javascript">
+/**
+ * Need to configure require js before psbehaviors.
+ */
+require.config({
+    	baseUrl: ~[scripts_url],
+    	paths: {
+    		'jquery':                'cas/jquery.min',
+        'underscore':            'underscore/amd-underscore-'+~[if.jsdebug]'dev'[else]'min'[/if]+'-1.3.1',
+    		'backbone':              'backbone/amd-backbone-'+~[if.jsdebug]'dev'[else]'min'[/if]+'-0.9.1',
+    		'Handlebars':            'handlebars/require-handlebars.1.0.0.beta.4',
+    		'Handlebars/i18nprecompile': 'handlebars/hbs-i18nprecompile-0.2.1'    	}
+    });
+</script>
+  ~[wc:CAS]
+  <script type="text/javascript" src="/scripts/cas/functions/cas_handlebars.js"></script>
+  <script src="/scripts/cas/jquery.min.js"></script>
+  <script src="/scripts/cas/underscore-min.js"></script>
+  <script src="/scripts/cas/json2.js"></script>
+  <script src="/scripts/cas/backbone-min.js"></script>
+  <script src="/scripts/cas/handlebars.js"></script>
+  <!-- Grades Template -->
+  <script id="grades-template" type="text/x-handlebars-template">
+    <table class="rcgradetable">
+      <tr>
+        <td>Course Title and Instructor</td>
+        <td class="rcdatelabel colshown">~[displayprefyearschool:nc_reportcard_col1date]</td>
+        <td class="rcdatelabel ~[if.~[displayprefyearschool:nc_reportcard_columns]>=2]colshown[else]colhidden[/if]">~[displayprefyearschool:nc_reportcard_col2date]</td>
+        <td class="rcdatelabel ~[if.~[displayprefyearschool:nc_reportcard_columns]>=3]colshown[else]colhidden[/if]">~[displayprefyearschool:nc_reportcard_col3date]</td>
+        <td class="rcdatelabel ~[if.~[displayprefyearschool:nc_reportcard_columns]>=4]colshown[else]colhidden[/if]">~[displayprefyearschool:nc_reportcard_col4date]</td>
+        <td class="rcdatelabel ~[if.~[displayprefyearschool:nc_reportcard_columns]>=5]colshown[else]colhidden[/if]">~[displayprefyearschool:nc_reportcard_col5date]</td>
+        <td class="rcdatelabel ~[if.~[displayprefyearschool:nc_reportcard_columns]>=6]colshown[else]colhidden[/if]">~[displayprefyearschool:nc_reportcard_col6date]</td>
+        <td class="rcdatelabel ~[if.~[displayprefyearschool:nc_reportcard_columns]>=7]colshown[else]colhidden[/if]">~[displayprefyearschool:nc_reportcard_col7date]</td>
+        <td class="rcdatelabel ~[if.~[displayprefyearschool:nc_reportcard_columns]>=8]colshown[else]colhidden[/if]">~[displayprefyearschool:nc_reportcard_col8date]</td>
+        <td>Instructor Comments</td>
+      </tr>
+      {{#each this}}
+      <tr>
+        <td class="rccoursebox bordered">{{courseNumber}} - {{sectionNumber}} - {{courseName}}<br>{{teacherName}}</td>
+        <td class="rcgradebox">
+          {{#each column1}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rcgradebox ~[if.~[displayprefyearschool:nc_reportcard_columns]>=2]colshown[else]colhidden[/if]">
+          {{#each column2}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rcgradebox ~[if.~[displayprefyearschool:nc_reportcard_columns]>=3]colshown[else]colhidden[/if]">
+          {{#each column3}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rcgradebox ~[if.~[displayprefyearschool:nc_reportcard_columns]>=4]colshown[else]colhidden[/if]">
+          {{#each column4}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rcgradebox ~[if.~[displayprefyearschool:nc_reportcard_columns]>=5]colshown[else]colhidden[/if]">
+          {{#each column5}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rcgradebox ~[if.~[displayprefyearschool:nc_reportcard_columns]>=6]colshown[else]colhidden[/if]">
+          {{#each column6}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rcgradebox ~[if.~[displayprefyearschool:nc_reportcard_columns]>=7]colshown[else]colhidden[/if]">
+          {{#each column7}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rcgradebox ~[if.~[displayprefyearschool:nc_reportcard_columns]>=8]colshown[else]colhidden[/if]">
+          {{#each column8}}
+          <div class="rcstorecodelabel">{{storeCode}}:</div>
+          <div class="rcgrade">{{grade}}</div>
+          {{/each}}
+        </td>
+        <td class="rccommentbox bordered">{{comment}}</td>
+      </tr>
+      {{/each}}
+    </table>
+    <div class="rcabsences">Cumulative Absences:</div>
+    <div class="rcabsencecount">Days: ~(*DABS)</div>
+  </script>
+</head>
+
+<body class="~[if.~[displayprefyearschool:nc_reportcard_layout]=landscape]landscape[else]portrait[/if]">
+~[x:insertfile;/admin/cas/reports/partials/reportinstructions.html]
+~[x:GetDoThisForStudents]
+~[x:SortSelection;Students:~[prefschool:nc_reportcard_sort]]
+~[RepeatForEach:Students]
+<article class="pagebody">
+  <table class="~[if.~[displayprefyearschool:nc_reportcard_layout]=landscape]landscape[else]portrait[/if]">
+    <thead>
+      <tr>
+        <th>
+          <section id="header-~(id)" class="rcgroup clearfix"></section>
+          <div style="border-top: 2pt solid;"></div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <section id="grades-~(id)" class="rcgroup clearfix"></section>
+          <div style="border-top: 2pt solid;"></div>
+          <section id="footer_~(id)" class="rcgroup clearfix">
+            ~[if.~[displayprefyearschool:nc_reportcard_principalsig]=on]
+            <div class="principalsig">
+              <div class="signaturelabel">Principal's Signature</div>
+              <div class="signatureline">&nbsp;</div>
+            </div>
+            [/if]
+            ~[if.~[displayprefyearschool:nc_reportcard_parentsig]=on]
+            <div class="parentsig">
+              <div class="signaturelabel">Signature of Parent/Guardian</div>
+              <div class="signatureline">&nbsp;</div>
+            </div>
+            [/if]
+          </section>
+          <section id="schoolmessage~(id)" class="rcgroup clearfix">
+            ~[if.~[displayprefyearschool:nc_reportcard_schoolmessage]#]
+            <div class="messagelabel">School Message:</div>
+            <div>~[displayprefyearschool:nc_reportcard_schoolmessage]</div>
+            [/if]
+          </section>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+[between:Students]
+  <div class="clearfix" style="page-break-after: always; width: 100%;">
+    <div class="noprint" style="border-top: thin dotted;">
+    </div>
+  </div>
+[/RepeatForEach:Students]
+
+<script type="text/javascript" src="js/reporttemplate.js">
+</script>
+<div id="legal"><p></p></div>
+</body>
+</html>

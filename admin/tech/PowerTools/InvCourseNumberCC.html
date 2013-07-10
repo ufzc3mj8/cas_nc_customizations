@@ -1,0 +1,83 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>CC Record Course Number issues</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]<content tag="breadcrumbs"><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; CC Record Course Number issues</content>~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; CC Record Course Number issues<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Invalid Course Number in the CC Table in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This report displays any CC record where the course number exists in the courses table, but has a different case sensitivity. This issue is documented in <a href="https://powersource.pearsonschoolsystems.com/d/55894" target="PowerSource">PowerSource article 55894</a>.
+<p>
+<p id="Correction"></p><p>
+<!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated" align=right></div>
+<script type="text/javascript">
+~[tlist_sql;
+SELECT SUBSTR(security, (Select groupvalue from ps.teachers where id = ~[x:userid]), 1) FROM ps.pages WHERE lower(to_char(path)) = 'tech/usm/home.html']
+DDAPerms = '~(result)';
+[/tlist_sql]
+if ((DDAPerms == '0') || (DDAPerms == '1'))
+	{
+	document.getElementById('Correction').innerHTML = 'Correcting these records requires permissions to access Direct Database Access. Please see your PowerSchool Administrator staff for assistance with correcting these records.';
+	}
+else
+	{
+	document.getElementById('Correction').innerHTML = 'These CC records may be corrected using the <a href=\"MaintWizard/InvalidCourseCCWizard.html\">CC Records with Incorrect Course Number Wizard</a>.';
+	};
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+        var myColumnDefs = [
+            {key:"Student", label:"Student", minWidth: 150,sortable:true},
+			{key:"SectionID", label:"SectionID", minWidth: 50,sortable:true},
+			{key:"SchoolName", label:"School Name", minWidth: 150,sortable:true},
+			{key:"TermID", label:"TermID", minWidth: 50,sortable:true},
+			{key:"SectionCourse", label:"Sections Course #", minWidth: 50,sortable:true},
+			{key:"SectionNumber", label:"Section #", minWidth: 50,sortable:true},
+			{key:"CoursesCourse", label:"Courses Course #", minWidth: 50,sortable:true}
+			];
+		
+        var myDataSource = new YAHOO.util.DataSource("DataSource/InvCourseNumberCC.html"); 
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["Student","SectionID","SchoolName","TermID","SectionCourse","SectionNumber","CoursesCourse"]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+					rowsPerPage: PowerTools.RowsPerPage(),
+					containers : ['top_container','bottom_container'],
+					template : YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE, 
+					rowsPerPageOptions: [
+						{value:25,text:"25 Rows"},
+						{value:50,text:"50 Rows"},
+						{value:100,text:"100 Rows"},
+						{value:500,text:"500 Rows"},
+						{value:100000,text:"Max Rows"}
+					]
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+                
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

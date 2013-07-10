@@ -1,0 +1,73 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Grade Scales with Duplicate Cutoffs</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Grade Scales with Duplicate Cutoffs
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Grade Scales with Duplicate Cutoffs<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Grade Scales with Duplicate Cutoff Percentages</h1>
+<p>
+This report selects any grade scale which contains more than one item with the same cutoff percentage.
+<p>
+Selecting a record will take you to the grade scale, where the cutoff percentages may be corrected, or the duplicate item may be removed.
+<!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+		YAHOO.widget.DataTable.Formatter.GradeScales = PowerTools.GradeScalesLink;
+
+	   var myColumnDefs = [
+            {key:"Name", label:"Grade Scale Name", minWidth: 150,sortable:true,formatter: "GradeScales"},
+			{key:"Cutoffpercentage", label:"Cutoff Percent", minWidth: 50,sortable:true},
+			{key:"Countitem", label:"Count", minWidth: 50,sortable:true}
+			];
+
+        var myDataSource = new YAHOO.util.DataSource("DataSource/GradeScaleDupCutoff.html");
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","Name","Cutoffpercentage","Countitem"]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+					rowsPerPage: PowerTools.RowsPerPage(),
+					containers : ['top_container','bottom_container'],
+					template : YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE, 
+					rowsPerPageOptions: [
+						{value:25,text:"25 Rows"},
+						{value:50,text:"50 Rows"},
+						{value:100,text:"100 Rows"},
+						{value:500,text:"500 Rows"},
+						{value:100000,text:"Max Rows"}
+					]
+                }),
+				sortedBy : {key:"Name", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

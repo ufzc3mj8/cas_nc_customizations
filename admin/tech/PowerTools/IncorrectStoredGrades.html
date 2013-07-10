@@ -1,0 +1,109 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Incorrect Stored Grades</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Incorrect Stored Grades
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Incorrect Stored Grades<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Students with Incorrect Stored Grades in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This report selects any student who has a grade where the letter grade or the GPA points does not match what is expected, based off the grade scale used when storing the grades.
+<p>
+Items in red indicate a mismatch between the Historical Grade record, and the Grade Scale calculation.<br>
+The GPA points are determined by the letter grade of the Stored Grade record compared to the GPA Points of the letter grade in the gradescale.
+The GPA points are determined by the percentage of the Stored Grade record compared to the cutoff percentage of the grade scale. 
+<p>
+Selecting a record will take you to the students Historical Grades page, where the blank grade can be deleted.
+<p>
+<table>
+<div id="Wizard" style="display:table-row"></div>
+</table><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+	
+		this.InvalidGPAPoints = function(elCell, oRecord, oColumn, oData)
+			{
+				var GPA = oRecord.getData("GPAPoints");
+				var ExpGPA = oRecord.getData("ExpGPAPoints");
+				if (GPA != ExpGPA)
+					{
+					elCell.innerHTML = "<font color=\"red\">" + GPA + " / " + ExpGPA + "</font>";
+					}
+				else
+					{
+					elCell.innerHTML = GPA + " / " + ExpGPA;
+					};
+			};
+		this.InvalidGrade = function(elCell, oRecord, oColumn, oData)
+			{
+				var LGrade = oRecord.getData("Grade");
+				var ExpLGrade = oRecord.getData("ExpGrade");
+				if (LGrade != ExpLGrade)
+					{
+					elCell.innerHTML = "<font color=\"red\">" + LGrade + " / " + ExpLGrade + "</font>";
+					}
+				else
+					{
+					elCell.innerHTML = LGrade + " / " + ExpLGrade;
+					};
+			};
+		
+		YAHOO.widget.DataTable.Formatter.InvalidGPA = this.InvalidGPAPoints;
+		YAHOO.widget.DataTable.Formatter.InvalidLGrade = this.InvalidGrade;
+		YAHOO.widget.DataTable.Formatter.PreviousGrades = PowerTools.PreviousGradesLink;
+
+	   var myColumnDefs = [
+            {key:"Student", label:"Student", minWidth: 50,sortable:true,formatter: "PreviousGrades"},
+			{key:"CourseName", label:"Course Name", minWidth: 50,sortable:true},
+			{key:"CourseNumber", label:"Course Number", minWidth: 50,sortable:true},
+            {key:"Storecode", label:"Store Code", minWidth: 50,sortable:true},
+			{key:"TermID", label:"Term ID", minWidth: 50,sortable:true},
+			{key:"Percent", label:"Percent", minWidth: 50,sortable:true},
+			{key:"Grade", label:"Grade / Expected", minWidth: 50,sortable:true, formatter: "InvalidLGrade"},
+			{key:"GPAPoints", label:"GPA Points / Expected", minWidth: 50,sortable:true,formatter: "InvalidGPA"},
+			{key:"SchoolName", label:"School", minWidth: 150,sortable:true}
+			];
+
+        var myDataSource = new YAHOO.util.DataSource("DataSource/IncorrectStoredGrades.html?curyearonly=~(gpv.curyearonly)");
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","Student","SchoolName","CourseName","CourseNumber","Storecode","TermID","Percent","Grade","ExpGrade","GPAPoints","ExpGPAPoints"]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: ~(gpv.maxlines),
+					containers : ['top_container','bottom_container'],
+					template: PowerTools.templateCY()
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

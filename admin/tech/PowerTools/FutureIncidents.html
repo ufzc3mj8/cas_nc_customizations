@@ -1,0 +1,83 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Incidents with Future Dates</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]			
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Incidents with Future Dates
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Incidents with Future Dates<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Incidents with Future Dates</h1>
+<p>
+This report selects any incident with an incident date in the future.
+<p>
+Selecting an incident ID will take you to the incident management record.
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+
+
+YAHOO.util.Event.onDOMReady(function() {
+	ClientPagination = function() {
+		
+		this.IncidentLink = function(elCell, oRecord, oColumn, oData)
+			{
+				var ID = oRecord.getData("IncidentID");
+				elCell.innerHTML = "<a href='/admin/incidents/incidentlog.html?id=" + ID + "' target=Powertools>" + ID + "</a>";
+			};
+	
+		YAHOO.widget.DataTable.Formatter.Incident = this.IncidentLink;
+
+		var myColumnDefs = [
+			{key:"IncidentID", label:"Incident ID", minWidth: 50,sortable:true,formatter: "Incident"},
+			{key:"Date", label:"Incident Date", minWidth: 50,sortable:true},
+			{key:"Title", label:"Incident Title", minWidth: 200,sortable:true},
+			{key:"School", label:"School Name", minWidth: 50, sortable:true}
+		];
+
+		var myDataSource = new YAHOO.util.DataSource("DataSource/FutureIncidents.html");
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+		myDataSource.responseSchema = {
+			fields: ["IncidentID","School","Date","Title"]
+		};
+		
+		var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+					rowsPerPage: PowerTools.RowsPerPage(),
+					containers : ['top_container','bottom_container'],
+					template : YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE, 
+					rowsPerPageOptions: [
+						{value:25,text:"25 Rows"},
+						{value:50,text:"50 Rows"},
+						{value:100,text:"100 Rows"},
+						{value:500,text:"500 Rows"},
+						{value:100000,text:"Max Rows"}
+					]
+                }),
+				sortedBy : {key:"IncidentID", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+		};
+		
+		var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+		
+		return {
+			oDS: myDataSource,
+			oDT: myDataTable
+		};
+	}();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

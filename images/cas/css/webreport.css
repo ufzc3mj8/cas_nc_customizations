@@ -160,7 +160,7 @@
 
   .testscorename {
     float   : left;
-    width   : 200pt;
+    width   : 300pt;
     padding : 0 0 0 5pt;
     }
 
@@ -180,7 +180,7 @@
 
   .testscore {
     float      : left;
-    width      : 74pt;
+    width      : 104pt;
     text-align : center;
     }
 
@@ -786,6 +786,11 @@
     float  : left;
     width  : 478pt;
     border : 1pt solid #000;
+    }
+
+  .gradescaleurl {
+    text-align: center;
+    padding: 40pt 0 0 0;
     }
 
   .pageNum {

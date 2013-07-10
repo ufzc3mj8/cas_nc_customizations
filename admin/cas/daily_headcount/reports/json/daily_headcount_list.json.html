@@ -1,0 +1,45 @@
+[
+    ~[tlist_sql;
+      SELECT t1.studentid
+      , t1.dcid
+      , t1.lastfirst
+      FROM (
+      SELECT s1.id studentid
+      , s1.dcid dcid
+      , s1.lastfirst lastfirst
+      FROM students s1
+      ~[if.~[gpv:status]=total]WHERE s1.entrydate <= to_date('~[gpv:eaodate]','mm/dd/yyyy')[/if]
+      ~[if.~[gpv:status]=current]WHERE s1.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')[/if]
+      ~[if.~[gpv:status]=prior]WHERE s1.entrydate < to_date('~[gpv:eaodate]','mm/dd/yyyy')[/if]
+      AND s1.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+      AND s1.schoolid = ~(v.curschoolid)
+      AND s1.grade_level = ~[gpv:gradelevel]
+      UNION ALL
+      SELECT s2.id studentid
+      , s2.dcid dcid
+      , s2.lastfirst lastfirst
+      FROM reenrollments r1
+      JOIN students s2
+      ON r1.studentid = s2.id
+      ~[if.~[gpv:status]=total]WHERE r1.entrydate <= to_date('~[gpv:eaodate]','mm/dd/yyyy')[/if]
+      ~[if.~[gpv:status]=current]WHERE r1.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')[/if]
+      ~[if.~[gpv:status]=prior]WHERE r1.entrydate < to_date('~[gpv:eaodate]','mm/dd/yyyy')[/if]
+      AND r1.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+      AND r1.schoolid = ~(v.curschoolid)
+      AND r1.grade_level = ~[gpv:gradelevel]
+      ) t1
+      JOIN ps_adaadm_defaults_all a1
+      ON t1.studentid = a1.studentid
+      AND a1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+      ~[if.~[gpv:attendance]=present]WHERE a1.attendancevalue > 0[/if]
+      ~[if.~[gpv:attendance]=absent]WHERE (a1.attendancevalue <= 0 OR a1.attendancevalue IS NULL)[/if]
+      ORDER BY t1.lastfirst;
+    ]
+    {
+      "studentid" : "~(studentid;t)",
+      "studentdcid" : "~(dcid;t)",
+      "student" : "~(lastfirst;t)"
+    },
+    [/tlist_sql]
+    {}
+]

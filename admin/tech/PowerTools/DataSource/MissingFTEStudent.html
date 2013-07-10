@@ -1,0 +1,84 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>School Name</th>
+		<th>Entry Date</th>
+		<th>Exit Date</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT *
+FROM (
+SELECT s1.dcid
+, s1.lastfirst
+, s2.name
+, CASE
+	WHEN to_char(s1.Entrydate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+	ELSE to_char(s1.Entrydate, 'MM/DD/YYYY') END
+, CASE
+	WHEN to_char(s1.Exitdate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+	ELSE to_char(s1.Exitdate, 'MM/DD/YYYY') END
+FROM ps.students s1
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+LEFT JOIN ps.fte f1
+ON s1.fteid = f1.id
+WHERE (f1.schoolid != s1.schoolid
+or s1.fteid=0)
+~[if#curyearonly.~(gpv.curyearonly)=1]AND s1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=s1.schoolid)
+    AND (s1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=s1.schoolid)
+[/if#curyearonly]
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+AND s1.schoolid != 999999
+UNION ALL
+SELECT s1.dcid
+, s1.lastfirst
+, s2.name
+, CASE
+	WHEN to_char(r1.Entrydate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+	ELSE to_char(r1.Entrydate, 'MM/DD/YYYY') END
+, CASE
+	WHEN to_char(r1.Exitdate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+	ELSE to_char(r1.Exitdate, 'MM/DD/YYYY') END
+FROM ps.reenrollments r1
+LEFT JOIN ps.schools s2
+ON r1.schoolid = s2.school_number
+LEFT JOIN ps.fte f1
+ON r1.fteid = f1.id
+INNER JOIN ps.students s1
+ON r1.studentid = s1.id
+WHERE (r1.schoolid != f1.schoolid
+OR r1.fteid = 0)
+~[if.is.a.school]AND r1.schoolid = ~[v.curschoolid][/if.is.a.school]
+AND r1.schoolid != 999999
+~[if#curyearonly.~(gpv.curyearonly)=1]AND r1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=r1.schoolid)
+    AND (r1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=r1.schoolid)
+[/if#curyearonly]
+ORDER BY lastfirst)
+]
+
+	<tr>
+		<td>~(s1.dcid;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s2.name;t)</td>
+		<td>~(s1.Entrydate;t)</td>
+		<td>~(s1.Exitdate;t)</td>
+	</tr>
+			[/tlist_sql]
+	</tbody>
+</table>

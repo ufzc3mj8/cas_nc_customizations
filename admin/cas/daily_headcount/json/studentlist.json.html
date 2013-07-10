@@ -1,0 +1,20 @@
+{"students" : [~[tlist_sql;
+SELECT s.dcid
+, s.id
+, s.lastfirst
+, s.entrydate
+, (SELECT min(calendardate)
+FROM PS_ADAADM_DEFAULTS_ALL
+WHERE studentid = s.id
+AND calendardate > s.entrydate
+AND attendancevalue > 0) validday
+FROM students s
+JOIN PS_ADAADM_DEFAULTS_ALL p
+ON s.id = p.studentid
+AND s.entrydate = p.calendardate
+WHERE p.attendancevalue = 0
+AND s.schoolid = ~(v.curschoolid)
+AND s.enroll_status = 0
+AND s.entrydate >= (select firstday from terms where schoolid = ~(v.curschoolid) and isyearrec = 1 and yearid = ~(v.curyearid))
+AND s.entrydate < (select lastday from terms where schoolid = ~(v.curschoolid) and isyearrec = 1 and yearid = ~(v.curyearid))
+ORDER BY s.lastfirst]{"dcid" : "~(dcid)","id" : "~(id)","student" : "~(lastfirst;t)","entrydate" : "~(entrydate;d)","validdate" : "~(validdate;d)"},[/tlist_sql]{}]}

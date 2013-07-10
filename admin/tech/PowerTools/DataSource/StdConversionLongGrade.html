@@ -1,0 +1,27 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>Conversion Name</th>
+	<th>Grade/Label</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+		SELECT g1.dcid
+		, g2.name gsname
+		, g1.value grade
+		FROM ps.gen g1
+		LEFT JOIN ps.gen g2
+		ON g1.valueli = g2.id
+		WHERE g1.cat = 'stdconv'
+		AND length(g1.value) > 8
+		ORDER BY g2.name
+	]
+
+	<tr class="~[evenoddrow]">
+		<td>~(g2.dcid;t)</td>
+		<td>~(g2.g2name;t)</td>
+		<td>~(g1.grade;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

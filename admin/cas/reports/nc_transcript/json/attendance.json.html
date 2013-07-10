@@ -1,0 +1,54 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   [
+    ~[tlist_sql;
+      SELECT to_char(r.entrydate, 'mm/dd/yyyy')
+      , to_char(r.exitdate, 'mm/dd/yyyy')
+      , s.total_days_absent
+      , s.total_days_present
+      , CASE
+      WHEN s2.name IS NOT NULL
+      THEN s2.name
+      ELSE (
+      SELECT schoolname
+      FROM C_REENROLLMENTSOUTOFDISTRICT
+      WHERE reenrollmentsdcid = r.dcid)
+      END schoolname
+      , r.schoolid
+      , CASE
+      WHEN r.grade_level = 0
+      THEN 'K'
+      ELSE to_char(r.grade_level)
+      END grade_level
+      , t.abbreviation
+      FROM reenrollments r
+      FULL JOIN s_nc_reenrollments s
+      ON s.reenrollmentsdcid = r.dcid
+      FULL JOIN schools s2
+      ON r.schoolid = s2.school_number
+      FULL JOIN terms t
+      ON t.schoolid = r.schoolid
+      AND t.firstday <= r.entrydate
+      AND t.lastday >= r.entrydate
+      AND t.isyearrec = '1'
+      WHERE studentid = ~(id)
+      ORDER BY r.entrydate
+      , r.exitdate
+    ]
+    {
+      "entrydate" : "~(r.entrydate;t)",
+      "exitdate" : "~(r.exitdate;t)",
+      "totalDaysAbsent" : "~(s.total_days_absent;t)",
+      "totalDaysPresent" : "~(s.total_days_present;t)",
+      "schoolname" : "~(s2.name)",
+      "schoolnumber" : "~(r.schoolid)",
+      "gradeLevel" : "~(grade_level)",
+      "year" : "~(t.abbreviation)"
+    },
+    [/tlist_sql]
+{}
+]
+[between:Students],
+[/RepeatForEach:Students]
+}

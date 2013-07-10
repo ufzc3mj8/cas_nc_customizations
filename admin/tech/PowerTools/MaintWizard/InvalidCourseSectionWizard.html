@@ -1,0 +1,116 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Section Records with Incorrect Section Number Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Section Records with Incorrect Section Number Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Section Records with Incorrect Section Number Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing Section Records with Incorrect Section Number records in All Schools</h1>
+<p>
+Use this wizard to repair Section Records with incorrect case sensitivity. This process will correct the case sensitivity of the Section number.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<div id="iframe" style="display:none"></div>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var RecordID = new Array();
+var GoodSection = new Array();
+var BadSection = new Array();
+~[tlist_sql;
+	SELECT rownum
+	, s1.id
+	, s1.course_number
+	, c1.course_number
+	FROM ps.sections s1
+	LEFT JOIN ps.courses c1
+	ON lower(s1.course_number) = lower(c1.course_number)
+	WHERE s1.course_number != c1.course_number
+	~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if]
+	ORDER BY s1.id
+	]
+RecordID[~(rownum)] = '~(result1)';
+BadSection[~(rownum)] = '~(result2)';
+GoodSection[~(rownum)] = '~(result3)';
+[/tlist_sql]
+// Check if there are 0 records to correct
+var i=(1);
+var l=(GoodSection.length);
+if (l == 0)
+	{
+	document.write("There are no Section Records with incorrect Section number case sensitivity");
+	}
+else if (l == 2)
+	{
+	document.write('There is ' + (l-1) + ' Section record with incorrect Section number case sensitivity.<br />');
+	document.write("<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to correct the Section record\"  enabled=\"true\" onClick=\"CorrectRecords()\;\"></p>");
+	}
+else
+	{
+	document.write('There are ' + (l-1) + ' Section records with incorrect Section number case sensitivity.<br />');
+	document.write("<p><input type=\"Submit\" id=\;this.disabled=true;\"></p>");
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').disabled = true;
+	document.getElementById("CorrectButton").value="Correcting records";
+	SetNonAtomic();
+	};
+function SetNonAtomic()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"RecordCheck()\" src=\"/admin/tech/home.html?opname=setglobalnonatomicsync&p1=&p2=&code=&ac=specop&x=23&y=11\">");
+	};
+// Check for invalid records
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		document.getElementById('iframe').innerHTML = ('<iframe onload=\"SelectRecord()\" src=\"/admin/tech/usm/home.html?filenum=3\">');
+		}
+	else
+		{
+		ProgressDisplay();
+		document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('All Section records corrected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		document.getElementById('iframe').innerHTML = ("<iframe src=\"/admin/tech/home.html?opname=setglobalatomicsync&p1=&p2=&code=&ac=specop&x=19&y=6\">");
+		};
+	};	
+// Select the bad record in the Section table and move to change the invalid record
+function SelectRecord()
+	{
+	document.getElementById('iframe').innerHTML = ('<iframe onload=\"UpdateChangeRecord()\" src=\"/admin/tech/usm/home.html?fieldnum_1=1&comparator1=%3D&value=' + RecordID[i] + '&value=&ac=usm&search=Search+all\">');
+	};
+// Change the Section record to something other than it's current Section number to force a change
+function UpdateChangeRecord()
+	{
+	document.getElementById('iframe').innerHTML = ('<iframe onload=\"CorrectRecord()\" src=\"/admin/tech/usm/home.html?fieldnum=3&modifytext=' + BadSection[i] + '_bad&modify=Modify+Selected+Records\">');
+	};
+// Correct the record to a valid Section number
+function CorrectRecord()
+	{
+	document.getElementById('iframe').innerHTML = ('<iframe onload=\"displayNext()\" src=\"/admin/tech/usm/home.html?fieldnum=3&modifytext=' + GoodSection[i] + '&modify=Modify+Selected+Records\">');
+	};
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

@@ -1,0 +1,109 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Orphaned StandardsGrades Records</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned StandardsGrades Records
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned StandardsGrades Records<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Orphaned StandardsGrades Records in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This report selects any StandardsGrades Record where the student~[if.district.office], school, [/if]or standard does not exist.
+<p>
+Selecting a record will take you to the record in Direct Database ~[if.~[displaypref:PowerTools-Redirect-Orphan-DDA]=1]Access, where the invalid data can be corrected or the record may be deleted[else]Export, where the record to be corrected may be reviewed for correction[/if].
+<p>
+<table>
+<div id="Wizard" style="display:table-row"></div>
+</table>
+<!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id="paginated"></div>
+<script type="text/javascript">
+~[tlist_sql;
+SELECT SUBSTR(security, (Select groupvalue from ps.teachers where id = ~[x:userid]), 1)
+FROM ps.pages
+WHERE lower(to_char(path)) = 'tech/usm/home.html'
+]
+DDAPerms = '~(result)';
+[/tlist_sql]
+if ((DDAPerms == '0') || (DDAPerms == '1'))
+	{
+	DDAPrefs = '0';
+	}
+else
+	{
+	document.getElementById('Wizard').innerHTML = 'You may also remove all orphaned records using the <a href="MaintWizard/OrphanedStandardsGradesWizard.html">Orphaned Standards Grades Wizard</a>.';
+	DDAPrefs = '~[displaypref:PowerTools-Redirect-Orphan-DDA]';
+	};
+
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+		YAHOO.widget.DataTable.Formatter.StudentExist = PowerTools.StudentExistCheck;
+		YAHOO.widget.DataTable.Formatter.SchoolExist = PowerTools.ValidSchoolCheck;
+		YAHOO.widget.DataTable.Formatter.StandardExist = PowerTools.StandardExistCheck;
+      YAHOO.widget.DataTable.Formatter.SchoolValid = PowerTools.ValidSchoolCheck;
+		if (DDAPrefs == 'on')
+			{
+			YAHOO.widget.DataTable.Formatter.DDAStandardsGrades = PowerToolsDataLink.DDAStandardsGradesLink;
+			}
+		else
+			{
+			YAHOO.widget.DataTable.Formatter.DDAStandardsGrades = PowerToolsDataLink.DDEStandardsGradesLink;
+			};
+
+	   var myColumnDefs = [
+            {key:"ID", label:"ID", minWidth: 50,sortable:true,formatter: "DDAStandardsGrades"},
+			{key:"Student", label:"Student", minWidth: 50,sortable:true,formatter: "StudentExist"},
+            {key:"Standard", label:"Standard", minWidth: 150,sortable:true,formatter: "StandardExist"},
+			{key:"School", label:"School Name", minWidth: 200,sortable:true,formatter: "SchoolExist"},
+            {key:"YearID", label:"YearID", minWidth: 50,sortable:true}
+			];
+
+        var myDataSource = new YAHOO.util.DataSource("DataSource/OrphanedStandardsGrades.html");
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","ID","Student","StudentID","Standard","StandardID","School","YearID","SchoolID"]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: PowerTools.RowsPerPage(),
+					containers : ['top_container','bottom_container'],
+					template : YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE,
+					rowsPerPageOptions: [
+						{value:25,text:"25 Rows"},
+						{value:50,text:"50 Rows"},
+						{value:100,text:"100 Rows"},
+						{value:500,text:"500 Rows"},
+						{value:100000,text:"Max Rows"}
+					]
+                }),
+				sortedBy : {key:"ID", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

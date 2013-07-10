@@ -1,0 +1,84 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>Students School</th>
+		<th>Students School ID</th>
+		<th>Next School</th>
+		<th>Next School Number</th>
+		<th>Next Year Grade</th>
+		<th>School Low Grade</th>
+		<th>School High Grade</th>
+		<th>Year of Graduation</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT DISTINCT s1.dcid
+, s1.lastfirst
+, s2.name SchoolName
+, s1.schoolid
+, (SELECT Name 
+  FROM PS.Schools
+  WHERE s1.Next_School = Schools.School_Number) NextSchool
+, s1.Next_School
+, s1.Sched_NextYearGrade
+, (SELECT low_grade
+  FROM ps.schools
+  WHERE school_number = s1.next_school) LowGrade
+, (SELECT high_grade
+  FROM ps.schools
+  WHERE school_number = s1.next_school) HighGrade
+, s1.Sched_YearOfGraduation
+FROM PS.students s1
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+WHERE s1.Sched_Scheduled = 1
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+AND (
+  s1.next_school NOT IN 
+    ( 
+    SELECT school_number
+    FROM ps.schools)
+  OR s1.sched_yearofgraduation = 0
+  OR (
+    s1.sched_nextyeargrade < 
+      (
+      SELECT low_grade
+      FROM ps.schools
+      WHERE school_number = s1.next_school)
+    )
+  OR (
+    s1.sched_nextyeargrade >
+      (
+      SELECT high_grade
+      FROM ps.schools
+      WHERE school_number = s1.next_school)
+    )
+  )
+AND s1.id NOT IN (
+  SELECT id
+  FROM ps.students
+  WHERE next_school = '999999'
+  AND sched_nextyeargrade = '99'
+  AND sched_yearofgraduation != 0)
+ORDER BY s1.lastfirst
+]
+
+	<tr>
+		<td>~(s1.dcid;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(schoolname;t)</td>
+		<td>~(s1.schoolid;t)</td>
+		<td>~(s2.name;t)</td>
+		<td>~(s1.next_school;t)</td>
+		<td>~(s1.sched_nextyeargrade;t)</td>
+		<td>~(s2.lowgrade;t)</td>
+		<td>~(s2.highgrade;t)</td>
+		<td>~(s1.sched_yearofgraduation;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>
+

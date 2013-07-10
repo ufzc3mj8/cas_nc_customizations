@@ -1,0 +1,54 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   {
+~[tlist_sql;
+SELECT s1.id
+, s1.lastfirst
+, CASE
+  WHEN to_char(s1.grade_level) = 0
+  THEN 'Ki'
+  ELSE to_char(s1.grade_level)
+  END gradelevel
+, s1.home_room
+, s1.student_number
+, s1.mailing_street
+, s1.mailing_city
+, s1.mailing_state
+, s1.mailing_zip
+, s2.name
+, s2.schooladdress
+, s2.schoolcity
+, s2.schoolstate
+, s2.schoolzip
+, s2.schoolphone
+, s2.principal
+FROM students s1
+JOIN schools s2
+ON s1.schoolid = s2.school_number
+WHERE s1.id = ~(id)
+]
+    "id"              : "~(s1.id)",
+    "lastfirst"       : "~(s1.lastfirst)",
+    "gradelevel"      : "~(gradelevel)",
+    "homeroom"        : "~(s1.home_room)",
+    "studentnumber"   : "~(s1.student_number)",
+    "mailingstreet"   : "~(s1.mailing_street)",
+    "mailingcity"     : "~(s1.mailing_city)",
+    "mailingstate"    : "~(s1.mailing_state)",
+    "mailingzip"      : "~(s1.mailing_zip)",
+    "schoolname"      : "~(s2.name)",
+    "schooladdress"   : "~(s2.schooladdress)",
+    "schoolcity"      : "~(s2.schoolcity)",
+    "schoolstate"     : "~(s2.schoolstate)",
+    "schoolzip"       : "~(s2.schoolzip)",
+    "schoolphone"     : "~(s2.schoolphone)",
+    "schoolprincipal" : "~(s2.principal)",
+[/tlist_sql]
+    "districtname"    : "~[displaypref:districtname]",
+    "superintendent"  : "~[displaypref:Superintendent]",
+    "date"            : "~[letter.date]"
+}
+[between:Students],
+[/RepeatForEach:Students]
+}

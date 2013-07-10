@@ -1,0 +1,118 @@
+{
+"grades" : [
+~[tlist_sql;
+SELECT distinct(s1.grade_level)
+, (SELECT COUNT(*)
+FROM students s2
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = s2.id
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE s2.grade_level = s1.grade_level
+AND s2.schoolid = s1.schoolid
+AND s2.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.exitdate > s2.entrydate
+AND p1.attendancevalue > 0) eps
+, (SELECT COUNT(*)
+FROM students s2
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = s2.id
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE s2.grade_level = s1.grade_level
+AND s2.schoolid = s1.schoolid
+AND s2.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.exitdate > s2.entrydate
+AND (p1.attendancevalue = 0 or p1.attendancevalue IS NULL)) eas
+, (SELECT COUNT(*)
+FROM students s2
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = s2.id
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE s2.grade_level = s1.grade_level
+AND s2.schoolid = s1.schoolid
+AND s2.entrydate < to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND p1.attendancevalue > 0) pps
+, (SELECT COUNT(*)
+FROM students s2
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = s2.id
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE (s2.grade_level = s1.grade_level
+AND s2.schoolid = s1.schoolid
+AND s2.entrydate < to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND (p1.attendancevalue = 0 OR p1.attendancevalue IS NULL))) pas
+, (SELECT COUNT(*)
+FROM reenrollments r1
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = r1.studentid
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE r1.grade_level = s1.grade_level
+AND r1.schoolid = s1.schoolid
+AND r1.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND r1.exitdate > r1.entrydate
+AND p1.attendancevalue > 0) epr
+, (SELECT COUNT(*)
+FROM reenrollments r1
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = r1.studentid
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE r1.grade_level = s1.grade_level
+AND r1.schoolid = s1.schoolid
+AND r1.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND r1.exitdate > r1.entrydate
+AND p1.attendancevalue = 0) ear
+, (SELECT COUNT(*)
+FROM reenrollments r1
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = r1.studentid
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE r1.grade_level = s1.grade_level
+AND r1.schoolid = s1.schoolid
+AND r1.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND r1.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND p1.attendancevalue > 0) ppr
+, (SELECT COUNT(*)
+FROM reenrollments r1
+FULL JOIN ps_adaadm_defaults_all p1
+ON p1.studentid = r1.studentid
+AND p1.calendardate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+WHERE r1.grade_level = s1.grade_level
+AND r1.schoolid = s1.schoolid
+AND r1.entrydate = to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND r1.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND (p1.attendancevalue = 0 or p1.attendancevalue IS NULL)) par
+,(SELECT count(*)
+FROM students s2
+WHERE s2.entrydate <= to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.grade_level = s1.grade_level
+AND s2.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.schoolid = s1.schoolid
+AND NOT EXISTS (
+SELECT *
+FROM CC
+WHERE cc.studentid = S2.id
+AND cc.dateenrolled = s2.entrydate
+)
+) students_no_courses
+FROM students s1
+-- WHERE s1.schoolid = ~[gpv:schoolid]
+WHERE s1.schoolid = ~(v.curschoolid)
+ORDER BY s1.grade_level
+]
+{
+"grade" : "~(grade_level;t)",
+"enrolled_present_students" : ~(enrolled_present_students;t),
+"enrolled_absent_students" : ~(enrolled_absent_students;t),
+"prior_present_students" : ~(prior_present_studentsl;t),
+"prior_absent_students" : ~(prior_absent_students;t),
+"enrolled_present_reenrollments" : ~(enrolled_present_reenrollments;t),
+"enrolled_absent_reenrollments" : ~(enrolled_absent_reenrollments;t),
+"prior_present_reenrollments" : ~(prior_present_reenrollments;t),
+"prior_absent_reenrollments" : ~(prior_absent_reenrollments;t),
+"students_no_courses" : ~(students_no_courses;t)
+},
+[/tlist_sql]
+{}
+]
+}

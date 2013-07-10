@@ -1,0 +1,35 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>Section ID</th>
+		<th>Section Course Number</th>
+		<th>School Name</th>
+		<th>Courses Course Number</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT s1.id
+, s1.course_number section_coursenumber
+, s2.name
+, c1.course_number course_coursenumber
+FROM ps.sections s1
+LEFT JOIN ps.courses c1
+ON lower(s1.course_number) = lower(c1.course_number)
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+WHERE c1.course_number != s1.course_number
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.id
+  ]
+
+	<tr>
+		<td>~(SectionID)</a></td>
+		<td>~(section_coursenumber;t)</td>
+		<td>~(name;t)</td>
+		<td>~(courses_coursenumber;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>
+

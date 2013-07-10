@@ -1,0 +1,63 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Global Preferences</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+<form action="/admin/changesrecorded.white.html" method="POST" target="_parent">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Global Preferences
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Global Preferences<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Global Preferences </h1>
+<p>
+Use this page to set the global preferences for PowerTools. 
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><table border="0" cellspacing="0" cellpadding="4">
+	<tr bgcolor="#edf3fe">
+		<td class="bold">Hide the Special Program Enrollments Outside School Enrollments and Special Program Enrollments with Invalid Grade Levels reports</td>
+		<td><input type="checkbox" name="[pref]PowerTools-Hide-SPEnrollments-Reports"></td>
+	</tr>
+	<tr>
+		<td class="bold">Hide the Padded School Enrollment report</td>
+		<td><input type="checkbox" name="[pref]PowerTools-Hide-Padded-School-Enrollment-Report"></td>
+	</tr>
+	<tr bgcolor="#edf3fe">
+		<td class="bold">Hide the Blank Stored Grades Report</td>
+		<td><input type="checkbox" name="[pref]PowerTools-Hide-Blank-Stored-Grades"></td>
+	</tr>
+	<tr>
+		<td class="bold">Hide the Duplicate Stored Grades Report</td>
+		<td><input type="checkbox" name="[pref]PowerTools-Hide-Duplicate-Stored-Grades"></td>
+	</tr>
+	<tr bgcolor="#edf3fe">
+		<td class="bold">Redirect DDE links in reports to DDA instead(Requires DDA Access)</td>
+		<td><input type="checkbox" name="[pref]PowerTools-Redirect-Orphan-DDA"></td>
+	</tr>
+	<tr>
+		<td class="bold">Allow selecting only Hispanic options to qualify Federal Ethnicity and Race</td>
+		<td><input type="checkbox" name="[pref]PowerTools-Hispanic-Only-Qualifies"></td>
+	</tr>
+	~[if.~[x:version]>=7.0]
+	<tr bgcolor="#edf3fe">
+		<td class="bold">Enable SchoolNet Preparation Reports (District Office Only)</td>
+		<td><input type="checkbox" name="[pref]PowerTools-Enable-SchoolNet-Prep"></td>
+	</tr>
+	[/if]
+</table>
+<p id="bottom_container" style="text-align:center"></p>
+<tr>
+<td colspan="2" align="right"><input type="hidden" name="ac" value="prim">~[submitbutton]</td>
+<td>&nbsp;</td>
+</tr>
+~[x:insertfile;PowerToolsFooter.html]
+</form>

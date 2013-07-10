@@ -1,0 +1,77 @@
+{
+~[tlist_sql;
+SELECT name
+, team_code
+, short_name
+, coach
+, team_type
+, team_category
+, faculty_assigned
+, include_report_card
+, include_transcript
+, earns_award
+, external_code
+, points
+, authorized
+, attendance_reason
+, to_char(start_date,'mm/dd/yyyy')
+, to_char(end_date, 'mm/dd/yyyy')
+, exit_reason_required
+, to_char(scholar_athlete_date, 'mm/dd/yyyy')
+, to_char(elig_report_date, 'mm/dd/yyyy')
+, season
+, gender
+, sport_level
+, min_cum_gpa_sem
+, min_mark_gpa_sem
+, min_courses
+, failed_courses_allowed
+, dropped_courses_allowed
+, min_age
+, max_age
+, accident_ins_reqd
+, health_ins_reqd
+, phys_exam_reqd
+, phys_exam_within
+, fee_type
+, fee_amount
+FROM s_nc_ae_teams
+WHERE id = ~[gpv:id];
+]
+"name" : "~(name)",
+"team_code" : "~(team_code)",
+"short_name" : "~(short_name)",
+"coach" : "~(coach)",
+"team_type" : "~(team_type)",
+"team_category" : "~(team_category)",
+"faculty_assigned" : "~(faculty_assigned)",
+"include_report_card" : "~(include_report_card)",
+"include_transcript" : "~(include_transcript)",
+"earns_award" : "~(earns_award)",
+"external_code" : "~(external_code)",
+"points" : "~(points)",
+"authorized" : "~(authorized)",
+"attendance_reason" : "~(attendance_reason)",
+"start_date" : "~(start_date)",
+"end_date" : "~(end_date)",
+"exit_reason_required" : "~(exit_reason_required)",
+"scholar_athlete_date" : "~(scholar_athlete_date)",
+"elig_report_date" : "~(elig_report_date)",
+"season" : "~(season)",
+"gender" : "~(gender)",
+"sport_level" : "~(sport_level)",
+"min_cum_gpa_sem" : "~(min_cum_gpa_sem)",
+"min_mark_gpa_sem" : "~(min_mark_gpa_sem)",
+"min_courses" : "~(min_courses)",
+"failed_courses_allowed" : "~(failed_courses_allowed)",
+"dropped_courses_allowed" : "~(dropped_courses_allowed)",
+"min_age" : "~(min_age)",
+"max_age" : "~(max_age)",
+"accident_ins_reqd" : "~(accident_ins_reqd)",
+"health_ins_reqd" : "~(health_ins_reqd)",
+"phys_exam_reqd" : "~(phys_exam_reqd)",
+"phys_exam_within" : "~(phys_exam_within)",
+"fee_type" : "~(fee_type)",
+"fee_amount" : "~(fee_amount)"
+[/tlist_sql]
+}

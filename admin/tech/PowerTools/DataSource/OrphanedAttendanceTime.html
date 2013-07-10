@@ -1,0 +1,26 @@
+<table id="tabledata">
+  <thead>
+  <th>DCID</th>
+  <th>ID</th>
+  <th>AttendanceID</th>
+  </thead>
+  <tbody>
+  ~[tlist_sql;
+  SELECT a1.dcid
+  , a1.id
+  , a1.attendanceid
+  FROM attendance_time a1
+  LEFT JOIN attendance a2
+  ON a1.attendanceid = a2.id
+  WHERE a2.id IS NULL
+  ORDER BY a1.ID
+  ]
+
+  <tr class="~[evenoddrow]">
+    <td>~(a1.dcid;t)</td>
+    <td>~(a1.id;t)</td>
+    <td>~(a1.attendanceid;t)</td>
+  </tr>
+  [/tlist_sql]
+  </tbody>
+</table>

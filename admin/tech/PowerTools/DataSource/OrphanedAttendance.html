@@ -1,0 +1,103 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>ID</th>
+	<th>Student</th>
+	<th>StudentID</th>
+	<th>Attendance Code</th>
+	<th>Attendance Code ID</th>
+	<th>Att Record Code ID</th>
+	<th>Course.Section</th>
+	<th>Course.Section Sort</th>
+	<th>Period</th>
+	<th>Period ID</th>
+	<th>School Name</th>
+	<th>School Number</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT a1.dcid
+, a1.id
+, s1.lastfirst
+, a1.studentid
+, a2.att_code
+, a2.id
+, a1.attendance_codeid
+, CASE
+  WHEN c1.id IS NULL
+  AND a1.ccid != 0
+  THEN '<font color="red">CCID ' || a1.ccid || ' Does Not Exist</font>'
+  WHEN a1.ccid = 0
+  THEN 'Daily Record'
+  WHEN s3.id IS NULL
+  THEN '<font color="red">Section ID ' || abs(c1.sectionid) || ' Does Not Exist</font>'
+  WHEN c2.course_number IS NULL
+  THEN '<font color="red">Course Number ' || c1.course_number || ' Does Not Exist</font>'
+  ELSE c1.course_number || '.' || c1.section_number
+  END course_section
+, CASE
+  WHEN c1.id IS NULL
+  AND a1.ccid != 0
+  THEN 'CCID ' || a1.ccid || ' Does Not Exist'
+  WHEN a1.ccid = 0
+  THEN 'Daily Record'
+  WHEN s3.id IS NULL
+  THEN 'Section ID ' || abs(c1.sectionid) || ' Does Not Exist'
+  WHEN c2.course_number IS NULL
+  THEN 'Course Number ' || c1.course_number || ' Does Not Exist'
+  ELSE c1.course_number || '.' || c1.section_number
+  END course_sectionsort
+, p1.period_number
+, a1.periodid
+, s2.name
+, a1.schoolid
+FROM ps.attendance a1
+LEFT JOIN ps.students s1
+ON a1.studentid = s1.id
+LEFT JOIN PS.attendance_code a2
+ON a1.attendance_codeid = a2.id
+LEFT JOIN ps.cc c1
+ON a1.ccid = c1.id
+LEFT JOIN ps.period p1
+ON a1.periodid = p1.id
+LEFT JOIN ps.schools s2
+ON a1.schoolid = s2.school_number
+LEFT JOIN ps.sections s3
+ON abs(c1.sectionid) = s3.id
+AND c1.sectionid != 0
+LEFT JOIN ps.courses c2
+ON c1.course_number = c2.course_number
+WHERE (s1.id IS NULL
+  OR a2.id IS NULL
+  OR (c1.id IS NULL
+    AND a1.ccid != 0)
+  OR (p1.id IS NULL
+    AND a1.periodid != 0)
+  OR s2.id IS NULL
+  OR (s3.ID IS NULL
+    AND abs(c1.sectionid) != 0)
+  OR (c2.course_number IS NULL
+    AND c1.course_number IS NOT NULL)
+)
+~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY a1.ID
+	]
+
+	<tr class="~[evenoddrow]">
+		<td>~(a1.dcid;t)</td>
+		<td>~(a1.id;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(a1.studentid;t)</td>
+		<td>~(a1.att_code;t)</td>
+		<td>~(a2.id;t)</td>
+		<td>~(a1.att_codesort;t)</td>
+		<td>~(c1.course_section;t)</td>
+		<td>~(c1.course_sectionsort;t)</td>
+		<td>~(p1.period;t)</td>
+		<td>~(a1.periodid;t)</td>
+		<td>~(s2.Schoolname;t)</td>
+		<td>~(s2.schoolid;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

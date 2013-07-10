@@ -1,0 +1,17 @@
+{
+  "enrollments" : [
+  ~[tlist_sql;
+    SELECT dcid
+    FROM cc
+    WHERE studentid = ~[gpv:studentid]
+    AND dateenrolled >= to_date('~[gpv:entrydate]','mm_dd_yyyy')
+    AND dateenrolled < to_date('~[gpv:validdate]','mm_dd_yyyy')
+    AND schoolid = ~(v.curschoolid)
+  ]
+  {
+    "dcid" : "~(dcid;t)"
+  },
+  [/tlist_sql]
+  {}
+  ]
+}

@@ -1,0 +1,61 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>ID</th>
+		<th>Student</th>
+		<th>StudentID</th>
+		<th>School</th>
+		<th>School Number</th>
+		<th>Grade_Level</th>
+		<th>School High Grade</th>
+		<th>School Low Grade</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT r1.dcid
+, r1.id
+, s1.lastfirst
+, r1.studentid
+, s2.name
+, r1.schoolid
+, r1.grade_level
+, s2.high_grade
+, s2.low_grade
+FROM ps.reenrollments r1
+LEFT JOIN ps.students s1
+ON r1.studentid = s1.id
+LEFT JOIN ps.schools s2
+ON r1.schoolid = s2.school_number
+WHERE (r1.schoolid NOT IN (
+  SELECT school_number
+  FROM ps.schools)
+OR (r1.grade_level < s2.low_grade
+  AND r1.schoolid != '999999')
+OR (
+  r1.grade_level > s2.high_grade
+  AND r1.schoolid != '999999')
+OR (
+  r1.grade_level != '99'
+  AND r1.schoolid = '999999'))
+OR (s1.id IS NULL
+OR s2.id IS NULL)
+~[if.is.a.school]AND r1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY r1.ID
+	]
+
+	<tr>
+		<td>~(r1.dcid;t)</td>
+		<td>~(r1.id;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(r1.studentid;t)</td>
+		<td>~(s2.Schoolname;t)</td>
+		<td>~(r1.schoolid;t)</td>
+		<td>~(r1.GradeLevel;t)</td>
+		<td>~(s2.high_grade;t)</td>
+		<td>~(s2.low_grade;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

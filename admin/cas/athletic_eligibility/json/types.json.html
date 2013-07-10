@@ -1,0 +1,15 @@
+{
+  "types" : [
+    ~[tlist_sql;
+    SELECT id
+    , name
+    FROM S_NC_AE_TYPES
+    ORDER BY name]
+    {
+      "id" : "~(id)",
+      "name" : "~(name)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}

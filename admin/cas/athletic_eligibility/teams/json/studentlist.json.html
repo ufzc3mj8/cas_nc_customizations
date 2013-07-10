@@ -1,0 +1,23 @@
+{
+  "students" : [
+    ~[tlist_sql;
+      SELECT id
+      , lastfirst
+      FROM students
+      WHERE schoolid = ~(curschoolid)
+      AND enroll_status <= 0
+      AND id NOT IN (
+        SELECT studentid
+        FROM S_NC_AE_TEAMMEMBERS
+        WHERE teamid = ~[gpv:id])
+      ORDER BY lastfirst]
+    {
+      "id" : "~(id)",
+      "name" : "~(name)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}
+
+

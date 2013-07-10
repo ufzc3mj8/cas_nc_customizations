@@ -1,0 +1,52 @@
+<table id="tabledata">
+	<thead>
+			<th>School Name</th>
+			<th>FTE</th>
+			<th>School Year</th>
+			<th>Att Mode Code</th>
+			<th>Att Conversion</th>
+			<th>Calc Presents / Absences</th>
+	</thead>
+	<tbody>
+	~[tlist_sql;
+SELECT s1.name
+, f1.name
+, (f1.yearid + 1990)||'-'||(f1.yearid + 1991)
+, f1.dflt_att_mode_code
+, CASE
+  WHEN f1.dflt_conversion_mode_code = 'PeriodDay'
+  THEN 'Period to Day'
+  WHEN f1.dflt_conversion_mode_code = 'CodeDay'
+  THEN 'Code to Day'
+  WHEN f1.dflt_conversion_mode_code = 'TimeDay'
+  THEN 'Time to Day'
+  ELSE 'Unknown'
+  END ModeCode
+, CASE
+  WHEN to_char((SELECT value
+  FROM ps.prefs
+  WHERE lower(name) = 'att_calccntpresentsabsences'
+  AND schoolid = f1.schoolid
+  AND yearid = f1.yearid)) = 'P'
+  THEN 'Presents'
+  ELSE 'Absences'
+  END CalcType
+FROM ps.fte f1
+INNER JOIN ps.schools s1
+ON f1.schoolid = s1.school_number
+ORDER BY f1.yearid
+, s1.name
+, f1.name
+  ]
+
+		<tr class="~[evenoddrow]">
+			<td>~(s1.name;t)</td>
+			<td>~(f1.name;t)</td>
+			<td>~(f1.yearid;t)</td>
+			<td>~(f1.dflt_att_mode_code;t)</td>
+			<td>~(f1.dflt_conversion_mode_code;t)</td>
+			<td>~(att_calccntpresentsabsences;t)</td>
+		</tr>
+		[/tlist_sql]
+	</tbody?
+</table>

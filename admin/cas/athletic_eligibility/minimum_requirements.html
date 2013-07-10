@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Athletic Eligibility Minimum Requirements</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "minimum_requirements.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form action="/admin/changesrecorded.white_nf.html" method="POST" name="pref" id="pref">
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_attendance_preferences.home.start_page]</a> &gt; <a href="/admin/schoolsetup/home.html"
+                                                                                                                                                                    target="_top">~[text:psx.html.admin_attendance_preferences.home.school_setup]</a>
+  &gt; <a href="/admin/cas/athletic_eligibility" target="_top">Athletic Eligibility</a> &gt; Minimum Requirements<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+  <h1>Athletic Eligibility Minimum Requirements</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><label for="minimum_attendance">Minimum Attendance Percentage</label></td>
+          <td><input id="minimum_attendance" type="text" name="[prefyearschool]nc_ae_minimum_attendance" value="~[displayprefyearschool:nc_ae_minimum_attendance]" size="5" /></td>
+        </tr>
+        <tr>
+          <td><label for="min_weighted">Minimum Weighted GPA for Scholar Athlete</label></td>
+          <td><input id="min_weighted" type="text" name="[prefyearschool]nc_ae_minimum_weighted" value="~[displayprefyearschool:nc_ae_minimum_weighted]" size="5" /></td>
+        </tr>
+        <tr>
+          <td><label for="min_unweighted">Minimum Unweighted GPA for Scholar Team</label></td>
+          <td><input type="text" id="min_unweighted" name="[prefyearschool]nc_ae_minimum_unweighted" value="~[displayprefyearschool:nc_ae_minimum_unweighted]" size="5" /></td>
+        </tr>
+        <tr>
+          <td><label for="calc_date">Age Calculation Date</label></td>
+          <td><input type="text" id="calc_date" class="psDateWidget" name="[prefyearschool]nc_ae_calc_date" value="~[displayprefyearschool;nc_ae_calc_date]"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+
+    <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+
+  ~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

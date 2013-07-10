@@ -1,0 +1,100 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Non-Session Attendance</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]<content tag="breadcrumbs"><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Non-Session Attendance</content>~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Non-Session Attendance<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Students with Attendance on Non-Session Days in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This report selects any student who has an attendance record that is on a day not in session on the calendar, or any meeting attendance record that the section is not in session either by the cycle day or bell schedule. It is also possible the the attendance record belongs to a section that no longer exists.
+This report also selects any student who has an attendance record when the student is either not in school, or not in that section on the date the attendance record exists.
+<p>
+Selecting a student will take you to the students Attendance page, though the attendance records may need to be corrected using DDA. Selecting an Attendance ID will take you to the record in Direct Database ~[if.~[displaypref:PowerTools-Redirect-Orphan-DDA]=1]Access[else]Export[/if].
+<p>
+A non in-session day is indicated by the Calendar not having the In-Session checkbox checked.
+<p>
+This report is dependant on the Section Meetings table. If you are experiencing incorrect data, please reset section meetings.
+<p>
+<table>
+<div id="Wizard" style="display:table-row"></div>
+</table><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+~[tlist_sql;
+SELECT SUBSTR(security, (Select groupvalue from ps.teachers where id = ~[x:userid]), 1)
+FROM ps.pages
+WHERE lower(to_char(path)) = 'tech/usm/home.html'
+]
+DDAPerms = '~(result)';
+[/tlist_sql]
+if ((DDAPerms == '0') || (DDAPerms == '1'))
+	{
+	DDAPrefs = '0';
+	}
+else
+	{
+	document.getElementById('Wizard').innerHTML = 'You may also remove all orphaned records using the <a href="MaintWizard/NonInSessionAttendanceWizard.html">Non-Session Attendance Wizard</a>.';
+	DDAPrefs = '~[displaypref:PowerTools-Redirect-Orphan-DDA]';
+	};
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+		YAHOO.widget.DataTable.Formatter.Attendance = PowerTools.AttendanceLink;
+		if (DDAPrefs == 'on')
+			{
+			YAHOO.widget.DataTable.Formatter.DDAAttendance = PowerToolsDataLink.DDAAttendanceLink;
+			}
+		else
+			{
+			YAHOO.widget.DataTable.Formatter.DDAAttendance = PowerToolsDataLink.DDEAttendanceLink;
+			};
+		
+        var myColumnDefs = [
+            {key:"Student", label:"Student", minWidth: 150,sortable:true,formatter: "Attendance"},
+            {key:"AttendanceID", label:"Attendance ID", minWidth: 100,sortable:true,formatter: "DDAAttendance"},
+            {key:"Date", label:"Date", minWidth: 100,sortable:true,formatter: "date"},
+            {key:"AttendanceType", label:"Attendance Type", minWidth: 100,sortable:true},
+            {key:"CCID", label:"CCID", minWidth: 50,sortable:true},
+            {key:"PeriodID", label:"Period ID", minWidth: 50,sortable:true},
+            {key:"AttendanceCode", label:"Att. Code", minWidth: 30,sortable:true},
+            {key:"Error", label:"Error", minWidth: 150,sortable:true},
+			{key:"SchoolName", label:"School Name", minWidth: 200,sortable:true}
+            ];
+		
+        var myDataSource = new YAHOO.util.DataSource("DataSource/NonInSessionAttendance.html?curyearonly=~(gpv.curyearonly)"); 
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","Student","SchoolName","AttendanceDCID","AttendanceID",{key: "Date", parser: "date"},"AttendanceType","CCID","PeriodID","AttendanceCode","Error"]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: ~(gpv.maxlines),
+					containers : ['top_container','bottom_container'],
+					template: PowerTools.templateCY()
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+                
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

@@ -1,0 +1,11 @@
+<div class="grouptitle">IMMUNIZATION INFORMATION</div>
+{{#emptyArrayCheck this.length}}
+{{#each this}}
+{{#if name}}
+{{#newdose}}
+<div class="dosename">{{name}}</div>
+{{/newdose}}
+<div class="dosedate">{{date}}</div>
+{{/if}}
+{{/each}}
+{{/emptyArrayCheck}}

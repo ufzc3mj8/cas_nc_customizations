@@ -1,0 +1,44 @@
+<table id="tabledata">
+<thead>
+	<th>Period Number</th>
+	<th>School ID</th>
+	<th>Year ID</th>
+	<th>Count</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT p1.period_number
+, CASE
+  WHEN p1.schoolid = '0'
+  THEN 'District Office'
+  WHEN p1.schoolid IN (
+    SELECT School_Number
+    FROM ps.schools)
+  THEN (
+    SELECT name
+    FROM ps.schools
+    WHERE school_number = p1.schoolid)
+  ELSE 'School Does Not Exist'
+  END SchoolName
+, p1.year_id
+, count(*)
+FROM ps.period p1
+~[if.is.a.school]WHERE p1.schoolid = ~[v.curschoolid][/if.is.a.school]
+GROUP BY p1.period_number
+, p1.schoolid
+, p1.year_id
+HAVING COUNT(*) > 1
+ORDER BY SchoolName
+, p1.year_id
+, p1.period_number
+  ]
+
+	<tr>
+		<td>~(period_number;t)</a></td>
+		<td>~(schoolid;t)</td>
+		<td>~(yearid;t)</td>
+		<td>~(count;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

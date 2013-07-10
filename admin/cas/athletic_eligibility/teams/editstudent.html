@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Student Athletic Eligibility Detail</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "edit.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var pageData = {
+      "id" : "~[gpv:id]"
+    };
+  </script>
+  ~[wc:CAS]
+  <script type="text/javascript" src="/scripts/cas/extSchema.js"></script>
+  <script type="text/javascript" src="js/populateStudent.js"></script>
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body style="display:none">
+
+<form action="/admin/cas/athletic_eligibility/teams/manage.html?id=~[gpv:teamid]&name=~[gpv:teamname]" method="POST">
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_attendance_preferences.home.start_page]</a> &gt; <a href="/admin/schoolsetup/home.html"
+                                                                                                                                                                    target="_top">~[text:psx.html.admin_attendance_preferences.home.school_setup]</a>
+  &gt; <a href="/admin/cas/athletic_eligibility" target="_top">Athletic Eligibility</a> &gt; <a href="/admin/cas/athletic_eligibility/teams/home.html" target="_top">Manage Teams</a> &gt; Student
+  Athletic Eligibility Detail
+  <!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+  <h1>Student Athletic Eligibility Detail</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+    <h2>Student Detail</h2>
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th class="bold">Option</th>
+          <th class="bold">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><label for="student_number">Student Number</label></td>
+          <td><input type="text" value="" size="45" maxlength="50" id="student_number" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="student_name">Student Name</label></td>
+          <td><input type="text" value="" id="student_name" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="team_name">Team Name</label></td>
+          <td><input type="text" value="" id="team_name" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="age">Age as of ~[if.~[displayprefyearschool:nc_ae_calc_date]=]8/31[else]~[displayprefyearschool:nc_ae_calc_date][/if]</label></td>
+          <td><input type="text" value="" id="age" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="grade_level">Grade Level</label></td>
+          <td><input type="text" value="" id="grade_level" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="school_year">School Year</label></td>
+          <td><input type="text" value="" id="school_year" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="elig_report_date">Eligibility Report Date</label></td>
+          <td><input type="text" value="" id="elig_report_date" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="scholar_athlete_date">Scholar Athlete Date</label></td>
+          <td><input type="text" value="" id="scholar_athlete_date" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="weighted_gpa">Weighted GPA</label></td>
+          <td><input type="text" value="" id="weighted_gpa" readonly="readonly" /></td>
+        </tr>
+        <tr>
+          <td><label for="unweighted_gpa">Unweighted GPA</label></td>
+          <td><input type="text" value="" id="unweighted_gpa" readonly="readonly" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="box-round">
+    <h2>Team Eligibility</h2>
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><label for="student_membership">Student Membership</label></td>
+          <td><fieldset id="student_membership" onChange="toggleOverride('student_membership')">
+            <label for="student_membership_yes"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]STUDENT_MEMBERSHIP" id="student_membership_yes" value="1" />Yes</label>
+            <label for="student_membership_no"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]STUDENT_MEMBERSHIP" id="student_membership_no" value="0" />No</label>
+            <label for="student_membership_override"><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]STUDENT_MEMBERSHIP_OVERRIDE" id="student_membership_override" value="1" />Override</label><br />
+            <label for="student_membership_memo">Memo: </label><textarea name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]STUDENT_MEMBERSHIP_MEMO" id="student_membership_memo"></textarea>
+          </fieldset>
+
+          </td>
+        </tr>
+        <tr>
+          <td><label for="four_season_rule">Four Season Rule</label></td>
+          <td>
+            <fieldset id="four_season_rule" onChange="toggleOverride('four_season_rule')">
+              <label for="four_season_rule_yes"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]FOUR_SEASON_RULE" id="four_season_rule_yes" value="1" />Yes</label>
+              <label for="four_season_rule_no"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]FOUR_SEASON_RULE" id="four_season_rule_no" value="0" />No</label>
+              <label for="four_season_rule_override"><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]FOUR_SEASON_RULE_OVERRIDE" id="four_season_rule_override" value="1" />Override</label><br />
+              <label for="four_season_rule_memo">Memo: </label><textarea name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]FOUR_SEASON_RULE_MEMO" id="four_season_rule_memo"></textarea>
+            </fieldset>
+
+          </td>
+        </tr>
+        <tr>
+          <td><label for="amateur_status">Amateur Status</label></td>
+          <td>
+            <fieldset id="amateur_status" onChange="toggleOverride('amateur_status')">
+              <label for="amateur_status_yes"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]AMATEUR_STATUS" id="amateur_status_yes" value="1" />Yes</label>
+              <label for="amateur_status_no"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]AMATEUR_STATUS" id="amateur_status_no" value="0" />No</label>
+              <label for="amateur_status_override"><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]AMATEUR_STATUS_OVERRIDE" id="amateur_status_override" value="1" />Override</label><br />
+              <label for="amateur_status_memo">Memo: </label><textarea name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]AMATEUR_STATUS_MEMO" id="amateur_status_memo"></textarea>
+            </fieldset>
+
+          </td>
+        </tr>
+        <tr>
+          <td><label for="residency_verified">Residency Verified</label></td>
+          <td>
+            <fieldset id="residency_verified" onChange="toggleOverride('residency_verified')">
+              <label for="residency_verified_yes"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]RESIDENCY_VERIFIED" id="residency_verified_yes" value="1" />Yes</label>
+              <label for="residency_verified_no"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]RESIDENCY_VERIFIED" id="residency_verified_no" value="0" />No</label>
+              <label for="residency_verified_override"><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]RESIDENCY_VERIFIED_OVERRIDE" id="residency_verified_override" value="1" />Override</label><br />
+              <label for="residency_verified_memo">Memo: </label><textarea name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]RESIDENCY_VERIFIED_MEMO" id="residency_verified_memo"></textarea>
+            </fieldset>
+
+          </td>
+        </tr>
+        <tr>
+          <td><label for="local_requirements">Local Requirements</label></td>
+          <td>
+            <fieldset id="local_requirements" onChange="toggleOverride('local_requirements')">
+              <label for="local_requirements_yes"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]LOCAL_REQUIREMENTS" id="local_requirements_yes" value="1" />Yes</label>
+              <label for="local_requirements_no"><input type="radio" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]LOCAL_REQUIREMENTS" id="local_requirements_no" value="0" />No</label>
+              <label for="local_requirements_override"><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]LOCAL_REQUIREMENTS_OVERRIDE" id="local_requirements_override" value="1" />Override</label><br />
+              <label for="local_requirements_memo">Memo: </label><textarea name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]LOCAL_REQUIREMENTS_MEMO" id="local_requirements_memo"></textarea>
+            </fieldset>
+
+          </td>
+        </tr>
+        <tr>
+          <td><label for="ninth_entry">9th Grade Entry Date</label></td>
+          <td>
+            <fieldset id="ninth_entry">
+              <input type="text" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]NINTH_GRADE_ENTRY" id="ninth_grade_entry" readonly="readonly" />
+              <label for="ne_override"><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]NINTH_GRADE_ENTRY_OVERRIDE" id="ne_override" value="1" />Override</label>
+            </fieldset>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="box-round">
+    <h2>School Eligibility</h2>
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><label for="physical_exam_date">Physical Exam</label></td>
+          <td><input type="text" class="psDateWidget" id="physical_exam_date" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]PHYSICAL_EXAM_DATE" /></td>
+        </tr>
+        <tr>
+          <td><label for="physical_exam_passed">Pass/Fail</label></td>
+          <td><select name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]PHYSICAL_EXAM_PASSED" id="physical_exam_passed">
+            <option value=""/>
+            <option value="1">Passed</option>
+            <option value="0">Failed</option>
+          </select>
+        </tr>
+        <tr>
+          <td><label for="physical_exam_renew_by">Renew By</label></td>
+          <td><input type="text" class="psDateWidget" id="physical_exam_renew_by" name="cf-[:0.S_NC_AE_TEAMMEMBERS.S_NC_AE_TEAMMEMBERS:~[gpv:id;-1]]PHYSICAL_EXAM_RENEW_BY" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="button-row"><input type="hidden" name="ac" value="prim">~(deletebutton2)~[submitbutton]</div>
+  <!-- TODO Add (Re)Calculate functionality for the individual student -->
+  <br>
+  <!-- end of content of bounding box -->
+  ~[wc:admin_footer_css]
+</form>
+</body>
+</html><!-- non framed -->

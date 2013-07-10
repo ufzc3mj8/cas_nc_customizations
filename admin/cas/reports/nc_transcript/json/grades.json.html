@@ -1,0 +1,138 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   [
+
+~[tlist_sql;
+SELECT c1.studentid
+, CASE
+WHEN (c1.dateenrolled >= s1.entrydate
+AND c1.dateenrolled <= s1.exitdate)
+THEN to_char(s1.grade_level)
+WHEN c1.dateenrolled > s1.exitdate
+THEN to_char(s1.sched_nextyeargrade)
+ELSE to_char(s1.grade_level)
+END grade_level
+, c1.course_number course_number
+, nvl(c3.course_name, c2.course_name) course_name
+, to_char(trunc(c1.termid/100)+1990) || '/' || SUBSTR(to_char(trunc(c1.termid/100)+1991),-2,2) schoolyear
+, CASE
+WHEN c2.excludefromgpa = 1
+THEN 'E'
+ELSE null
+END excludegpa
+, CASE
+WHEN c2.credit_hours = '0'
+THEN 'N'
+ELSE null
+END noncreditcourse
+, CASE
+WHEN (c1.dateenrolled < sysdate
+AND c1.dateleft > sysdate)
+THEN 'P'
+ELSE null
+END currentcourse
+, CASE
+WHEN (c1.dateenrolled >= s1.entrydate
+AND c1.dateenrolled <= s1.exitdate)
+THEN 'P'
+WHEN c1.dateenrolled > s1.exitdate
+THEN 'S'
+ELSE null
+END scheduledcourse
+FROM cc c1
+FULL JOIN courses c2
+ON c1.course_number = c2.course_number
+FULL JOIN students s1
+ON c1.studentid = s1.id
+FULL JOIN courses@DBL_ENTCON c3
+ON substr(c2.course_number,1,7) = c3.course_number
+WHERE c1.studentid = ~(id)
+AND NOT EXISTS (
+SELECT *
+FROM storedgrades s2
+WHERE s2.sectionid = c1.sectionid
+AND s2.storecode = 'F1')
+ORDER BY schoolyear desc
+, grade_level
+, course_name]
+{
+"studentid"       : ~(studentid),
+"gradelevel"      : ~(grade_level),
+"coursenumber"    : "~(course_number)",
+"coursename"      : "~(course_name)",
+"termid"          : "~(termid)",
+"excludegpa"      : "~(excludegpa;t)",
+"noncredit"       : "~(noncredit;t)",
+"currentcourse"   : "~(currentcourse)",
+"scheduledcourse" : "~(scheduledcourse)"
+},
+[/tlist_sql]
+~[tlist_sql;
+SELECT s.studentid
+, s.grade_level
+, nvl(c3.course_number, s.course_number)
+, s.course_name
+, s.grade
+, nvl(s.gpa_points,0)
+, nvl((s.gpa_points+s.gpa_addedvalue),0) weighted
+, s.earnedcrhrs
+, CASE
+  WHEN s.schoolid != ~(v.curschoolid)
+  THEN to_char(s.schoolid)
+  ELSE ''
+  END previousschools
+, to_char(trunc(s.termid/100)+1990) || '/' || SUBSTR(to_char(trunc(s.termid/100)+1991),-2,2) schoolyear
+, CASE
+  WHEN s.excludefromgpa = 1
+  THEN 'E'
+  ELSE null
+  END excludegpa
+, CASE
+  WHEN c.credit_hours = '0'
+  THEN 'N'
+  ELSE null
+  END noncreditcourse
+, CASE
+  WHEN (select count(*)
+    FROM cc
+    WHERE cc.sectionid = s.sectionid
+    AND cc.dateenrolled < sysdate
+    AND cc.dateleft > sysdate) > 0
+  THEN 'P'
+  ELSE null
+  END currentcourse
+FROM storedgrades s
+FULL JOIN courses c
+ON s.course_number = c.course_number
+FULL JOIN courses@DBL_ENTCON c3
+ON substr(s.course_number,1,7) = c3.course_number
+WHERE studentid = ~(id)
+AND earnedcrhrs > 0
+AND s.storecode = 'F1'
+ORDER BY schoolyear desc
+    , s.datestored desc
+    , s.course_name asc
+]
+    {
+    "studentid"       : ~(studentid),
+    "gradelevel"      : ~(grade_level),
+    "coursenumber"    : "~(course_number)",
+    "coursename"      : "~(course_name)",
+    "lettergrade"     : "~(grade)",
+    "unweighted"      : ~(gpa_points),
+    "weighted"        : ~(weighted),
+    "credithours"     : "~(earnedcrhrs)",
+    "previousschool"  : "~(previousschools)",
+    "termid"          : "~(termid)",
+    "excludegpa"      : "~(excludegpa;t)",
+    "noncredit"       : "~(noncredit;t)",
+    "currentcourse"   : "~(currentcourse)"
+    },
+[/tlist_sql]
+    {}
+  ]
+
+[between:Students],
+[/RepeatForEach:Students]
+}

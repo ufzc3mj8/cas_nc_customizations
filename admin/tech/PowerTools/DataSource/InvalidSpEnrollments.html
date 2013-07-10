@@ -1,0 +1,43 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>School Name</th>
+		<th>Program Name</th>
+		<th>Entry Date</th>
+		<th>Exit Date</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+	SELECT s2.dcid
+	, s2.lastfirst
+	, s3.name schoolname
+	, g1.name 
+	, to_char(s1.enter_date, 'MM/DD/YYYY')
+	, to_char(s1.exit_date, 'MM/DD/YYYY')
+	FROM ps.spEnrollments s1
+	LEFT JOIN ps.schools s3
+	ON s1.schoolid = s3.school_number
+	INNER JOIN ps.students s2
+	ON s1.studentid = s2.id
+	LEFT JOIN ps.gen g1
+	ON s1.programid = g1.id
+	WHERE s1.enter_date > s1.exit_date
+	AND s1.exit_date != '01/01/1900'
+	~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+	ORDER BY s2.lastfirst
+	]
+
+	<tr>
+		<td>~(dcid;t)</td>
+		<td>~(lastfirst;t)</td>
+		<td>~(schoolname;t)</td>
+		<td>~(name;t)</td>
+		<td>~(entrydate;t)</td>
+		<td>~(exitdate;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

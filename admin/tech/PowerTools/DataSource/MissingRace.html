@@ -1,0 +1,80 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>Ethnicity</th>
+		<th>Race</th>
+		<th>Hispanic / Latino</th>
+		<th>School Name</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+		SELECT s1.dcid
+		, s1.lastfirst
+    , CASE
+      WHEN s1.ethnicity IS NULL
+      THEN '<font color="red">No scheduling/reporting ethnicity specified</font>'
+      ELSE s1.ethnicity
+      END schedethnicity
+    , CASE
+      WHEN (Select COUNT(s2.racecd)
+        FROM ps.studentrace s2
+        WHERE s2.studentid = s1.id) = 1
+      THEN (SELECT s2.racecd
+        FROM ps.studentrace s2
+        WHERE s2.studentid = s1.id)
+      WHEN (Select COUNT(s2.racecd)
+        FROM ps.studentrace s2
+        WHERE s2.studentid = s1.id) > 1
+      THEN 'Multiple races specified'
+      ELSE '<font color="red">No federal race specified</font>'
+      END fedrace
+    , CASE
+      WHEN Fedethnicity = 1
+      THEN 'Yes'
+      WHEN Fedethnicity = 0
+      THEN 'No'
+      WHEN Fedethnicity = 2
+      THEN 'Decline to specify'
+      ELSE '<font color="red">Hispanic or Latino not declared</font>'
+      END FedEthnicity
+    , s3.name
+		FROM ps.students s1
+		LEFT JOIN ps.schools s3
+		ON s1.schoolid = s3.school_number
+		WHERE (s1.ethnicity IS NULL
+      OR (SELECT COUNT(*)
+        FROM ps.studentrace s2
+        WHERE s2.studentid = s1.id)=0
+	~[if.~[displaypref:PowerTools-Hispanic-Only-Qualifies]<1]
+      OR s1.fedethnicity NOT IN (0,1,2))
+	 [else]
+	 AND s1.fedethnicity NOT IN (0,1,2))
+	 [/if]
+    ~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+		~[if.~(gpv.curyearonly)=1]AND s1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=s1.schoolid)
+    AND (s1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=s1.schoolid)
+      [/if]    
+    ORDER BY s1.lastfirst
+    , s1.dcid
+	]
+
+	<tr>
+		<td>~(s1.dcid;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s1.ethnicity;t)</td>
+		<td>~(s2.race;t)</td>
+		<td>~(s1.Fedethnicity;t)</td>
+		<td>~(s3.name;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

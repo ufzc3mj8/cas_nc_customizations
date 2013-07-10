@@ -1,0 +1,31 @@
+<div class="grouptitle">PREVIOUS SCHOOLS INFORMATION</div>
+{{#emptyArrayCheck this.length}}
+<table class="attendancelisting">
+  <thead>
+    <tr>
+      <th class="prevschoolname theader">School Name</th>
+      <th class="spacer">&nbsp;</th>
+      <th class="prevschoolgrade theader">Grade</th>
+      <th class="spacer">&nbsp;</th>
+      <th class="prevschooldate theader">Start Date</th>
+      <th class="spacer">&nbsp;</th>
+      <th class="prevschooldate theader">End Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each this}}
+    {{#if entrydate}}
+    <tr>
+      <td class="prevschoolname">{{schoolname}}</td>
+      <td class="spacer">&nbsp;</td>
+      <td class="prevschoolgrade">{{gradeLevel}}</td>
+      <td class="spacer">&nbsp;</td>
+      <td class="prevschooldate">{{entrydate}}</td>
+      <td class="spacer">&nbsp;</td>
+      <td class="prevschooldate">{{exitdate}}</td>
+    </tr>
+    {{/if}}
+    {{/each}}
+  </tbody>
+</table>
+{{/emptyArrayCheck}}

@@ -1,0 +1,93 @@
+{
+    ~[tlist_sql;
+      SELECT s.student_number
+      , s.lastfirst
+      , t.name
+      ~[if.~[displayprefyearschool:nc_ae_calc_date]=]
+      , TRUNC(MONTHS_BETWEEN(to_date('8/30/' || (t.school_year+1990), 'mm/dd/yyyy'), s.dob)/12)  age
+      [else]
+      , TRUNC(MONTHS_BETWEEN(to_date('~[displayprefyearschool:nc_ae_calc_date]', 'mm/dd/yyyy'), s.dob)/12)  age
+      [/if]
+      , s.grade_level
+      , t.school_year+1990
+      , to_char(t.elig_report_date, 'mm/dd/yyyy')
+      , to_char(t.scholar_athlete_date, 'mm/dd/yyyy')
+      , tm.student_membership
+      , tm.student_membership_override
+      , replace(replace(replace(tm.student_membership_memo,CHR(13),'\n'),CHR(10),''),'''','\''')
+      , tm.four_season_rule
+      , tm.four_season_rule_override
+      , replace(replace(replace(tm.four_season_rule_memo,CHR(13),'\n'),CHR(10),''),'''','\''')
+      , tm.amateur_status
+      , tm.amateur_status_override
+      , replace(replace(replace(tm.amateur_status_memo,CHR(13),'\n'),CHR(10),''),'''','\''')
+      , tm.residency_verified
+      , tm.residency_verified_override
+      , replace(replace(replace(tm.residency_verified_memo,CHR(13),'\n'),CHR(10),''),'''','\''')
+      , tm.local_requirements
+      , tm.local_requirements_override
+      , replace(replace(replace(tm.local_requirements_memo,CHR(13),'\n'),CHR(10),''),'''','\''')
+      , to_char(tm.physical_exam_date, 'mm/dd/yyyy')
+      , tm.physical_exam_passed
+      , to_char(tm.physical_exam_renew_by, 'mm/dd/yyyy')
+      , tm.ninth_grade_entry_override
+      , tm.ninth_grade_entry_memo
+      FROM S_NC_AE_TEAMMEMBERS tm
+      JOIN students s
+      ON tm.studentid = s.id
+      JOIN S_NC_AE_TEAMS t
+      ON tm.teamid = t.id
+      WHERE tm.id=~[gpv:id]
+    ]
+    "student_number" : "~(s.student_number)",
+    "student_name" : "~(s.lastfirst)",
+    "team_name" : "~(t.name)",
+    "age" : "~(age)",
+    "grade_level" : "~(s.grade_level)",
+    "school_year" : "~(school_year)",
+    "elig_report_date" : "~(t.elig_report_date)",
+    "scholar_athlete_date" : "~(t.scholar_athlete_date)",
+    "student_membership" : "~(tm.student_membership)",
+    "student_membership_override" : "~(tm.student_membership_override)",
+    "student_membership_memo" : "~(tm.student_membership_memo)",
+    "four_season_rule" : "~(tm.four_season_rule)",
+    "four_season_rule_override" : "~(tm.four_season_rule_override)",
+    "four_season_rule_memo" : "~(tm.four_season_rule_memo)",
+    "amateur_status" : "~(tm.amateur_status)",
+    "amateur_status_override" : "~(tm.amateur_status_override)",
+    "amateur_status_memo" : "~(tm.amateur_status_memo)",
+    "residency_verified" : "~(tm.residency_verified)",
+    "residency_verified_override" : "~(tm.residency_verified_override)",
+    "residency_verified_memo" : "~(tm.residency_verified_memo)",
+    "local_requirements" : "~(tm.local_requirements)",
+    "local_requirements_override" : "~(tm.local_requirements_override)",
+    "local_requirements_memo" : "~(tm.local_requirements_memo)",
+    "physical_exam_date" : "~(tm.physical_exam_date)",
+    "physical_exam_passed" : "~(tm.physical_exam_passed)",
+    "physical_exam_renew_by" : "~(tm.physical_exam_renew_by)",
+    "ninth_grade_entry_override" : "~(tm.ninth_grade_entry_override;t)",
+    "ninth_grade_entry_memo" : "~(tm.ninth_grade_entry_memo;t)",
+    [/tlist_sql]
+    ~[tlist_sql;
+    SELECT to_char(min(entrydate), 'mm/dd/yyyy')
+    FROM (
+      SELECT entrydate
+      FROM students s
+      JOIN S_NC_AE_TEAMMEMBERS t
+      ON s.id = t.studentid
+      AND t.id = ~[gpv:id]
+      WHERE s.grade_level = 9
+      UNION ALL
+      SELECT entrydate
+      FROM reenrollments r
+      JOIN S_NC_AE_TEAMMEMBERS t
+      ON r.studentid = t.studentid
+      AND t.id = ~[gpv:id]
+      WHERE r.grade_level = 9
+      )]
+    "ninth_grade_entry" : "~(entrydate;t)",
+    [/tlist_sql]
+    "weighted_gpa" : "~(*gpa method="weighted")",
+    "unweighted_gpa" : "~(*gpa method="unweighted")"
+
+}

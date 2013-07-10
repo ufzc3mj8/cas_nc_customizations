@@ -1,0 +1,98 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Duplicate Preferences Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Preferences Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Preferences Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate preference records in All Schools</h1>
+<p>
+Use this wizard to repair duplicate Preferences. This process will remove the duplicate Preferences.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id="iframe" style="display:none"></div>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+~[tlist_sql;
+SELECT rownum
+, p1.dcid
+FROM ps.prefs p1
+WHERE EXISTS (
+  SELECT 1
+  FROM ps.prefs p2
+  WHERE p2.name = p1.name
+  AND (p2.schoolid = p1.schoolid
+    OR (p2.schoolid IS NULL
+      AND p1.schoolid IS NULL))
+  AND (p2.yearid = p1.yearid
+    OR (p2.yearid IS NULL
+    AND p1.yearid IS NULL))
+  AND (p2.userid = p1.userid
+    OR (p2.userid IS NULL
+      AND p1.userid IS NULL))
+  AND p2.id < p1.id)
+	]
+BadDCID[~(rownum)] = '~(BadDCID)';
+[/tlist_sql]
+// Check if there are 0 records to correct
+var i=(1);
+var l=(BadDCID.length);
+if (l == 0)
+	{
+	document.getElementById('Header').innerHTML = "There are no duplicate Preferences";
+	}
+else
+	{
+	document.getElementById('Header').innerHTML = 'There are ' + (l-1) + ' duplicate Preferences to be deleted.<br />\
+		<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to delete the duplicate Preferences\"  enabled=\"true\" onClick=\"ButtonClick()\;\"></p>';
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').disabled = true;
+	document.getElementById("CorrectButton").value="Correcting records";
+	RecordCheck();
+	};
+// Check for invalid records
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		DeleteRecord();
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat("All duplicate Pref records corrected");
+		document.getElementById('Output').innerHTML = previousOutput;
+		};
+	};	
+// Delete the bad Pref record and move to display the success record
+function DeleteRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/selectiondeletedframed.html?ac=prim&DR-009" + BadDCID[i] + "=delete\">");
+	};
+// Display the success message and return to check records
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

@@ -1,0 +1,37 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>Grade Level</th>
+		<th>School Name</th>
+		<th>Enrollment School Name</th>
+		<th>Exit Date</th>
+	</tr>
+</thead>
+<tbody>
+~[tlist_sql;
+SELECT s1.dcid
+, s1.lastfirst
+, s1.grade_level
+, (SELECT name from ps.schools where school_number = s1.schoolid) Schoolname
+, (SELECT name from ps.schools where school_number = s1.enrollment_schoolid) EnrSchoolName
+, to_char(s1.exitdate, 'mm/dd/yyyy')
+FROM ps.students s1
+WHERE s1.schoolid != s1.enrollment_schoolid
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.lastfirst
+]
+
+	<tr>
+		<td>~(s1.dcid;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s1.grade_level;t)</td>
+		<td>~(s1.school;t)</td>
+		<td>~(s1.EnrSchoolName;t)</td>
+		<td>~(s1.ExitDate;t)</td>
+	</tr>
+	[/tlist_sql]
+</tbody>
+</table>
+

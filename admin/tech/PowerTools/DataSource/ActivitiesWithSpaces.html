@@ -1,0 +1,25 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>Activity Name</th>
+	<th>Field Name</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+		SELECT g1.dcid
+		, g1.name
+		, g1.value
+		FROM ps.gen g1
+		WHERE lower(g1.cat) = 'activity'
+		AND g1.value like '% %'
+		ORDER BY g1.name
+	]
+
+	<tr class="~[evenoddrow]">
+		<td>~(g1.dcid;t)</td>
+		<td>~(g1.name;t)</td>
+		<td>~(g1.value;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

@@ -1,0 +1,85 @@
+<table id="tabledata">
+<thead>
+	<th>Report</th>
+	<th>Count</th>
+</thead>
+<tbody>
+	<tr>
+		<td><a href="AttendanceOverview.html">Attendance Overview</a></td>
+		<td><a href="AttendanceOverview.html">Not Applicable</a></td>
+	</tr>
+	<tr>
+		<td><a href="FutureDiscipline.html">Discipline Logs with Future Dates</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.log l1
+LEFT JOIN ps.students s1
+ON l1.studentid = s1.id
+WHERE l1.discipline_actiondate > CURRENT_TIMESTAMP
+AND l1.logtypeid = '-100000'
+]
+			<a href="FutureDiscipline.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DuplicateTeacherNumbers.html">Duplicate Teacher Numbers</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.teachers t1
+INNER JOIN ps.teachers t2
+on t1.teachernumber = t2.teachernumber
+INNER JOIN ps.schools s1
+ON t1.schoolid = s1.school_number
+INNER JOIN ps.schools s2
+ON t2.schoolid = s2.school_number
+AND t1.dcid < t2.dcid
+WHERE t1.staffstatus = 1
+]
+			<a href="DuplicateTeacherNumbers.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="FutureIncidents.html">Incidents with Future Dates</a></td>
+		<td>~[tlist_sql;
+SELECT COUNT(*)
+FROM ps.incident i1
+LEFT JOIN ps.schools s1
+ON i1.school_number = s1.school_number
+WHERE i1.incident_ts > CURRENT_TIMESTAMP
+]
+			<a href="FutureIncidents.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>	
+	<tr>
+		<td><a href="PossibleDupStudents.html">Possible Duplicate Students</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.students s1
+INNER JOIN ps.students s2
+ON s1.lastfirst = s2.lastfirst
+AND s1.dob = s2.dob
+AND s1.dcid < s2.dcid
+]
+			<a href="PossibleDupStudents.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="PossibleDupTeachers.html">Possible Duplicate Teachers</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.teachers t1
+INNER JOIN ps.teachers t2
+ON t1.lastfirst = t2.lastfirst
+AND t1.ssn = t2.ssn
+AND t1.dcid < t2.dcid
+INNER JOIN ps.schools s1
+ON t1.schoolid = s1.school_number
+INNER JOIN ps.schools s2
+ON t2.schoolid = s2.school_number
+WHERE t1.staffstatus = 1
+]
+			<a href="PossibleDupTeachers.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+</tbody>
+</table>

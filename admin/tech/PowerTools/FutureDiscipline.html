@@ -1,0 +1,84 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Discipline Logs with Future Dates</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]			
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Future Discipline Logs
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Future Discipline Logs<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Discipline Logs with Future Dates</h1>
+<p>
+This report selects any student with a log entry that has a type of "Discipline" and a discipline action date in the future.
+<p>
+Selecting a student will take you to the log entry for the student.
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+
+
+YAHOO.util.Event.onDOMReady(function() {
+	ClientPagination = function() {
+	
+		this.LogEntryLink = function(elCell, oRecord, oColumn, oData)
+		{
+			var name = oRecord.getData("Student");  
+			var SDCID = oRecord.getData("SDCID");  
+			var LDCID = oRecord.getData("LDCID");  
+			elCell.innerHTML = "<a href=/admin/students/home.html?frn=001" + SDCID + "&ac=suv;lsp=/admin/students/customlogentry.html?frn=008" + LDCID + "&studentfrn=001" + SDCID + " target=Powertools>" + name + "</a>";  
+		}; 
+	
+		YAHOO.widget.DataTable.Formatter.LogEntry = this.LogEntryLink;
+
+		var myColumnDefs = [
+			{key:"Student", label:"Student", minWidth: 150,sortable:true,formatter: "LogEntry"},
+			{key:"Date", label:"Date", minWidth: 50,sortable:true},
+			{key:"Title", label:"Title", minWidth: 100,sortable:true}
+		];
+
+		var myDataSource = new YAHOO.util.DataSource("DataSource/FutureDiscipline.html");
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+		myDataSource.responseSchema = {
+			fields: ["LDCID","SDCID","Student","Date","Title"]
+		};
+		
+		var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+					rowsPerPage: PowerTools.RowsPerPage(),
+					containers : ['top_container','bottom_container'],
+					template : YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE, 
+					rowsPerPageOptions: [
+						{value:25,text:"25 Rows"},
+						{value:50,text:"50 Rows"},
+						{value:100,text:"100 Rows"},
+						{value:500,text:"500 Rows"},
+						{value:100000,text:"Max Rows"}
+					]
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+		};
+		
+		var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+		
+		return {
+			oDS: myDataSource,
+			oDT: myDataTable
+		};
+	}();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

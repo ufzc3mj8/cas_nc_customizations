@@ -1,0 +1,20 @@
+{
+  "codes" : [
+    ~[tlist_sql;
+      SELECT id
+      , att_code
+      , description
+      FROM attendance_code
+      WHERE schoolid = ~(v.curschoolid)
+      AND yearid = ~(v.curyearid)
+      ORDER BY sortorder]
+    {
+      "id" : "~(id)",
+      "code" : "~(att_code)",
+      "desc" : "~(description)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}
+

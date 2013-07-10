@@ -1,0 +1,17 @@
+{
+  "attendance" : [
+    ~[tlist_sql;
+      SELECT dcid
+      FROM attendance
+      WHERE studentid = ~[gpv:studentid]
+      AND att_date >= to_date('~[gpv:entrydate]','mm_dd_yyyy')
+      AND att_date < to_date('~[gpv:validdate]','mm_dd_yyyy')
+      AND schoolid = ~(v.curschoolid)
+    ]
+    {
+      "dcid" : "~(dcid;t)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}

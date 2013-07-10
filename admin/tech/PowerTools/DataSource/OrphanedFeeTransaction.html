@@ -1,0 +1,49 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>ID</th>
+	<th>Student</th>
+	<th>StudentID</th>
+	<th>Fee Name</th>
+	<th>Fee ID</th>
+	<th>School Name</th>
+	<th>School Number</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT f1.dcid
+, f1.id
+, s1.lastfirst
+, f1.studentid
+, f2.description
+, f1.feeid
+, s2.Name
+, f1.schoolid
+FROM PS.fee_transaction f1
+LEFT JOIN ps.students s1
+ON f1.studentid = s1.id
+LEFT JOIN ps.fee f2
+ON f1.feeid = f2.id
+LEFT JOIN ps.schools s2
+ON f1.schoolid = s2.school_number
+WHERE (s1.id IS NULL
+OR f2.ID IS NULL
+OR s2.id IS NULL
+)
+~[if.is.a.school]AND f1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY f1.ID
+	]
+
+	<tr class="~[evenoddrow]">
+		<td>~(f1.dcid;t)</td>
+		<td>~(f1.id;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(f1.studentid;t)</td>
+		<td>~(f2.feename;t)</td>
+		<td>~(f1.feeid;t)</td>
+		<td>~(s2.name;t)</td>
+		<td>~(f1.schoolid;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

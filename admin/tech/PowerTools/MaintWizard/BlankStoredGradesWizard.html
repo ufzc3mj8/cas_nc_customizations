@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>Blank Stored Grades Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Blank Stored Grades Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Blank Stored Grades Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Removing blank stored grades in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to remove blank stored grades. This wizard will remove all stored grades where the letter grade is blank, the percent is zero, and the comment is blank.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+~[tlist_sql;
+		SELECT rownum
+		, s1.dcid
+		FROM ps.storedgrades s1
+		INNER JOIN ps.students s2
+		ON s1.studentid = s2.id
+		WHERE grade IS NULL
+		AND percent = 0
+		AND comment_value IS NULL
+		~[if.is.a.school]AND s2.schoolid = ~[v.curschoolid][/if.is.a.school]
+	]
+BadDCID[~(rownum)] = '~(baddcid)';
+[/tlist_sql]
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = "There are no blank stored grades.";
+	}
+else
+	{
+	// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' blank stored grade to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' blank stored grades to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to remove the blank stored grades\" enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').value='Correcting records';
+	document.getElementById('CorrectButton').disabled=true;
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/selectiondeletedframed.html?ac=prim&DR-031" + BadDCID[i] + "=delete\">");
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All blank stored grades removed.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

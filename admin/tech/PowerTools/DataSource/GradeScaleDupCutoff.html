@@ -1,0 +1,35 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>Grade Scale Name</th>
+	<th>Cutoff Percentage</th>
+	<th>Count</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+		SELECT g2.dcid
+		, g2.name
+		, g3.cutoffpercentage
+		, g3.countitem
+		FROM (
+		SELECT g1.gradescaleid
+		, g1.cutoffpercentage
+		, count(*) countitem
+		FROM ps.gradescaleitem g1
+		WHERE g1.gradescaleid != -1
+		GROUP BY g1.gradescaleid
+		, g1.cutoffpercentage
+		HAVING COUNT(*) > 1) g3
+		LEFT JOIN ps.gradescaleitem g2
+		ON g3.gradescaleid = g2.dcid
+	]
+
+	<tr class="~[evenoddrow]">
+		<td>~(g2.dcid;t)</td>
+		<td>~(g2.name;t)</td>
+		<td>~(g3.cutoffpercentage;t)</td>
+		<td>~(g3.countitem;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

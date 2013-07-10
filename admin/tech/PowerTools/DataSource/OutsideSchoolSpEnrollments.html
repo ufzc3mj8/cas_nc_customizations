@@ -1,0 +1,59 @@
+<table id="tabledata">
+	<thead>
+		<tr>
+			<th>DCID</td>
+			<th>Student</td>
+			<th>Program Name</td>
+			<th>School Name</td>
+			<th>Enter Date</td>
+			<th>Exit Date</td>
+		</tr>
+	</thead>
+	<tbody>
+	~[tlist_sql;
+SELECT s1.dcid as dcid
+, s1.lastfirst as lastfirst
+, g1.name as name
+, s3.name as schoolname
+, CASE
+  WHEN to_char(s2.enter_date, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+  ELSE to_char(s2.enter_date, 'MM/DD/YYYY') END
+, CASE
+  WHEN to_char(s2.exit_date, 'MM/DD/YYYY') = '01/01/1900' THEN '00/00/0000'
+  ELSE to_char(s2.exit_date, 'MM/DD/YYYY') END
+FROM ps.spenrollments s2
+INNER JOIN ps.students s1
+ON s2.studentid = s1.id
+INNER JOIN ps.gen g1
+ON s2.programid = g1.id
+INNER JOIN ps.schools s3
+ON s2.schoolid = s3.school_number
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.students
+  WHERE s2.enter_date BETWEEN s1.entrydate AND s1.exitdate
+  AND s2.exit_date BETWEEN s1.entrydate AND s1.exitdate
+  AND s2.schoolid = s1.schoolid
+  )
+AND NOT EXISTS (
+  SELECT *
+  FROM ps.reenrollments r1
+  WHERE s2.enter_date BETWEEN r1.entrydate AND r1.exitdate
+  AND s2.exit_date BETWEEN r1.entrydate AND r1.exitdate
+  AND r1.schoolid = s2.schoolid
+  )
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.lastfirst
+]
+
+	<tr>
+		<td>~(s1.dcid)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(p1.Name;t)</td>
+		<td>~(s2.schoolid;t)</td>
+		<td>~(s2.Enter_Date;t)</td>
+		<td>~(s2.Exit_date;t)</td>
+	</tr>
+			[/tlist_sql]
+	</tbody>
+</table>

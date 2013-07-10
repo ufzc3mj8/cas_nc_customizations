@@ -1,0 +1,416 @@
+<table id="tabledata">
+<thead>
+	<th>Report</th>
+	<th>Count</th>
+</thead>
+<tbody>
+	<tr>
+		<td><b>Duplicate Records</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="DupAttendanceCode.html">Duplicate Attendance Codes</a></td>
+		<td>~[tlist_sql;
+SELECT COUNT(*)
+FROM ps.attendance_code a1
+INNER JOIN ps.attendance_code a2
+ON a1.schoolid = a2.schoolid
+AND a1.yearid = a2.yearid
+AND (
+	a1.att_code = a2.att_code
+	OR (
+		a1.att_Code IS NULL
+		AND a2.att_Code IS NULL)
+	)
+AND a1.id < a2.id
+WHERE a1.id = (
+    SELECT MIN(ID)
+    FROM ps.attendance_code
+    WHERE (att_code = a2.att_code
+    OR (att_code IS NULL
+    AND a2.att_code IS NULL)
+    )
+AND schoolid = a1.schoolid
+AND yearid = a2.yearid)
+AND a2.Schoolid = ~[v.curschoolid]
+]
+			<a href="DupAttendanceCode.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupAttendanceConversion.html">Duplicate Attendance Conversions</a></td>
+		<td>~[tlist_sql;
+SELECT COUNT(*)
+FROM ps.attendance_conversion a1
+INNER JOIN ps.attendance_conversion a2
+ON a1.name = a2.name
+AND a1.schoolid = a2.schoolid
+AND a1.year_id = a2.year_id
+AND a1.id < a2.id
+WHERE a1.id = (
+	SELECT MIN(ID)
+	FROM ps.attendance_conversion
+	WHERE name = a2.name
+	AND year_id = a2.year_id
+	AND schoolid = a2.schoolid)
+AND a2.schoolid = ~[v.curschoolid]
+]
+			<a href="DupAttendanceConversion.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	
+	<tr>
+		<td><a href="DupBellSchedule.html">Duplicate Bell Schedules</a></td>
+		<td>~[tlist_sql;
+SELECT COUNT(*)
+FROM ps.bell_schedule b1
+INNER JOIN PS.bell_schedule b2
+ON b1.schoolid = b2.schoolid
+AND b1.year_id = b2.year_id
+AND b1.name = b2.name
+AND b1.id < b2.id
+AND b1.id = (
+	SELECT MIN(ID)
+	FROM ps.bell_schedule
+	WHERE schoolid = b2.schoolid
+	AND year_id = b2.year_id
+	AND name = b2.name)
+AND b2.Schoolid = ~[v.curschoolid]
+
+]
+			<a href="DupBellSchedule.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	
+	<tr>
+		<td><a href="DupBellScheduleItems.html">Duplicate Bell Schedule Items</a></td>
+		<td>~[tlist_sql;
+SELECT Count(*)
+FROM (
+SELECT b1.bell_Schedule_id
+, b1.period_id
+FROM ps.bell_schedule_items b1
+LEFT JOIN ps.bell_schedule b2
+ON b1.bell_schedule_id = b2.id
+WHERE b1.bell_schedule_id IN (
+  SELECT ID
+  FROM ps.bell_schedule)
+AND b2.schoolid = ~[v.curschoolid]
+GROUP BY b1.bell_schedule_id
+, b1.period_id
+HAVING COUNT(*) > 1
+)
+]
+			<a href="DupBellScheduleItems.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	
+	<tr>
+		<td><a href="DupCalendarDay.html">Duplicate Calendar Days</a></td>
+		<td>~[tlist_sql;
+SELECT Count(*)
+FROM ps.calendar_day c1
+JOIN ps.calendar_day c2
+ON c1.date_value = c2.date_value
+AND c1.schoolid = c2.schoolid
+AND C1.id < c2.id
+WHERE c1.id = (
+	SELECT MIN(ID)
+	FROM ps.calendar_day
+	WHERE date_value = c2.date_value
+	AND schoolid = c2.schoolid)
+AND c1.schoolid = ~[v.curschoolid]
+]
+			<a href="DupCalendarDay.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>	
+	<tr>
+		<td><a href="DupCourseNumbers.html">Duplicate Course Numbers</a></td>
+		<td>~[tlist_sql;
+SELECT Count(*)
+FROM ps.courses c1
+, ps.courses c2
+WHERE c1.course_number = c2.course_number
+AND c1.dcid > c2.dcid]
+			<a href="DupCourseNumbers.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupCustomFields.html">Duplicate Custom Fields</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.fieldstable f1
+LEFT JOIN ps.fieldstable f2
+ON f1.name = f2.name
+AND f1.fileno = f2.fileno
+WHERE f1.dcid < f2.dcid
+AND f1.fileno = 100;
+AND f1.dcid = (
+	SELECT MIN(dcid)
+	FROM ps.fieldstable
+	WHERE fileno = f2.fileno
+	AND name = f2.name)
+AND f2.fileno IN('100','200','300','400')
+]
+			<a href="DupCustomFields.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupDays.html">Duplicate Cycle Days</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.cycle_day d1
+INNER JOIN ps.cycle_day d2
+ON d1.schoolid = d2.schoolid
+AND d1.year_id = d2.year_id
+AND d1.letter = d2.letter
+AND d1.id < d2.id
+WHERE d1.id = (
+	SELECT MIN(ID)
+	FROM ps.cycle_day
+	WHERE schoolid = d2.schoolid
+	AND year_id = d2.year_id
+	AND letter = d2.letter)
+AND d2.Schoolid = ~[v.curschoolid]
+]
+			<a href="DupDays.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupEntryCodes.html">Duplicate Entry Codes</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.gen g1
+LEFT JOIN ps.gen g2
+ON g1.cat = g2.cat
+AND g1.name = g2.name
+WHERE lower(g1.cat) = 'entrycodes'
+AND g1.id < g2.id
+AND g1.id = (
+	SELECT MIN(ID)
+	FROM ps.gen
+	WHERE cat = g2.cat
+	AND name = g2.name)
+]
+			<a href="DupEntryCodes.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>	
+	<tr>
+		<td><a href="DupExitCodes.html">Duplicate Exit Codes</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.gen g1
+LEFT JOIN ps.gen g2
+ON g1.cat = g2.cat
+AND g1.name = g2.name
+WHERE lower(g1.cat) = 'exitcodes'
+AND g1.id < g2.id
+AND g1.id = (
+	SELECT MIN(ID)
+	FROM ps.gen
+	WHERE cat = g2.cat
+	AND name = g2.name)
+]
+			<a href="DupExitCodes.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>	
+	<tr>
+		<td><a href="DupFTE.html">Duplicate FTE's</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.fte f1
+INNER JOIN ps.fte f2
+ON f1.name = f2.name
+AND f1.schoolid = f2.schoolid
+AND f1.yearid = f2.yearid
+AND f1.id < f2.id
+WHERE f1.id = (
+	SELECT MIN(id)
+	FROM ps.fte
+	WHERE name = f2.name
+	AND schoolid = f2.schoolid
+	AND yearid = f2.yearid)
+AND f2.schoolid = ~[v.curschoolid]
+]
+			<a href="DupFTE.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupPeriodNumber.html">Duplicate Periods</a></td>
+		<td>~[tlist_sql;
+SELECT COUNT(*)
+FROM ps.period p1
+INNER JOIN ps.period p2
+ON p1.schoolid = p2.schoolid
+AND p1.year_id = p2.year_id
+AND p1.period_number = p2.period_number
+AND p1.id < p2.id
+WHERE p1.id = (
+	SELECT MIN(ID)
+	FROM ps.period
+	WHERE schoolid = p2.schoolid
+	AND year_id = p2.year_id
+	AND period_number = p2.period_number)
+AND p2.Schoolid = ~[v.curschoolid]
+]
+			<a href="DupPeriodNumber.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupPrefs.html">Duplicate Preferences</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.prefs p1
+WHERE EXISTS (
+  SELECT 1
+  FROM ps.prefs p2
+  WHERE p2.name = p1.name
+  AND (p2.schoolid = p1.schoolid
+    OR (p2.schoolid IS NULL
+      AND p1.schoolid IS NULL))
+  AND (p2.yearid = p1.yearid
+    OR (p2.yearid IS NULL
+    AND p1.yearid IS NULL))
+  AND (p2.userid = p1.userid
+    OR (p2.userid IS NULL
+      AND p1.userid IS NULL))
+  AND p2.id > p1.id)
+]
+			<a href="DupPrefs.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>	
+	<tr>
+		<td><a href="DupServerConfig.html">Duplicate Server Configuration</a></td>
+		<td>~[tlist_sql;
+SELECT Count(*)
+FROM ps.server_config s1
+INNER JOIN ps.server_config s2
+ON s1.server_instanceid = s2.server_instanceid
+AND s1.name = s2.name
+WHERE s1.id < s2.id
+AND ROWNUM = 1
+AND s1.id = (
+	SELECT MIN(ID)
+	FROM ps.server_config
+	WHERE name = s2.name
+	AND server_instanceid = s2.server_instanceid
+	)
+]
+			<a href="DupServerConfig.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupServerInstance.html">Duplicate Server Instance</a></td>
+		<td>~[tlist_sql;
+SELECT Count(*)
+FROM ps.server_instance s1
+INNER JOIN ps.server_instance s2
+ON  s1.id = s2.id
+WHERE s1.dcid < s2.dcid
+AND s1.dcid = (
+	SELECT MIN(DCID)
+	FROM ps.server_instance
+	WHERE id = s2.id)
+]
+			<a href="DupServerInstance.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>	
+	<tr>
+		<td><a href="DupTermBins.html">Duplicate Termbins (Final Grade Setups)</a></td>
+		<td>~[tlist_sql;
+SELECT Count(*)
+FROM ps.termbins t1
+JOIN ps.termbins t2
+ON t1.schoolid = t2.schoolid
+AND t1.termid = t2.termid
+AND t1.storecode = t2.storecode
+AND t1.dcid < t2.dcid
+WHERE t1.dcid = (
+	SELECT MIN(DCID)
+	FROM ps.termbins
+	WHERE schoolid = t2.schoolid
+	AND termid = t2.termid
+	AND storecode = t2.storecode)
+AND t1.schoolid = ~[v.curschoolid]
+]
+			<a href="DupTermBins.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="DupTerms.html">Duplicate Terms</a></td>
+		<td>~[tlist_sql;
+SELECT Count(*)
+FROM ps.terms t1
+INNER JOIN ps.terms t2
+ON t1.schoolid = t2.schoolid
+AND t1.id = t2.id
+AND t1.dcid < t2.dcid
+AND t1.dcid = (
+	SELECT MIN(DCID)
+	FROM ps.terms
+	WHERE schoolid = t2.schoolid
+	AND id = t2.id)
+AND t1.schoolid = ~[v.curschoolid]
+]
+			<a href="DupTerms.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><b>Invalid Course Numbers</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="InvCourseNumberCC.html">CC Records with incorrect case course number</a></td>
+		<td>~[tlist_sql;
+SELECT COUNT(*)
+FROM ps.cc c1
+LEFT JOIN ps.courses c2
+ON lower(c1.course_number) = lower(c2.course_number)
+WHERE c1.course_number != c2.course_number
+AND c1.schoolid = ~[v.curschoolid]
+]
+			<a href="InvCourseNumberCC.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+		<tr>
+		<td><a href="InvCourseNumberSections.html">Sections records with incorrect case course number</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.sections s1
+LEFT JOIN ps.courses c1
+ON lower(s1.course_number) = lower(c1.course_number)
+WHERE s1.course_number != c1.course_number
+AND s1.schoolid = ~[v.curschoolid]
+]
+			<a href="InvCourseNumberSections.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><b>Miscellanous</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="IncorrectStudYear.html">Students with incorrect studyear records</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.cc c1
+LEFT JOIN ps.students s1
+ON c1.studentid = s1.id
+WHERE c1.studyear != (c1.studentid || trunc(abs(c1.termid)/100))
+AND s1.schoolid = ~[v.curschoolid]
+]
+			<a href="IncorrectStudYear.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+	<tr>
+		<td><a href="StudentNumberIssue.html">Students with student numbers over 2147483647</a></td>
+		<td>~[tlist_sql;
+SELECT count(*)
+FROM ps.students s1
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+WHERE student_number >= 2147483647
+AND s1.schoolid = ~[v.curschoolid]
+]
+			<a href="StudentNumberIssue.html">~(count;t)</a>[/tlist_sql]
+		</td>
+	</tr>
+</tbody>
+</table>

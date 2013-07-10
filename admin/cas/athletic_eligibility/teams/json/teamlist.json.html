@@ -1,0 +1,31 @@
+{
+  "teams" : [
+    ~[tlist_sql;
+      SELECT rownum
+      , t.id
+      , t.name
+      , t.team_code
+      , t.short_name
+      , c.name
+      , (SELECT count(*)
+        FROM s_nc_ae_teammembers
+        WHERE teamid = t.id) membercount
+      FROM S_NC_AE_TEAMS t
+      JOIN S_NC_AE_CATEGORIES c
+      ON t.team_category = c.id
+      WHERE t.school_year = ~(v.curyearid)
+      ORDER BY t.name]
+    {
+      "rownum" : "~(rownum)",
+      "id" : "~(id)",
+      "name" : "~(name)",
+      "code" : "~(team_code;t)",
+      "shortname" : "~(short_name;t)",
+      "category" : "~(c.name;t)",
+      "membercount" : "~(membercount)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}
+

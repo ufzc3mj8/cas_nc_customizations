@@ -1,0 +1,20 @@
+{
+  ~[tlist_sql;
+    SELECT to_char(c.concussion_date, 'mm/dd/yyyy')
+    , c.entered_by
+    , t.lastfirst
+    , to_char(c.entry_date, 'mm/dd/yyyy')
+    , replace(replace(replace(c.notes,CHR(13),'\n'),CHR(10),''),'''','\''')
+    , c.studentid
+    FROM S_NC_AE_CONCUSSION c
+    JOIN teachers t
+    ON c.entered_by = t.id
+    WHERE c.id = ~[gpv:id]]
+    "concussionDate" : "~(c.concussion_date;t)",
+    "enteredBy" : "~(c.entered_by;t)",
+    "teacherName" : "~(t.lastfirst;t)",
+    "entryDate" : "~(c.entry_date;t)",
+    "notes" : "~(c.notes;t)",
+    "studentid" : "~(c.studentid;t)"
+    [/tlist_sql]
+}

@@ -1,0 +1,32 @@
+<table id="tabledata">
+	<thead>
+		<th>ID</th>
+		<th>Host IP</th>
+		<th>User Supplied Name</th>
+		<th>Server State</th>
+	</thead>
+	<tbody>
+	~[tlist_sql;
+	SELECT id
+	, host_ip
+	, user_supplied_name
+	, server_state
+	FROM ps.server_instance
+	WHERE id IN (
+     SELECT ID
+    FROM ps.server_instance 
+    GROUP BY ID
+    HAVING COUNT(id)>1
+		)
+	ORDER BY id
+  ]
+
+	<tr>
+		<td>~(ID;t)</a></td>
+		<td>~(host_ip;t)</td>
+		<td>~(user_supplied_name;t)</td>
+		<td>~(server_state;t)</td>
+	</tr>
+			[/tlist_sql]
+	</tbody>
+</table>

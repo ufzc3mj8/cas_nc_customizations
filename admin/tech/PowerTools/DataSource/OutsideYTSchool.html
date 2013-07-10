@@ -1,0 +1,71 @@
+<table id="tabledata">
+	<thead>
+			<th>DCID</th>
+			<th>Student</th>
+			<th>School Name</th>
+			<th>Grade Level</th>
+			<th>Entry Date</th>
+			<th>Exit Date</th>
+	</thead>
+	<tbody>
+~[tlist_sql;
+SELECT *
+FROM (SELECT s1.dcid
+, s1.lastfirst lastfirst
+, s2.name
+, s1.grade_level
+, CASE
+	WHEN to_char(s1.Entrydate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+	ELSE to_char(s1.Entrydate, 'MM/DD/YYYY') END
+, CASE
+	WHEN to_char(s1.Exitdate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+	ELSE to_char(s1.Exitdate, 'MM/DD/YYYY') END
+FROM PS.students s1
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.terms t1
+  WHERE s1.exitdate >= t1.firstday
+  AND s1.exitdate <= t1.lastday +1
+  AND s1.entrydate >= t1.firstday
+  AND s1.entrydate <= t1.lastday +1
+  AND s1.schoolid = t1.schoolid)
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+AND s1.exitdate > s1.entrydate
+UNION ALL
+SELECT s1.dcid
+, s1.lastfirst lastfirst
+, s2.name
+, s1.grade_level
+, to_char(r1.Entrydate, 'MM/DD/YYYY')
+, to_char(r1.Exitdate, 'MM/DD/YYYY')
+FROM PS.students s1
+, ps.reenrollments r1
+LEFT JOIN ps.schools s2
+ON r1.schoolid = s2.school_number
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.terms t1
+  WHERE r1.exitdate >= t1.firstday
+  AND r1.exitdate <= t1.lastday +1
+  AND r1.entrydate >= t1.firstday
+  AND r1.entrydate <= t1.lastday +1
+  AND r1.schoolid = t1.schoolid)
+AND r1.exitdate > r1.entrydate
+AND r1.studentid = s1.id
+~[if.is.a.school]AND r1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY lastfirst)
+]
+
+		<tr>
+			<td>~(s1.dcid;t)</td>
+			<td>~(s1.lastfirst;t)</td>
+			<td>~(s2.name;t)</td>
+			<td>~(s1.Grade_Level;t)</td>
+			<td>~(s1.Entrydate;t)</td>
+			<td>~(s1.Exitdate;t)</td>
+		</tr>
+	[/tlist_sql]
+	</tbody>
+</table>

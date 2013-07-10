@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  ~[AuthorizeXFRE:UF-001.*]
+  ~[AuthorizeXFRE:UF-004.*]
+  ~[AuthorizeXFRE:UF-157.*]
+<!-- non framed -->
+<head>
+  <title>Daily Headcount</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var headcount = {
+      ~[tlist_sql;SELECT id FROM attendance_code WHERE schoolid = ~(v.curschoolid) AND yearid = ~(v.curyearid) AND att_code IS NULL]
+      "currentpresentid" : "~(id)"
+    [/tlist_sql]
+    };
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "studentlist.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+  <script type="text/javascript" src="js/daily_headcount.js"></script>
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_attendance_functions.att_recorddailydte_specfunc.start_page]</a> &gt; <a
+    href="/admin/functions.html" target="_top">~[text:psx.html.admin_attendance_functions.att_recorddailydte_specfunc.special_functions]</a> &gt;Daily Headcount<!-- breadcrumb end -->
+    ~[wc:admin_navigation_css]
+
+  <h1>Daily Headcount</h1><!-- start of content and bounding box -->
+
+    <div id="loading_page" class="feedback-alert" style="display: none">Loading data, please wait. This may take several minutes.</div>
+  <div class="box-round">
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Date Enrolled</th>
+          <th>First Date Received ADA</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="studentlist">
+
+      </tbody>
+    </table>
+    <div class="button-row">
+
+      <div style="padding:5pt;float:left;">Select Exit Code to use for dropped students: <select id="exitcode" onChange="selectExitCode();">
+        <option value="" />
+      </select>
+      </div><span id="formError" style="display: none">You must choose an Exit Code</span>~[submitbutton]
+    </div>
+  </div>
+<form method="POST" class="noSubmitLoading" id="attendanceactions" style="display:none;"><input type="hidden" name="ac" value="prim"></form>
+<form method="POST" class="noSubmitLoading" id="enrollmentactions" style="display:none;"><input type="hidden" name="ac" value="prim"></form>
+<form method="POST" class="noSubmitLoading" id="schoolactions" style="display:none;"><input type="hidden" name="ac" value="prim"></form>
+~[wc:admin_footer_css]
+</body>
+</html>

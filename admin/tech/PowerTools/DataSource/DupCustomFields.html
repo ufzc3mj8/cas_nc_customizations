@@ -1,0 +1,36 @@
+<table id="tabledata">
+	<thead>
+		<th>Field Name</th>
+		<th>Table</th>
+		<th>Count</th>
+	</thead>
+	<tbody>
+	~[tlist_sql;
+SELECT f1.Name
+, CASE
+  WHEN f1.fileno = '100'
+  THEN 'Students'
+  WHEN f1.fileno = '200'
+  THEN 'Teachers'
+  WHEN f1.fileno = '300'
+  THEN 'Courses'
+  WHEN f1.fileno = '400'
+  THEN 'Sections'
+  END
+, count(*)
+FROM PS.fieldstable f1
+WHERE f1.fileno IN('100','200','300','400')
+GROUP BY f1.name
+, f1.fileno
+HAVING count(*) > 1
+ORDER BY f1.Name
+  ]
+
+	<tr>
+		<td>~(FieldName;t)</a></td>
+		<td>~(table;t)</td>
+		<td>~(count;t)</td>
+	</tr>
+			[/tlist_sql]
+	</tbody>
+</table>

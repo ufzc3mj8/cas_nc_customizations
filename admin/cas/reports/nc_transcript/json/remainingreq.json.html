@@ -1,0 +1,11 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   [
+  {
+  "studentid" : "~(id)"
+  }
+]
+[between:Students],
+[/RepeatForEach:Students]
+}

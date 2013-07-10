@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Athletic Eligibility Team/Group Maintenance</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "edit.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var pageData = {
+      "id" : "~[gpv:id]"
+    }
+  </script>
+  ~[wc:CAS]
+  <script type="text/javascript" src="/scripts/cas/extSchema.js"></script>
+  <script type="text/javascript" src="js/populateTeam.js"></script>
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body style="display:none">
+
+<form action="/admin/cas/athletic_eligibility/teams/home.html" method="POST">
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_attendance_preferences.home.start_page]</a> &gt; <a href="/admin/schoolsetup/home.html"
+                                                                                                                                                                    target="_top">~[text:psx.html.admin_attendance_preferences.home.school_setup]</a>
+  &gt; <a href="/admin/cas/athletic_eligibility" target="_top">Athletic Eligibility</a> &gt; <a href="/admin/cas/athletic_eligibility/teams/home.html" target="_top">Manage Teams</a> &gt; Team/Group Maintenance<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+  <h1>Athletic Eligibility Team/Group Maintenance</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th class="bold">Option</th>
+          <th class="bold">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><label for="name">Team Name</label></td>
+          <td><input type="text" value="" size="45" maxlength="50" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]NAME" id="name"></td>
+        </tr>
+        <tr>
+          <td><label for="team_code">Team Code</label></td>
+          <td><input type="text" size="10" maxlength="3" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]TEAM_CODE" id="team_code"></td>
+        </tr>
+        <tr>
+          <td><label for="short_name">Short Name</label></td>
+          <td><input type="text" value="" size="10" maxlength="10" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]SHORT_NAME" id="short_name"></td>
+        </tr>
+        <tr>
+          <td><label for="coach">Coach</label></td>
+          <td>
+            <select name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]COACH" id="coach">
+              <option value=""></option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="team_type">Team Type</label></td>
+          <td>
+            <select name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]TEAM_TYPE" id="team_type">
+              <option value=""></option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="team_category">Team Category</label></td>
+          <td>
+            <select name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]TEAM_CATEGORY" id="team_category">
+              <option value=""></option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="faculty_assigned">Faculty Assigned</label></td>
+          <td>
+            <select name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]FACULTY_ASSIGNED" id="faculty_assigned">
+              <option value=""></option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="include_report_card">Include on Report Card</label></td>
+          <td><input type="checkbox" id="include_report_card" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]INCLUDE_REPORT_CARD"></td>
+        </tr>
+        <tr>
+          <td><label for="include_transcript">Include on Transcript</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]INCLUDE_TRANSCRIPT" id="include_transcript"></td>
+        </tr>
+        <tr>
+          <td><label for="earns_award">Earns An Award</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]EARNS_AWARD" id="earns_award"></td>
+        </tr>
+        <tr>
+          <td><label for="external_code">External Code</label></td>
+          <td><input type="text" size="30" maxlength="30" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]EXTERNAL_CODE" id="external_code"></td>
+        </tr>
+        <tr>
+          <td><label for="points">Points</label></td>
+          <td><input type="text" size="10" maxlength="10" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]POINTS" id="points"></td>
+        </tr>
+        <tr>
+          <td><label for="authorized">Authorized</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]AUTHORIZED" id="authorized"></td>
+        </tr>
+        <tr>
+          <td><label for="attendance_reason">Attendance Reason</label></td>
+          <td>
+            <select name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]ATTENDANCE_REASON" id="attendance_reason">
+              <option value=""></option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="start_date">Start Date</label></td>
+          <td><input type="text" class="psDateWidget" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]START_DATE" id="start_date"></td>
+        </tr>
+        <tr>
+          <td><label for="end_date">End Date</label></td>
+          <td><input type="text" class="psDateWidget" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]END_DATE" id="end_date"></td>
+        </tr>
+        <tr>
+          <td><label for="exit_reason_required">End Date and Exit Reason Required on Delete</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]EXIT_REASON_REQUIRED" id="exit_reason_required"></td>
+        </tr>
+        <tr>
+          <td><label for="scholar_athlete_date">Scholar Athlete Report Date</label></td>
+          <td><input type="text" class="psDateWidget" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]SCHOLAR_ATHLETE_DATE" id="scholar_athlete_date"></td>
+        </tr>
+        <tr>
+          <td><label for="elig_report_date">Eligibility Report Date</label></td>
+          <td><input type="text" class="psDateWidget" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]ELIG_REPORT_DATE" id="elig_report_date"></td>
+        </tr>
+        <tr>
+          <td><label for="season">Season</label></td>
+          <td>
+            <select name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]SEASON" id="season">
+              <option value=""></option>
+              <option value="1">Fall</option>
+              <option value="2">Winter</option>
+              <option value="3">Spring</option>
+              <option value="4">Summer</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="gender">Gender</label></td>
+          <td>
+            <fieldset id="gender">
+              <label for="genderm"><input type="radio" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]GENDER" id="genderm" value="M" />Male</label>
+              <label for="genderf"><input type="radio" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]GENDER" id="genderf" value="F" />Female</label>
+              <label for="genderc"><input type="radio" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]GENDER" id="genderc" value="C" />Co-Ed</label>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="sport_level">Level</label></td>
+          <td>
+            <fieldset id="sport_level">
+              <label for="levelv"><input type="radio" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]SPORT_LEVEL" id="levelv" value="1" />Varsity</label>
+              <label for="leveljv"><input type="radio" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]SPORT_LEVEL" id="leveljv" value="2" />Jr. Varsity</label>
+              <label for="levelo"><input type="radio" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]SPORT_LEVEL" id="levelo" value="3" />Other</label>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="min_cum_gpa_sem">Minimum Semester Cumulative GPA</label></td>
+          <td><input type="text" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]MIN_CUM_GPA_SEM" size="10" id="min_cum_gpa_sem"></td>
+        </tr>
+        <tr>
+          <td><label for="min_mark_gpa_sem">Minimum Semester Mark GPA</label></td>
+          <td><input type="text" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]MIN_MARK_GPA_SEM" value="" size="10" id="min_mark_gpa_sem"></td>
+        </tr>
+        <tr>
+          <td><label for="min_courses">Minimum Courses</label></td>
+          <td><input type="text" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]MIN_COURSES" value="" size="10" id="min_courses"></td>
+        </tr>
+        <tr>
+          <td><label for="failed_courses_allowed">Failed Courses Allowed</label></td>
+          <td><input type="text" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]FAILED_COURSES_ALLOWED" value="" size="10" id="failed_courses_allowed"></td>
+        </tr>
+        <tr>
+          <td><label for="dropped_courses_allowed">Dropped Courses Allowed</label></td>
+          <td><input type="text" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]DROPPED_COURSES_ALLOWED" value="" size="10" id="dropped_courses_allowed"></td>
+        </tr>
+        <tr>
+          <td><label for="min_age">Minimum Age</label></td>
+          <td><input type="text" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]MIN_AGE" value="" size="10" id="min_age"></td>
+        </tr>
+        <tr>
+          <td><label for="max_age">Maximum Age</label></td>
+          <td><input type="text" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]MAX_AGE" value="" size="10" id="max_age"></td>
+        </tr>
+        <tr>
+          <td><label for="accident_ins_reqd">Accident Insurance Required</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]ACCIDENT_INS_REQD" id="accident_ins_reqd"></td>
+        </tr>
+        <tr>
+          <td><label for="health_ins_reqd">Health Insurance Required</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]HEALTH_INS_REQD" id="health_ins_reqd"></td>
+        </tr>
+        <tr>
+          <td><label for="phys_exam_reqd">Physical Exam Required</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]PHYS_EXAM_REQD" id="phys_exam_reqd"></td>
+        </tr>
+        <tr>
+          <td><label for="code_of_conduct">Signed Code of Conduct?</label></td>
+          <td><input type="checkbox" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]CODE_OF_CONDUCT" id="code_of_conduct"></td>
+        </tr>
+        <!-- TODO within needs to be added to Phys Exam Required once identified of purpose -->
+      </tbody>
+    </table>
+    <input type="hidden" name="cf-[:0.S_NC_AE_TEAMS.S_NC_AE_TEAMS:~[gpv:id;-1]]SCHOOL_YEAR" value="~(v.curyearid)" />
+    <div class="button-row"><input type="hidden" name="ac" value="prim">~(deletebutton2)~[submitbutton]</div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+  ~[wc:admin_footer_css]
+</form>
+</body>
+</html><!-- non framed -->

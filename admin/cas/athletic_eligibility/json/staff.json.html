@@ -1,0 +1,16 @@
+{
+  "users" : [
+    ~[tlist_sql;
+      SELECT id
+      , lastfirst
+      FROM teachers
+      WHERE schoolid = ~(v.curschoolid)
+      ORDER BY lastfirst]
+    {
+      "id" : "~(id)",
+      "name" : "~(name)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}

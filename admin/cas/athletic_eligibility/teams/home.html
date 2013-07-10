@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Athletic Eligibility Team Management</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "home.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+  <script type="text/javascript" src="js/listTeams.js"></script>
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_attendance_preferences.home.start_page]</a> &gt; <a href="/admin/schoolsetup/home.html"
+                                                                                                                                                                    target="_top">~[text:psx.html.admin_attendance_preferences.home.school_setup]</a>
+  &gt; <a href="/admin/cas/athletic_eligibility" target="_top">Athletic Eligibility</a> &gt; Team/Group Management<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+  <h1>Athletic Eligibility Team/Group Management</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+    <table border="0" cellspacing="0" cellpadding="4" id="teamlist" class="linkDescList">
+      <tr>
+        <th class="bold">Team/Group</th>
+        <th class="bold">Team Code</th>
+        <th class="bold">Short Name</th>
+        <th class="bold">Category</th>
+        <th class="bold">Members</th>
+      </tr>
+    </table>
+    <div class="button-row"><a class="button" href="editteam.html">Add New Team/Group</a></div>
+  </div>
+  <br>
+<!-- end of content of bounding box -->
+~[wc:admin_footer_css]
+</body>
+</html><!-- non framed -->

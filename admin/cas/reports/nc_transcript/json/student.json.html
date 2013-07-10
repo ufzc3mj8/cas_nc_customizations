@@ -1,0 +1,72 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   {
+~[tlist_sql;
+SELECT id
+, First_name || ' ' || Last_Name studentname
+, Mailing_Street || ' ' || Mailing_City || ', ' || Mailing_State || ' ' || Mailing_Zip studentaddress
+, Home_Phone
+, Student_Number
+, to_char(DOB, 'mm/dd/yyyy') DOB
+, CASE
+  WHEN lower(gender) = 'm'
+  THEN 'Male'
+  WHEN lower(gender) = 'f'
+  THEN 'Female'
+  ELSE ''
+  END gender
+, father
+, mother
+FROM students
+WHERE id = ~(id)
+]
+  "id"              : "~[if.~[gpv:report_name]=transcript_existing]~(id)[/if]",
+  "name"            : "~(studentname)",
+  "address"         : "~(studentaddress)",
+  "home_phone"      : "~(home_phone)",
+  "student_number"  : "~(student_number)",
+  "dob"             : "~(dob)",
+  "gender"          : "~(gender)",
+  "father" : "~(father)",
+  "mother" : "~(mother)",
+[/tlist_sql]
+~[tlist_sql;
+    SELECT CASE
+    WHEN s1.schoolid = 999999
+    THEN 'Graduation Date'
+    WHEN sna.diploma_issued < SYSDATE
+    THEN 'Graduation Date'
+    ELSE 'Expected Graduation Date'
+    END gradnote
+    , CASE WHEN s1.schoolid = 999999
+    THEN (SELECT to_char((r.exitdate-1), 'mm/dd/yyyy')
+    FROM reenrollments r
+    JOIN students s10
+    ON r.studentid = s10.id
+    WHERE r.exitcode IN ('W4','W6')
+    AND s10.dcid = s1.dcid)
+    WHEN sna.diploma_issued IS NOT NULL
+    THEN to_char(sna.diploma_issued, 'mm/dd/yyyy')
+    WHEN s1.grade_level = s2.high_grade
+    THEN (SELECT to_char(lastday, 'mm/dd/yyyy')
+    FROM terms
+    WHERE schoolid = s1.schoolid
+    AND terms.isyearrec = 1
+    AND terms.firstday <= s1.entrydate
+    AND terms.lastday >= s1.entrydate)
+    ELSE 'Undefined'
+    END graddate
+    FROM students s1
+    FULL JOIN S_NC_ACADEMIC sna
+    ON s1.dcid = sna.studentsdcid
+    JOIN schools s2
+    ON s1.schoolid = s2.school_number
+    WHERE s1.dcid = ~(id)]
+    "graduationnote" : "~(gradnote)",
+    "graduationdate" : "~(graddate)"
+[/tlist_sql]
+}
+[between:Students],
+[/RepeatForEach:Students]
+}

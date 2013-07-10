@@ -1,0 +1,36 @@
+<div class="grouptitle">STUDENT INFORMATION</div>
+<div class="col1of2">
+  <div class="infolabelleft">Name:</div>
+  <div class="infodataleft">{{name}}&nbsp;</div>
+  <div class="infolabelleft">Address:</div>
+  <div class="infodataleft">{{address}}&nbsp;</div>
+  <div class="infolabelleft">&nbsp;</div>
+  <div class="infodataleft">{{home_phone}}&nbsp;</div>
+  <div class="infolabelleft">Contacts:</div>
+  <div class="infodataleft">
+    {{#if father}}
+      {{father}}<br/>
+    {{/if}}
+    {{#if mother}}
+      {{mother}}
+    {{/if}}
+    &nbsp;
+  </div>
+</div>
+<div class="col2of2">
+  {{#if id}}
+  <div class="infolabelright">Student Id:</div>
+  <div class="infodataright">{{id}}&nbsp;</div>
+  {{/if}}
+  <div class="infolabelright">Student No:</div>
+  <div class="infodataright">{{student_number}}&nbsp;</div>
+  <div class="infolabelright">Birthdate:</div>
+  <div class="infodataright">{{dob}}&nbsp;</div>
+  <div class="infolabelright">Gender:</div>
+  <div class="infodataright">{{gender}}&nbsp;</div>
+  <div class="infolabelright">{{graduationnote}}:</div>
+  <div class="infodataright">{{graduationdate}}&nbsp;</div>
+  <div class="infolabelright">Course Of Study:</div>
+  <div class="infodataright">Future Ready Core</div>
+</div>
+

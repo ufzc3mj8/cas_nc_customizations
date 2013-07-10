@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Athletic Eligibility Report</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "nc_athletic_eligibility_prefs.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form target="_blank" action="/admin/cas/reports/nc_athletic_eligibility/nc_athletic_eligibility.html" method="POST" class="noSubmitLoading">
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.start_page]</a> &gt; <a href="/admin/functions.html"
+                                                                                                                                                                     target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.special_functions]</a>
+  &gt; <a href="/admin/studentlist/functions.html">~[text:psx.html.admin_reports.studschedmatrixprefs.group_functions]</a> &gt; Athletic Eligibility Report<!-- breadcrumb end -->
+  ~[wc:admin_navigation_css]
+
+  <h1>Athletic Eligibility Report</h1>
+  <!-- start of content and bounding box -->
+  <div class="box-round">
+
+    <table border="0" cellspacing="0" cellpadding="4">
+      <tr bgcolor="#f6f6f6">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.option]</td>
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.value]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.students_to_scan]</td>
+        <td>~[x:dothisfor;selected;enrolled]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">Report to run</td>
+        <td>
+          <fieldset>
+            <input type="radio" name="[prefschool]schoolgroup" id="schoollevel1" value="ms"/>Middle School<br>
+            <input type="radio" name="[prefschool]schoolgroup" id="schoollevel2" value="hs"/>High School
+          </fieldset>
+        </td>
+      </tr>
+    </table>
+    <br>
+
+    <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+
+  ~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

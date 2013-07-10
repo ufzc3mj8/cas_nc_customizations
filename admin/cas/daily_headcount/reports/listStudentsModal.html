@@ -1,0 +1,42 @@
+<script src="/scripts/cas/functions/cas_functions.js"></script>
+<div id="psDialog" class="psDialog ui-dialog-content ui-widget-content" style="width: auto; min-height: 12.8333px; height: auto;" scrolltop="0" scrollleft="0">
+<div onfocus="disablePopupButtons();" style="width:800px;height:400px;overflow:auto;">
+
+<form method="POST" action="/admin/home.html" class="submitOnce">
+<table cellspacing="1" cellpadding="3" border="0" bgcolor="#edf3fe" style="margin-bottom:30px;table-layout:fixed;width:100%">
+<colgroup>
+  <col width="100%">
+</colgroup>
+<tbody>
+<tr bgcolor="#f6f6f6">
+  <td valign="top" align="center">List of ~(decode;~[gpv:attendance];absent;all absent;present;all present;all;all) students from grade ~[gpv:gradelevel] ~(decode;~[gpv:status];total;as of;current;enrolled on;prior;enrolled before) ~[gpv:eaodate]<br>based on data set from Daily Headcount Summary</td>
+</tr>
+<tr bgcolor="#ffffff">
+<td valign="top">
+<ol class="columns" id="StudentList">
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+  <div style="display:none" id="studentSelection"></div>
+<div style="width:95%;position:absolute;bottom:0px;right:20px;" class="button-row">
+  <button type="button" onClick="selectStudents('replace')" id="makeSelection">Make Students Current Selection</button>
+  <button type="button" onClick="selectStudents('add')" id="addSelection">Add Students to Current Selection</button>
+</div>
+</form>
+<script type="text/javascript">
+  $j.getJSON('/admin/cas/daily_headcount/reports/json/daily_headcount_list.json.html?eaodate=~[gpv:eaodate]&status=~[gpv:status]&gradelevel=~[gpv:gradelevel]&attendance=~[gpv:attendance]', function(result) {
+    $j.each(result, function() {
+      if (this.studentdcid) {
+        $j('#StudentList').append('<li><a target="_top" href="/admin/students/home.html?frn=001' + this.studentdcid + '">' + this.student + '</a></li>');
+        $j('#studentSelection').append('<input type="hidden" value="' + this.studentid + '"/>');
+        $j('#makeSelection,#addSelection').removeAttr("disabled");
+      }
+    })
+  })
+</script>
+</div>
+</div>
+
+<!-- non framed -->

@@ -1,0 +1,69 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   {
+~[tlist_sql;
+    SELECT SUM(gpa_points)
+    , SUM(gpa_points+gpa_addedvalue) weighted
+    , SUM(earnedcrhrs)
+    , SUM(potentialcrhrs)
+    FROM storedgrades
+    WHERE studentid = ~(id)
+    AND grade_level BETWEEN 9 AND 12]
+    "unweighted" : "~(gpa_points)",
+    "weighted"   : "~(weighted)",
+    "earnedcredits" : "~(earnedcrhrs)",
+    "potentialcredits" : "~(potentialcrhrs)",
+    [/tlist_sql]
+    "weightedgpa" : "~(*gpa method="weighted")",
+    "simplegpa"   : "~(*gpa method="simple")",
+    ~[tlist_sql;
+      SELECT CASE
+      WHEN GRADE_13_RANK IS NOT NULL
+      THEN GRADE_13_RANK
+      WHEN GRADE_12_RANK IS NOT NULL
+      THEN GRADE_12_RANK
+      WHEN GRADE_11_RANK IS NOT NULL
+      THEN GRADE_11_RANK
+      WHEN GRADE_10_RANK IS NOT NULL
+      THEN GRADE_10_RANK
+      WHEN GRADE_09_RANK IS NOT NULL
+      THEN GRADE_09_RANK
+      ELSE null
+      END rank
+      , CASE
+      WHEN GRADE_13_RANK IS NOT NULL
+      THEN GRADE_13_OUTOF
+      WHEN GRADE_12_RANK IS NOT NULL
+      THEN GRADE_12_OUTOF
+      WHEN GRADE_11_RANK IS NOT NULL
+      THEN GRADE_11_OUTOF
+      WHEN GRADE_10_RANK IS NOT NULL
+      THEN GRADE_10_OUTOF
+      WHEN GRADE_09_RANK IS NOT NULL
+      THEN GRADE_09_OUTOF
+      END outof
+      , CASE
+      WHEN GRADE_13_RANK IS NOT NULL
+      THEN to_char(GRADE_13_DATE, 'mm/dd/yyyy')
+      WHEN GRADE_12_RANK IS NOT NULL
+      THEN to_char(GRADE_12_DATE, 'mm/dd/yyyy')
+      WHEN GRADE_11_RANK IS NOT NULL
+      THEN to_char(GRADE_11_DATE, 'mm/dd/yyyy')
+      WHEN GRADE_10_RANK IS NOT NULL
+      THEN to_char(GRADE_10_DATE, 'mm/dd/yyyy')
+      WHEN GRADE_09_RANK IS NOT NULL
+      THEN to_char(GRADE_09_DATE, 'mm/dd/yyyy')
+      END rankdate
+      FROM STUDENTS s
+      FULL JOIN S_NC_RANK r
+      ON studentsdcid = s.dcid
+      WHERE s.dcid = ~(id)]
+    "classrank" : "~(rank;t)",
+    "rankoutof" : "~(outof;t)",
+    "rankdate" : "~(rankdate;t)"
+    [/tlist_sql]
+}
+[between:Students],
+[/RepeatForEach:Students]
+}

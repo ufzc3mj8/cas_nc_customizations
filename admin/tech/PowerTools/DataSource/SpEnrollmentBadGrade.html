@@ -1,0 +1,80 @@
+<table id="tabledata">
+	<thead>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>School Name</th>
+		<th>Program Name</th>
+		<th>Student Grade Level</th>
+		<th>Program Grade Level</th>
+		<th>Entry Date</th>
+		<th>Exit Date</th>
+	</thead>
+	<tbody>
+	~[tlist_sql;
+	SELECT dcid
+	, lastfirst
+	, schoolname
+	, name
+	, grade_level
+	, gradelevel
+	, to_char(enter_date, 'MM/DD/YYYY') enter_date
+	, to_char(exit_date, 'MM/DD/YYYY') exit_date
+	FROM (
+	SELECT s1.dcid dcid
+	, s1.lastfirst lastfirst
+	, s3.name schoolname
+	, g1.name name
+	, s1.grade_level grade_level
+	, s2.gradelevel gradelevel
+	, s2.enter_date
+	, s2.exit_date
+	FROM ps.students s1
+	LEFT JOIN ps.schools s3
+	ON s1.schoolid = s3.school_number
+	LEFT JOIN ps.spenrollments s2
+	ON s1.id = s2.studentid
+	LEFT JOIN ps.gen g1
+	ON s2.programid = g1.id
+	WHERE s1.entrydate <= s2.enter_date
+	AND s1.exitdate >= s2.exit_date
+	AND s1.grade_level != s2.gradelevel
+	~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+	UNION ALL
+	SELECT s1.dcid dcid
+	, s1.lastfirst lastfirst
+	, s3.name schoolname
+	, g1.name name
+	, r1.grade_level grade_level
+	, s2.gradelevel gradelevel
+	, s2.enter_date
+	, s2.exit_date
+	FROM ps.reenrollments r1
+	LEFT JOIN ps.schools s3
+	ON r1.schoolid = s3.school_number
+	INNER JOIN ps.students s1
+	ON r1.studentid = s1.id
+	LEFT JOIN ps.spenrollments s2
+	ON r1.studentid = s2.studentid
+	LEFT JOIN ps.gen g1
+	ON s2.programid = g1.id
+	WHERE r1.entrydate <= s2.enter_date
+	AND r1.exitdate >= s2.exit_date
+	AND r1.grade_level != s2.gradelevel
+	~[if.is.a.school]AND r1.schoolid = ~[v.curschoolid][/if.is.a.school])
+	ORDER BY lastfirst
+]
+
+	<tr class="~[evenoddrow]">
+		<td>~(dcid;t)</td>
+		<td>~(lastfirst;t)</td>
+		<td>~(schoolname;t)</td>
+		<td>~(name;t)</td>
+		<td>~(s1.grade_level;t)</td>
+		<td>~(s2.grade_level;t)</td>
+		<td>~(entrydate;t)</td>
+		<td>~(exitdate;t)</td>
+	</tr>
+			[/tlist_sql]
+	</tbody>
+</table>
+

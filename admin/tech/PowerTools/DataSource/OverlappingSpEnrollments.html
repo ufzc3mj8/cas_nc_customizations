@@ -1,0 +1,45 @@
+<table id="tabledata">
+	<thead>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>Program Name</th>
+		<th>Overlap Date</th>
+		<th>School Name</th>
+	</thead>
+	<tbody>
+~[tlist_sql;
+SELECT s3.dcid
+	, s3.lastfirst
+	, g1.name
+	, to_char(s1.enter_date, 'MM/DD/YYYY')
+	, s4.name
+FROM ps.spenrollments s1
+, ps.spenrollments s2
+, ps.students s3
+, ps.schools s4
+, ps.gen g1
+WHERE s1.studentid = s2.studentid
+AND s1.programid = s2.programid
+AND (s1.dcid != s2.dcid
+  AND s1.enter_date > s2.enter_date
+  OR s1.dcid > s2.dcid
+  AND s1.enter_date = s2.enter_date)
+AND s1.enter_date < s2.exit_date
+AND s1.studentid = s3.id
+AND s1.schoolid = s4.school_number
+AND s1.programid = g1.id
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s3.lastfirst
+]
+
+	<tr class="~[evenoddrow]">
+		<td>~(s1.dcid;l)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(g1.name;t)</td>
+		<td>~(date;t)</td>
+		<td>~(s3.name;t)</td>
+	</tr>
+	[/tlist_sql]
+	</tbody>
+</table>
+

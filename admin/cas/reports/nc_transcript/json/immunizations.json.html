@@ -1,0 +1,28 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   [
+~[tlist_sql;
+SELECT h1.studentid
+, to_char(h1.dateadministered,'mm/dd/yyyy')
+, h3.vaccinename
+FROM HEALTHSTUDDOSEREC h1
+JOIN healthstudimmrec h2
+ON h1.healthstudimmrecid = h2.healthstudimmrecid
+JOIN healthvaccine h3
+ON h2.healthvaccineid = h3.healthvaccineid
+WHERE h1.studentid = ~(id)
+AND h1.dateadministered IS NOT NULL
+ORDER BY h3.vaccinename
+, h1.dateadministered]
+{
+"studentid" : "~(h1.studentid)",
+"date" : "~(h1.dateadministered)",
+"name" : "~(h3.vaccinename)"
+},
+[/tlist_sql]
+{}
+]
+[between:Students],
+[/RepeatForEach:Students]
+}

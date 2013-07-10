@@ -1,0 +1,155 @@
+<html>
+<head>
+<title>Orphaned PGFinalGrade Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned PGFinalGrade Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned PGFinalGrade Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Removing orphaned PGFinalGrade records in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to remove orphaned PGFinalGrade records. This process will delete all PGFinalGrade records where the student, section, or course number does not exist, based off the options selected.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+var BadStudent = new Array()
+var BadSection = new Array()
+var BadCourse = new Array()
+~[tlist_sql;
+SELECT rownum
+, p1.dcid
+, CASE
+  WHEN s1.ID IS NULL
+  THEN '1'
+  ELSE '0'
+  END StudentCheck
+, CASE
+  WHEN s2.id IS NULL
+  THEN '1'
+  ELSE '0'
+  END SectionCheck
+, CASE
+  WHEN c1.course_number IS NULL
+  THEN '1'
+  ELSE '0'
+  END CourseCheck
+FROM ps.pgfinalgrades p1
+LEFT JOIN ps.students s1
+ON p1.studentid = s1.id
+LEFT JOIN ps.sections s2
+ON p1.sectionid = s2.id
+LEFT JOIN ps.courses c1
+ON s2.course_number = c1.course_number
+WHERE (s1.id IS NULL
+OR s2.id IS NULL
+OR c1.course_number IS NULL
+)~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY p1.ID
+	]
+BadDCID[~(rownum)] = '~(baddcid)';
+BadStudent[~(rownum)] = '~(StudentCheck)';
+BadSection[~(rownum)] = '~(SectionCheck)';
+BadCourse[~(rownum)] = '~(CourseCheck)';
+[/tlist_sql]
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = "There are no orphaned PGFinalGrade records.";
+	}
+else
+	{
+	// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' orphaned PGFinalGrade record to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' orphaned PGFinalGrade records to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<b>Remove orphaned records where the following conditions exist:</b><br>\
+		<table>\
+		<tr><td><input type=\"checkbox\" id=\"NoStudent\">Student does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoSection\">Section does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoCourse\">Course does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"CheckAll\" onClick=\"SelectAll()\;\">Select / Deselect All</td></tr>\
+		</table>\
+		<input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to delete the orphaned PGFinalGrade records\"  enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function SelectAll()
+	{
+	if (document.getElementById('CheckAll').checked == true)
+		{
+		document.getElementById('NoStudent').checked = true;
+		document.getElementById('NoSection').checked = true;
+		document.getElementById('NoCourse').checked = true;
+		}
+	else
+		{
+		document.getElementById('NoStudent').checked = false;
+		document.getElementById('NoSection').checked = false;
+		document.getElementById('NoCourse').checked = false;
+		};
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById("CorrectButton").value="Correcting Records";
+	document.getElementById("CorrectButton").disabled=true;
+	document.getElementById("NoStudent").disabled=true;
+	document.getElementById("NoSection").disabled=true;
+	document.getElementById("NoCourse").disabled=true;
+	document.getElementById("CheckAll").disabled=true;
+	RecordCheck();
+	};	
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if ((document.getElementById('NoStudent').checked == true && BadStudent[i] == '1') || (document.getElementById('NoSection').checked == true && BadSection[i] == '1') || (document.getElementById('NoCourse').checked == true && BadCourse[i] == '1'))
+			{
+			document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/selectiondeletedframed.html?ac=prim&DR-095" + BadDCID[i] + "=delete\">");
+			}
+		else
+			{
+			i++
+			ProgressDisplay();
+			RecordCheck();
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All orphaned PGFinalGrades records removed with the options selected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

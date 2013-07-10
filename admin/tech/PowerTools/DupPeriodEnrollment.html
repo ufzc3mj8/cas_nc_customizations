@@ -1,0 +1,74 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Duplicate Period Enrollments</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]<content tag="breadcrumbs"><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Period Enrollments</content>~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Period Enrollments<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Students with Multiple Enrollments in the Same Period in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This report selects any student who is enrolled more than once in a period at any point in time.
+<p>
+Selecting a record will take you to the students All Enrollments page, where the duplicate period enrollments may be reviewed.
+<p>
+<b>This page is highly dependent on the Section Meetings records. If you are getting incorrect results, please reset section meetings.</b>
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+		YAHOO.widget.DataTable.Formatter.AllEnrollments = PowerTools.AllEnrollmentsLink; 
+		YAHOO.widget.DataTable.Formatter.Expression = this.CellFormatter; 
+		
+		this.CellFormatter = function(elCell, oRecord, oColumn, oData)
+		{
+			var PeriodNumber = oRecord.getData("PeriodNumber");  
+			var CycleDay = oRecord.getData("CycleDay");  
+			elCell.innerHTML = PeriodNumber + "(" + CycleDay + ")";  
+        };  
+		
+        var myColumnDefs = [
+            {key:"Student", label:"Student Name", minWidth: 150,sortable:true, formatter: "AllEnrollments"},
+            {key:"StudentNumber", label:"Student Number", minWidth: 100,sortable: true},
+            {key:"Date", label:"Date Dup Enrollment Starts", minWidth: 100,sortable:true, formatter: "date"},
+            {key:"PeriodNumber", label:"Expression", minWidth: 100,sortable:true,formatter: "Expression"},
+			{key:"SchoolName", label:"School Name", minWidth: 200,sortable:true}
+		];
+		
+        var myDataSource = new YAHOO.util.DataSource("DataSource/DupPeriodEnrollment.html?curyearonly=~(gpv.curyearonly)"); 
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","Student","SchoolName","StudentNumber",{key: "Date", parser: "date"},"PeriodNumber","CycleDay"]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: ~(gpv.maxlines),
+					containers : ['top_container','bottom_container'],
+					template: PowerTools.templateCY()
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+		
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+                
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

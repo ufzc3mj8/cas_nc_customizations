@@ -1,0 +1,22 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   [
+    ~[tlist_sql;
+      SELECT sa.award_name
+      , sa.received_date
+      FROM s_nc_studentawards sa
+      JOIN students s
+      ON sa.studentsdcid = s.dcid
+      WHERE s.id = ~(id)
+      ORDER BY sa.award_name]
+    {
+      "awardName" : "~(sa.award_name;t)",
+      "receivedDate" : "~(sa.received_date)"
+    },
+    [/tlist_sql]
+    {}
+]
+[between:Students],
+[/RepeatForEach:Students]
+}

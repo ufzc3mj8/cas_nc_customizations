@@ -1,0 +1,64 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>Student</th>
+	<th>School Name</th>
+	<th>Grade Level</th>
+	<th>Entry Date</th>
+	<th>Exit Date</th>
+	<th>Track</th>
+</thead>
+<tbody>
+~[tlist_sql;
+SELECT *
+FROM (
+SELECT s1.dcid
+, s1.lastfirst
+, s2.name
+, s1.grade_level
+, CASE
+  WHEN to_char(s1.entrydate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+  ELSE to_char(s1.entrydate, 'MM/DD/YYYY') END entrydate
+, CASE
+  WHEN to_char(s1.exitdate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+  ELSE to_char(s1.exitdate, 'MM/DD/YYYY') END exitdate
+, s1.track
+FROM ps.students s1
+LEFT JOIN ps.schools s2
+ON s1.schoolid = s2.school_number
+WHERE s1.track NOT IN ('A','B','C','D','E','F')
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+UNION ALL
+SELECT s1.dcid
+, s1.lastfirst
+, s2.name
+, r1.grade_level
+, CASE
+  WHEN to_char(r1.entrydate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+  ELSE to_char(r1.entrydate, 'MM/DD/YYYY') END
+, CASE
+  WHEN to_char(r1.exitdate, 'MM/DD/YYYY') = '01/01/1900' THEN '0/0/0'
+  ELSE to_char(r1.exitdate, 'MM/DD/YYYY') END
+, r1.track
+FROM ps.reenrollments r1
+LEFT JOIN ps.students s1
+ON r1.studentid = s1.id
+LEFT JOIN ps.schools s2
+ON r1.schoolid = s2.school_number
+WHERE r1.track NOT IN ('A','B','C','D','E','F')
+AND r1.studentid = s1.id
+~[if.is.a.school]AND r1.schoolid = ~[v.curschoolid][/if.is.a.school])
+]
+
+	<tr class="~[evenoddrow]">
+		<td>~(s1.dcid;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s2.name;t)</td>
+		<td>~(s1.grade_level;t)</td>
+		<td>~(s1.entrydate)</td>
+		<td>~(s1.exitdate)</td>
+		<td>~(s1.track;t)</td>
+	</tr>
+	[/tlist_sql]
+</tbody>
+</table>

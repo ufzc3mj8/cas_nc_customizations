@@ -1,0 +1,63 @@
+{
+"grades"       :   [
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+~[tlist_sql;
+SELECT s1.studentid
+, s1.course_number
+, s2.section_number
+, s1.course_name
+, s1.teacher_name
+, s1.storecode
+, s1.grade
+, CASE
+WHEN to_date('~[gpv:col1Date]','mm/dd/yyyy') > s1.datestored
+THEN 1
+WHEN to_date('~[gpv:col2Date]','mm/dd/yyyy') > s1.datestored
+THEN 2
+WHEN to_date('~[gpv:col3Date]','mm/dd/yyyy') > s1.datestored
+THEN 3
+WHEN to_date('~[gpv:col4Date]','mm/dd/yyyy') > s1.datestored
+THEN 4
+WHEN to_date('~[gpv:col5Date]','mm/dd/yyyy') > s1.datestored
+THEN 5
+WHEN to_date('~[gpv:col6Date]','mm/dd/yyyy') > s1.datestored
+THEN 6
+WHEN to_date('~[gpv:col7Date]','mm/dd/yyyy') > s1.datestored
+THEN 7
+WHEN to_date('~[gpv:col8Date]','mm/dd/yyyy') > s1.datestored
+THEN 8
+END colnum
+, replace(replace(replace((SELECT comment_value
+    FROM storedgrades
+    WHERE studentid = s1.studentid
+    AND course_number = s1.course_number
+    AND teacher_name = s1.teacher_name
+    AND storecode = '~[gpv:teacherCommentTerm]'), CHR(13), ' '), CHR(10), ' '),'''','\''')
+FROM storedgrades s1
+FULL JOIN sections s2
+ON s1.sectionid = s2.id
+WHERE s1.studentid=~(id)
+AND s1.termid like '~(v.curyearid)%'
+ORDER BY s1.course_number desc
+, s2.section_number desc
+, s1.datestored desc
+, s1.storecode desc
+]
+{
+"studentid"     : "~(studentid)",
+"courseNumber"  : "~(course_number)",
+"sectionNumber" : "~(s2.section_number)",
+"courseName"    : "~(s1.course_name)",
+"teacherName"   : "~(s1.teacher_name)",
+"storeCode"     : "~(s1.storecode)",
+"grade"         : "~(s1.grade)",
+"colnum"        : "~(colnum)",
+"comment"       : "~(s1.comment_value)"
+},
+[/tlist_sql]
+{}
+[between:Students],
+[/RepeatForEach:Students]
+]
+}

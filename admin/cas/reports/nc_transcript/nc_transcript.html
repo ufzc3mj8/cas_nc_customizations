@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <title>NC Transcript</title>
+  <script type="text/javascript" src="/scripts/cas/modernizr-2.6.2.min.js"></script>
+  <script src="/scripts/cas/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/images/cas/css/webreport.css" />
+  <script src="/scripts/requirejs/require.js"></script>
+  <script type="text/javascript">
+    require.config({
+      baseUrl : ~[scripts_url],
+      paths   : {
+        'jquery'                    : 'cas/jquery.min',
+        'Handlebars'                : 'handlebars/require-handlebars.1.0.0.beta.4',
+        'Handlebars/i18nprecompile' : 'handlebars/hbs-i18nprecompile-0.2.1'      }
+    });
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}, Spinner : {}};
+    PearsonCas.CasInfo.push({
+      "Report"                      : "NC Transcript Existing",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var reportconfig = {
+      reportname : "~[gpv:report_name]",
+      dothisfor  : "~[gpv:dothisfor]"
+    };
+  </script>
+   ~[wc:CAS]
+  <script type="text/javascript" src="/scripts/cas/functions/cas_handlebars.js"></script>
+</head>
+
+<body class="report">
+~[x:insertfile;/admin/cas/reports/partials/reportinstructions.html]
+~[x:GetDoThisForStudents]
+~[x:SortSelection;Students:[prefschool]nc_transcript_sort]
+~[RepeatForEach:Students]
+<article>
+  <table class="outsideborder">
+    <thead>
+      <tr>
+        <td class="headerbordered">&nbsp;</td>
+      </tr>
+      <tr>
+        <td>
+          <div id="schooldata-~(id)" class="page1header"></div>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <section id="studentdata-~(id)" class="studentdata"></section>
+          <section id="schooldata2-~(id)" class="studentdata"></section>
+          <section id="gradesdata-~(id)" class="studentdata"></section>
+          <section id="remainingcreditsdata-~(id)" class="studentdata"></section>
+          <section id="performancedata-~(id)" class="studentdata"></section>
+          <section id="testsdata-~(id)" class="studentdata"></section>
+          <section id="awardsdata-~(id)" class="studentdata"></section>
+          ~[if.~[gpv:report_name]=transcript_existing]
+          <section id="immunizationsdata-~(id)" class="studentdata"></section>
+          <section id="attendancedata-~(id)" class="studentdata"></section>
+          <section id="previousschoolsdata-~(id)" class="studentdata"></section>
+          [/if]
+          <section id="signature_~(id)" class="studentdata">
+            <div id="signaturedata" class="signature" style="page-break-after: always">
+              <p>Signature of Principal or Designee Certifying This Transcript</p>
+
+              <p>Name:______________________________ Date: ________________</p>
+            </div>
+          </section>
+          <section id="courseindexdata-~(id)" class="studentdata" style="page-break-before:always"></section>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class="footerbordered">&nbsp;</td>
+      </tr>
+    </tfoot>
+  </table>
+</article>
+<script type="text/javascript">
+
+</script>
+[between:Students]
+<div style="page-break-after: always;">
+  <div class="noprint" style="border-top: thin dotted;">
+  </div>
+</div>
+[/RepeatForEach:Students]
+<script type="text/javascript" src="js/reporttemplate.js"></script>
+</body>
+</html>

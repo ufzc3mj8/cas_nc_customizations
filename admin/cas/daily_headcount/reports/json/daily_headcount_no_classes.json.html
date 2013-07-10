@@ -1,0 +1,26 @@
+[
+~[tlist_sql;
+SELECT s2.id
+, s2.dcid
+, s2.lastfirst
+FROM students s2
+WHERE s2.entrydate <= to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.grade_level = ~[gpv:gradelevel]
+AND s2.exitdate > to_date('~[gpv:eaodate]','mm/dd/yyyy')
+AND s2.schoolid = ~(v.curschoolid)
+AND NOT EXISTS (
+SELECT *
+FROM CC
+WHERE cc.studentid = S2.id
+AND cc.dateenrolled = s2.entrydate
+)
+ORDER BY s2.lastfirst
+]
+{
+"studentid" : "~(id;t)",
+"studentdcid" : "~(dcid;t)",
+"student" : "~(lastfirst;t)"
+},
+[/tlist_sql]
+{}
+]

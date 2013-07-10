@@ -1,0 +1,72 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Overlapping School Enrollments</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]<content tag="breadcrumbs"><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Overlapping School Enrollments</content>~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Overlapping School Enrollments<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Students with Overlapping School Enrollments in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This page displays the reenrollment record which is overlapping another enrollment. Selecting a student will take you to the Transfer Info page, where the data can be corrected.
+<p>
+The data must be corrected manually, either by removing the invalid record, or by correcting the enrollment dates so they do not overlap.
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id="paginated"></div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+		YAHOO.widget.DataTable.Formatter.TransferInfo = PowerTools.TransferInfoLink; 
+		
+        var myColumnDefs = [
+            {key:"Student", label:"Student", minWidth: 150,sortable:true,formatter: "TransferInfo"},
+            {key:"GradeLevel", label:"Grade Level", minWidth: 50,sortable:true},
+            {key:"EntryDate", label:"Entry Date", minWidth: 100,sortable:true,formatter:"date"},
+            {key:"ExitDate", label:"Exit Date", minWidth: 100,sortable:true,formatter:"date"},
+            {key:"SchoolName", label:"School Name", minWidth: 200,sortable:true}
+            ];
+		
+        var myDataSource = new YAHOO.util.DataSource("DataSource/OverlappingSchool.html"); 
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","Student","SchoolName","GradeLevel",{key:"EntryDate",parser:"date"},{key:"ExitDate",parser:"date"}]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: PowerTools.RowsPerPage(),
+					containers : ['top_container','bottom_container'],
+					template : YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE, 
+						rowsPerPageOptions: [
+						{value:25,text:"25 Rows"},
+						{value:50,text:"50 Rows"},
+						{value:100,text:"100 Rows"},
+						{value:500,text:"500 Rows"},
+						{value:100000,text:"Max Rows"}
+					]
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+                
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

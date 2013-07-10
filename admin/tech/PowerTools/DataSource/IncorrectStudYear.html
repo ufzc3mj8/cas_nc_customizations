@@ -1,0 +1,47 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>Student</th>
+		<th>Course.Section</th>
+		<th>Reason</th>
+		<th>Student ID</th>
+		<th>Year ID</th>
+		<th>Studyear</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT c1.dcid
+, s1.lastfirst
+, c1.course_number || '.' || c1.section_number coursesection
+, CASE
+  WHEN c1.studyear LIKE c1.studentid||'%'
+  THEN 'YearID is incorrect in Studyear'
+  WHEN c1.studyear LIKE '%'||trunc(abs(c1.termid)/100)
+  THEN 'StudentID is incorrect in Studyear'
+  ELSE 'StudentID and YearID are incorrect in Studyear'
+  END Studyearbad
+, c1.studentid
+, trunc(abs(c1.termid)/100) yearid
+, c1.studyear
+FROM ps.cc c1
+LEFT JOIN ps.students s1
+ON c1.studentid = s1.id
+WHERE c1.studyear != (c1.studentid || trunc(abs(c1.termid)/100))
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.lastfirst
+	]
+
+	<tr>
+		<td>~(c1.dcid;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(c1.coursesection;t)</td>
+		<td>~(StudYearBad;t)</td>
+		<td>~(c1.studentid;t)</td>
+		<td>~(c1.yearid;t)</td>
+		<td>~(c1.studyear;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

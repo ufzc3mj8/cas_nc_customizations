@@ -1,0 +1,86 @@
+<script type="text/javascript" language="javascript" src="/scripts/cas/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/scripts/cas/ZeroClipboard.js"></script>
+<script type="text/javascript" charset="utf-8" src="/scripts/cas/TableTools.min.js"></script>
+<style type="text/css" title="currentStyle">
+  @import "/images/cas/css/DataTables_page.css";
+  @import "/images/cas/css/DataTables_table.css";
+  @import "/images/cas/css/TableTools.css";
+</style>
+<script type="text/javascript" charset="utf-8">
+  var $ = jQuery.noConflict();
+  $(document).ready(function() {
+    $('#example').dataTable({
+      "sDom"        : 'T<"clear"><"top"fi>rt<"bottom"lp<"clear">',
+      "sPaginationType" : "full_numbers",
+      "sAjaxSource"     : "json/nc_athletic_eligibility_hs.json.html?dothisfor=selected",
+      "oTableTools" : {
+        "sSwfPath" : "/scripts/cas/swf/copy_csv_xls_pdf.swf",
+        "aButtons" : [
+          {
+            "sExtends"    : "copy",
+            "sButtonText" : "Copy to clipboard"
+          },
+          {
+            "sExtends"    : "xls",
+            "sButtonText" : "Save for Excel"
+          },
+          {
+            "sExtends"    : "pdf",
+            "sButtonText" : "Save to PDF"
+          },
+          {
+            "sExtends"    : "print",
+            "sButtonText" : "Print"
+          }
+        ]
+      }
+    });
+  });
+</script>
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Student Number</th>
+      <th>Gender</th>
+      <th>Grade</th>
+      <th>DOB</th>
+      <th>Age</th>
+      <th>Current School</th>
+      <th>Previous School</th>
+      <th>Physical Exam Date</th>
+      <th>Semester Courses Taken/Passed</th>
+      <th>Yearlong Courses Taken/Passed</th>
+      <th>Days in Membership (LEA)</th>
+      <th>Days Absent</th>
+      <th>Membership Percentage</th>
+      <th>9th Grade Entry Date</th>
+      <th>Retained/Promoted (R/P)</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Student Number</th>
+      <th>Gender</th>
+      <th>Grade</th>
+      <th>DOB</th>
+      <th>Age</th>
+      <th>Current School</th>
+      <th>Previous School</th>
+      <th>Physical Exam Date</th>
+      <th>Semester Courses Taken/Passed</th>
+      <th>Yearlong Courses Taken/Passed</th>
+      <th>Days in Membership (LEA)</th>
+      <th>Days Absent</th>
+      <th>Membership Percentage</th>
+      <th>9th Grade Entry Date</th>
+      <th>Retained/Promoted (R/P)</th>
+    </tr>
+  </tfoot>
+</table>

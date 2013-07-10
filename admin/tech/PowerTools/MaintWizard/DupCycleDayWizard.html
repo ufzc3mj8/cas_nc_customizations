@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>Duplicate Cycle Days Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Cycle Days Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Cycle Days Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate cycle day records in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to repair duplicate cycle days. This process will repair all calendar day records, then remove the duplicate cycle days.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+var GoodID = new Array()
+var BadID = new Array()
+var CalendarCount = new Array()
+~[tlist_sql;
+SELECT rownum
+, d2.dcid BadDCID
+, d1.id GoodID
+, d2.id BadID
+, (SELECT COUNT(*)
+	FROM ps.calendar_day
+	WHERE cycle_day_id = d2.id) CalendarFixCount
+FROM ps.cycle_day d1
+INNER JOIN ps.cycle_day d2
+ON d1.schoolid = d2.schoolid
+AND d1.year_id = d2.year_id
+AND d1.letter = d2.letter
+AND d1.id < d2.id
+WHERE d1.id = (
+	SELECT MIN(ID)
+	FROM ps.cycle_day
+	WHERE schoolid = d2.schoolid
+	AND year_id = d2.year_id
+	AND letter = d2.letter)
+~[if.is.a.school]AND d2.Schoolid = ~[v.curschoolid][/if]
+ORDER BY d2.id
+]
+BadDCID[~(rownum)] = '~(BadDCID)';
+GoodID[~(rownum)] = '~(GoodID)';
+BadID[~(rownum)] = '~(BadID)';
+CalendarCount[~(rownum)] = '~(CalendarFixCount)';
+[/tlist_sql]
+var i = (1);
+var l = (BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = ("There are no duplicate cycle days.");
+	}
+else
+	{
+	// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' duplicate cycle day to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' duplicate cycle days to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to correct the duplicate cycle days\"  enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').disabled = true;
+	document.getElementById('CorrectButton').value = "Correcting Records";
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if (CalendarCount[i] > 0)
+			{
+			document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectCorrect()\" src=\"/admin/tech/usm/home.html?filenum=51\">");
+			}
+		else
+			{
+			selectCycleDayTable();
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All duplicate cycle days corrected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+function SelectCorrect()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayModify()\" src=\"/admin/tech/usm/home.html?fieldnum_1=15&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};	
+function displayModify()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectCycleDayTable()\" src=\"/admin/tech/usm/home.html?&fieldnum=15&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function selectCycleDayTable()
+	{	
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectBadRecord()\" src=\"/admin/tech/usm/home.html?filenum=135\">");
+	};	
+function selectBadRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"deleteBadRecord()\" src=\"/admin/tech/usm/home.html?fieldnum_1=1&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function deleteBadRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/tech/usm/home.html?fieldnum=0&modifytext=&verifydelete=yes&delete=Delete+Selected+Records\">");
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

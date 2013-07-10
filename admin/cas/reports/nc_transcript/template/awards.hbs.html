@@ -1,0 +1,9 @@
+<div class="grouptitle">AWARD/ACHIEVEMENTS AND EXTRA-CURRICULAR ACTIVITIES</div>
+{{#emptyArrayCheck this.length}}
+{{#each this}}
+  {{#if awardName}}
+    <div class="award">{{receivedDate}} - {{awardName}}</div>
+
+  {{/if}}
+{{/each}}
+{{/emptyArrayCheck}}

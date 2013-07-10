@@ -1,0 +1,28 @@
+<table id="tabledata">
+<thead>
+	<th>Incident ID</th>
+	<th>School</th>
+	<th>Incident Date</th>
+	<th>Title</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT i1.incident_id
+, s1.name
+, to_char(incident_ts, 'mm/dd/yyyy')
+, i1.incident_title
+FROM ps.incident i1
+LEFT JOIN ps.schools s1
+ON i1.school_number = s1.school_number
+WHERE i1.incident_ts > CURRENT_TIMESTAMP
+ORDER BY i1.incident_id
+	]
+	<tr class="~[evenoddrow]">
+		<td>~(i1.incident_id;t)</td>
+		<td>~(s1.name;t)</td>
+		<td>~(i1.incident_date;t)</td>
+		<td>~(i1.incident_title;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

@@ -1,0 +1,53 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   {
+~[tlist_sql;
+SELECT s.name
+, s.schooladdress
+, s.schoolcity
+, s.schoolstate
+, s.schoolzip
+, s.schoolphone
+, s.school_number
+, s.low_grade
+, s.high_grade
+, s2.accreditation_desc
+, s2.college_board_id
+, s.principal
+, s.schoolphone
+FROM schools s
+FULL JOIN S_NC_SCHOOLINFO s2
+ON s.dcid = s2.schoolsdcid
+WHERE school_number = ~(schoolid)
+]
+  "name"            : "~(name)",
+  "address"         : "~(schooladdress)",
+  "city"            : "~(schoolcity)",
+  "state"           : "~(schoolstate)",
+  "zip"             : "~(schoolzip)",
+  "phone"           : "~(schoolphone)",
+  "schoolnumber"    : "~(school_number)",
+  "lowgrade"        : ~(low_grade),
+  "highgrade"       : ~(high_grade),
+  "accreditation" : "~(accreditation_desc;t)",
+  "collegeboardcode" : "~(college_board_id)",
+  "principal" : "~(principal)",
+  "schoolphone" : "~(schoolphone)",
+[/tlist_sql]
+~[tlist_sql;
+  SELECT lower(name)
+    , value
+  FROM prefs
+  WHERE lower(name) in ('districtname','districtphone')
+  ORDER BY name
+]
+ "~(name)" : "~(value)",
+[/tlist_sql]
+  "student"         : "~(lastfirst)",
+  "studentno"       : "~(student_number)",
+  "transcriptname" : "~[if.~[gpv:report_name]=transcript_existing]NC Student Transcript[else]NC Standardized Transcript[/if]"
+}
+[between:Students],
+[/RepeatForEach:Students]
+}

@@ -1,0 +1,200 @@
+<table id="tabledata">
+	<thead>
+		<td>Student</a></td>
+		<th>Student Number</th>
+		<th>Entry Date</th>
+		<th>Exit Date</th>
+		<th>First CC Date</th>
+		<th>Last CC Date</th>
+		<th>Entry Date Sort</th>
+		<th>Exit Date Sort</th>
+	</thead>
+	<tbody>
+~[tlist_sql;
+SELECT * FROM (
+SELECT s1.dcid
+, s1.lastfirst lastfirst
+, s1.student_number
+, to_char(s1.entrydate, 'MM/DD/YYYY')
+, to_char(s1.exitdate, 'MM/DD/YYYY')
+, CASE
+    WHEN (
+      SELECT to_char(MIN(dateenrolled), 'MM/DD/YYYY')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= s1.entrydate
+      AND c1.dateleft <= s1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MIN(dateenrolled), 'MM/DD/YYYY')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= s1.entrydate
+      AND c1.dateleft <= s1.exitdate) 
+    END
+, CASE
+    WHEN (
+      SELECT to_char(MAX(dateleft), 'MM/DD/YYYY')
+      FROM ps.cc c2
+      WHERE c2.studentid = s1.id
+      AND c2.dateenrolled >= s1.entrydate
+      AND c2.dateleft <= s1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MAX(dateleft), 'MM/DD/YYYY')
+      FROM ps.cc c2
+      WHERE c2.studentid = s1.id
+      AND c2.dateenrolled >= s1.entrydate
+      AND c2.dateleft <= s1.exitdate)
+    END
+, CASE
+    WHEN (
+      SELECT to_char(MIN(dateenrolled), 'YYYYMMDD')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= s1.entrydate
+      AND c1.dateleft <= s1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MIN(dateenrolled), 'YYYYMMDD')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= s1.entrydate
+      AND c1.dateleft <= s1.exitdate) 
+    END ccentrysort
+, CASE
+    WHEN (
+      SELECT to_char(MAX(dateleft), 'YYYYMMDD')
+      FROM ps.cc c2
+      WHERE c2.studentid = s1.id
+      AND c2.dateenrolled >= s1.entrydate
+      AND c2.dateleft <= s1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MAX(dateleft), 'YYYYMMDD')
+      FROM ps.cc c2
+      WHERE c2.studentid = s1.id
+      AND c2.dateenrolled >= s1.entrydate
+      AND c2.dateleft <= s1.exitdate)
+    END ccexitsort	
+FROM ps.students s1
+WHERE s1.entrydate < s1.exitdate
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+AND (
+NOT EXISTS (
+  SELECT *
+  FROM ps.cc c3
+  WHERE c3.dateenrolled = s1.entrydate
+  AND c3.studentid = s1.id)
+OR NOT EXISTS (
+  SELECT *
+  FROM ps.cc c4
+  WHERE c4.dateleft = s1.exitdate
+  AND c4.studentid = s1.id))
+~[if#curyearonly.~(gpv.curyearonly)=1]AND s1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=s1.schoolid)
+    AND (s1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=s1.schoolid)
+[/if#curyearonly]
+UNION ALL
+SELECT s1.dcid
+, s1.lastfirst lastfirst
+, s1.student_number
+, to_char(r1.entrydate, 'MM/DD/YYYY')
+, to_char(r1.exitdate, 'MM/DD/YYYY')
+, CASE
+    WHEN (
+      SELECT to_char(MIN(dateenrolled), 'MM/DD/YYYY')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= r1.entrydate
+      AND c1.dateleft <= r1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MIN(dateenrolled), 'MM/DD/YYYY')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= r1.entrydate
+      AND c1.dateleft <= r1.exitdate) 
+    END
+, CASE
+    WHEN (
+      SELECT to_char(MAX(dateleft), 'MM/DD/YYYY')
+      FROM ps.cc c2
+      WHERE c2.studentid = s1.id
+      AND c2.dateenrolled >= r1.entrydate
+      AND c2.dateleft <= r1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MAX(dateleft), 'MM/DD/YYYY')
+      FROM ps.cc c2
+      WHERE c2.studentid = s1.id
+      AND c2.dateenrolled >= r1.entrydate
+      AND c2.dateleft <= r1.exitdate)
+    END
+, CASE
+    WHEN (
+      SELECT to_char(MIN(dateenrolled), 'YYYYMMDD')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= r1.entrydate
+      AND c1.dateleft <= r1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MIN(dateenrolled), 'YYYYMMDD')
+      FROM ps.cc c1
+      WHERE c1.studentid = s1.id
+      AND c1.dateenrolled >= r1.entrydate
+      AND c1.dateleft <= r1.exitdate) 
+    END ccentrysort
+, CASE
+    WHEN (
+      SELECT to_char(MAX(dateleft), 'YYYYMMDD')
+      FROM ps.cc c2
+      WHERE c2.studentid = s1.id
+      AND c2.dateenrolled >= r1.entrydate
+      AND c2.dateleft <= r1.exitdate) IS NULL THEN 'Not Enrolled'
+    ELSE (
+      SELECT to_char(MAX(dateleft), 'YYYYMMDD')
+      FROM ps.cc c2
+      WHERE c2.studentid = r1.id
+      AND c2.dateenrolled >= s1.entrydate
+      AND c2.dateleft <= r1.exitdate)
+    END ccexitsort	
+FROM ps.reenrollments r1
+INNER JOIN ps.students s1
+on r1.studentid = s1.id
+WHERE r1.entrydate < r1.exitdate
+~[if.is.a.school]AND r1.schoolid = ~[v.curschoolid][/if.is.a.school]
+AND (
+NOT EXISTS (
+  SELECT *
+  FROM ps.cc c3
+  WHERE c3.dateenrolled = r1.entrydate)
+OR NOT EXISTS (
+  SELECT *
+  FROM ps.cc c4
+  WHERE c4.dateleft = r1.exitdate))
+~[if#curyearonly.~(gpv.curyearonly)=1]AND r1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=r1.schoolid)
+    AND (r1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=r1.schoolid)
+[/if#curyearonly]
+)
+ORDER BY lastfirst
+]
+
+		<tr class="~[evenoddrow]">
+			<td><a href="/admin/students/home.html?frn=001~(cc1.dcid;l)&ac=suv;lsp=/admin/students/allenrollments.html" target="Powertools">~(cc1.lastfirst;t)</a></td>
+			<td>~(cc1.student_number;t)</td>
+			<td>~(s1.entrydate;t)</td>
+			<td>~(s1.exitdate;t)</td>
+			<td>~(c1.dateenrolled;t)</td>
+			<td>~(c1.dateleft;t)</td>
+			<td>~(CCEntrySort;t)</td>
+			<td>~(CCExitSort;t)</td>
+		</tr>
+	[/tlist_sql]
+	</tbody>
+</table>

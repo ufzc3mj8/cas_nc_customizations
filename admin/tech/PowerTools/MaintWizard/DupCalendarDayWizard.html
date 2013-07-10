@@ -1,0 +1,91 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Duplicate Calendar Days Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Calendar Days Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Calendar Days Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate calendar day records in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to repair duplicate calendar day records. This wizard will remove all duplicate calendar_day records.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+~[tlist_sql;
+	SELECT rownum
+	, c2.dcid BadDCID
+	FROM ps.calendar_day c1
+	JOIN ps.calendar_day c2
+	ON c1.date_value = c2.date_value
+	AND c1.schoolid = c2.schoolid
+	AND C1.id < c2.id
+	WHERE c1.id = (
+		SELECT MIN(ID)
+		FROM ps.calendar_day
+		WHERE date_value = c2.date_value
+		AND schoolid = c2.schoolid)
+	~[if.is.a.school]AND c1.schoolid = ~[v.curschoolid][/if.is.a.school]
+	]
+BadDCID[~(rownum)] = '~(baddcid)';
+[/tlist_sql]
+// Check if there are 0 records to correct
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = ("There are no duplicate Calendar Day records");
+	}
+else
+	{
+	// Check the count of records to correct and display the messages accordingly
+	document.getElementById('Header').innerHTML = ('<p>There are ' + (l-1) + ' duplicate Calendar_Day records to be removed.</p>\
+		<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to delete the duplicate Calendar Day records\"  enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').disabled = true;
+	document.getElementById("CorrectButton").value="Correcting records";
+	RecordCheck();
+	};
+// Check for invalid records
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/selectiondeletedframed.html?ac=prim&DR-051" + BadDCID[i] + "=delete\">");
+		}
+	else
+		{
+		ProgressDisplay();
+		document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat("All duplicate Calendar_Day records corrected");
+		document.getElementById('Output').innerHTML = previousOutput;
+		};
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

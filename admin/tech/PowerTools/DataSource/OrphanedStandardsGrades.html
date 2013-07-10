@@ -1,0 +1,53 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>ID</th>
+		<th>Student</th>
+		<th>Student ID</th>
+		<th>Standard</th>
+		<th>Standard ID</th>
+		<th>School Name</th>
+		<th>Year ID</th>
+		<th>School Number</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT s1.dcid
+, s1.id
+, s2.lastfirst
+, s1.studentid
+, s3.identifier
+, s1.standardsid
+, s4.name
+, s1.yearid yearid
+, s1.schoolid
+FROM ps.standardsgrades s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.standards s3
+ON s1.standardsid = s3.id
+LEFT JOIN ps.schools s4
+ON s1.schoolid = s4.school_number
+WHERE (s2.id IS NULL
+OR s3.id IS NULL
+OR s4.school_number IS NULL)
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.ID
+	]
+
+	<tr>
+		<td>~(s1.dcid;t)</td>
+		<td>~(s1.id;t)</td>
+		<td>~(s2.lastfirst;t)</td>
+		<td>~(s1.studentid;t)</td>
+		<td>~(s3.standard;t)</td>
+		<td>~(s1.standardid;t)</td>
+		<td>~(s4.schoolname;t)</td>
+		<td>~(s1.yearid;t)</td>
+		<td>~(s1.schoolid;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

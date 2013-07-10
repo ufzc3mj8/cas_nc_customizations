@@ -1,0 +1,49 @@
+{
+  "aaData"       :   [
+    ~[x:GetDoThisForStudents]
+    ~[RepeatForEach:Students]
+    ~[tlist_sql;
+      SELECT first_name
+      , last_name
+      , student_number
+      , gender
+      , grade_level
+      , to_char(dob,'mm/dd/yyyy')
+      , trunc((months_between(sysdate,dob))/12) age
+      , schoolid
+      --, previousschool
+      --, physical exam date
+      --, semester courses taken / passed
+      --, yearlong courses taken / passed
+      --, days in membership
+      --, days absent
+      --, membership percentage
+      --, 9th grade entry date
+      --, retained/promoted
+      FROM students
+      WHERE id = ~(id)
+    ]
+    [
+      "~(first_name)",
+      "~(last_name)",
+      "~(student_number)",
+      "~(gender)",
+      "~(grade_level)",
+      "~(dob)",
+      "~(age)",
+      "~(schoolid)",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+    [/tlist_sql]
+    [between:Students],
+    [/RepeatForEach:Students]
+  ]
+}

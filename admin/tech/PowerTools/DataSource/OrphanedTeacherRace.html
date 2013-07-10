@@ -1,0 +1,42 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</th>
+		<th>ID</th>
+		<th>Teacher</th>
+		<th>Teacher ID</th>
+		<th>Race Code</th>
+		<th>Race Code ID</th>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT t1.dcid
+, t1.id
+, t2.lastfirst
+, t1.teacherid
+, g1.name
+, t1.racecd
+FROM ps.teacherrace t1
+LEFT JOIN ps.teachers t2
+ON t1.teacherid = t2.id
+LEFT JOIN ps.gen g1
+ON t1.racecd = g1.name
+AND g1.cat = 'race'
+WHERE (t2.ID IS NULL
+  OR g1.name IS NULL)
+~[if.is.a.school]AND t2.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY t1.ID
+	]
+
+	<tr class="~[evenoddrow]">
+		<td>~(t1.dcid;t)</td>
+		<td>~(t1.id;t)</td>
+		<td>~(s2.lastfirst;t)</td>
+		<td>~(t1.teacherid;t)</td>
+		<td>~(g1.name;t)</td>
+		<td>~(t1.racecd;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

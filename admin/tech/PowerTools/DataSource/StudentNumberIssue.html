@@ -1,0 +1,37 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>Student</th>
+	<th>Student Number</th>
+	<th>School ID</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT s1.dcid
+, s1.Lastfirst
+, s1.student_number
+, CASE
+	WHEN s1.schoolid in (
+		SELECT school_number
+		FROM ps.schools)
+	THEN (
+		SELECT name
+		FROM ps.schools
+		WHERE school_number = s1.schoolid)
+	ELSE 'School does not exist'
+	END SchoolName
+FROM ps.students s1
+WHERE student_number >= 2147483647
+~[if.is.a.school]AND s1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.lastfirst
+  ]
+
+	<tr class="~[evenoddrow]">
+		<td>~(dcid;t)</td>
+		<td>~(lastfirst;t)</td>
+		<td>~(student_number;t)</td>
+		<td>~(schoolid;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

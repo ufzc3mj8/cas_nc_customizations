@@ -1,0 +1,86 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Possible Duplicate Students</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]			
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Possible Duplicate Students
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Possible Duplicate Students<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>Possible Duplicate Students</h1>
+<p>
+This report selects any student who has another student with the same first name, last name and date of births.
+<p>
+Selecting a student will take you to the students Demographics page.
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+
+
+YAHOO.util.Event.onDOMReady(function() {
+	ClientPagination = function() {
+		// Create a link to the students Demographics Page
+		this.Demographics2Link = function(elCell, oRecord, oColumn, oData)
+		{
+			var name = oRecord.getData("Student2");
+			var DCID2 = oRecord.getData("DCID2");
+			elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID2 + "&ac=suv;lsp=/admin/students/generaldemographics.html' target=Powertools>" + name + "</a>";
+		};
+	
+		YAHOO.widget.DataTable.Formatter.Demographics = PowerTools.DemographicsLink;
+		YAHOO.widget.DataTable.Formatter.Demographics2 = this.Demographics2Link;
+
+		var myColumnDefs = [
+			{key:"Student", label:"Student", minWidth: 150,sortable:true,formatter: "Demographics"},
+			{key:"StudentNumber", label:"Student Number", minWidth: 50,sortable:true},
+			{key:"Student2", label:"Student 2", minWidth: 150,sortable:true,formatter: "Demographics2"},
+			{key:"StudentNumber2", label:"Student Number 2", minWidth: 50,sortable:true},
+			{key:"DOB", label:"DOB", minWidth: 50,sortable:true}
+		];
+
+		var myDataSource = new YAHOO.util.DataSource("DataSource/PossibleDupStudents.html");
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+		myDataSource.responseSchema = {
+			fields: ["DCID","Student","StudentNumber","DOB","DCID2","Student2","StudentNumber2"]
+		};
+		
+		var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+					rowsPerPage: PowerTools.RowsPerPage(),
+					containers : ['top_container','bottom_container'],
+					template : YAHOO.widget.Paginator.TEMPLATE_ROWS_PER_PAGE, 
+					rowsPerPageOptions: [
+						{value:25,text:"25 Rows"},
+						{value:50,text:"50 Rows"},
+						{value:100,text:"100 Rows"},
+						{value:500,text:"500 Rows"},
+						{value:100000,text:"Max Rows"}
+					]
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+		};
+		
+		var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+		
+		return {
+			oDS: myDataSource,
+			oDT: myDataTable
+		};
+	}();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

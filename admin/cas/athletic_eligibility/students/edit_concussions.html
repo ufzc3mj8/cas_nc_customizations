@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Edit Concussions</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "edit.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var pageData = {
+      "id" : "~[gpv:id]"
+    };
+    $j(document).ready(function() {
+      populateForm("/admin/cas/athletic_eligibility/students/json/concussionform.json.html?id=" + pageData.id);
+    });
+  </script>
+  ~[wc:CAS]
+  <script src="/scripts/cas/extSchema.js"></script>
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body style="display:none;">
+
+<form action="concussions.html?frn=~[gpv:frn]" method="POST">
+  ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.demo.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch"
+                                                                                                                                                          target="_top">~[text:psx.html.admin_students.demo.student_selection]</a> &gt; <a href="concussions.html?frn=~[gpv:frn]">Concussions</a> &gt; Edit Concussion<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+  ~[wc:title_student_begin_css]Edit Concussion~[wc:title_student_end_css]
+  <div class="box-round">
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><label for="concussionDate">Concussion Date</label></td>
+          <td><input type="text" class="psDateWidget" name="cf-[:0.S_NC_AE_CONCUSSION.S_NC_AE_CONCUSSION:~[gpv:id;-1]]concussion_date" id="concussionDate"></td>
+        </tr>
+        <tr>
+          <td><label for="notes">Notes</label></td>
+          <td><textarea id="notes" name="cf-[:0.S_NC_AE_CONCUSSION.S_NC_AE_CONCUSSION:~[gpv:id;-1]]notes" rows="6" cols="50"></textarea></td>
+        </tr>
+        ~[if.~[gpv:id]>0]
+        <tr>
+          <td><label for="enteredBy">Entered By</label></td>
+          <td><input type="text" id="enteredBy" readonly="readonly"></td>
+        </tr>
+        <tr>
+          <td><label for="entryDate">Entered On</label></td>
+          <td><input type="text" id="entryDate" readonly="readonly"></td>
+        </tr>
+      </tbody>
+      [/if]
+    </table>
+    <input type="hidden" name="ac" value="prim" />
+    ~[if.~[gpv:id]<0]
+    <input type="hidden" name="cf-[:0.S_NC_AE_CONCUSSION.S_NC_AE_CONCUSSION:~[gpv:id;-1]]entered_by" value="~[x:userid]" />
+    <input type="hidden" name="cf-[:0.S_NC_AE_CONCUSSION.S_NC_AE_CONCUSSION:~[gpv:id;-1]]entry_date" value="~[short.date]" />
+    [/if]
+    <input type="hidden" name="cf-[:0.S_NC_AE_CONCUSSION.S_NC_AE_CONCUSSION:~[gpv:id;-1]]studentid" value="~(id)" />
+    <div class="button-row">
+      ~[if.~[gpv:id]>0]
+      <button name="btnDelete" id="btnDelete" onclick="deleteRecord()">Delete</button>
+      [/if]
+      ~[submitbutton]
+    </div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+  ~[wc:admin_footer_frame_css]
+</form>
+</body>
+</html><!-- non framed -->

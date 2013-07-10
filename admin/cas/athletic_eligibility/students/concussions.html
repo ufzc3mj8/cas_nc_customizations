@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Athletic Concussion Tracking</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "concussions.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var pageData = {
+      studentfrn : "~[gpv:frn]"
+    };
+  </script>
+  <script type="text/javascript" src="js/listConcussions.js"></script>
+  ~[wc:CAS]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.demo.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch"
+                                                                                                                                                          target="_top">~[text:psx.html.admin_students.demo.student_selection]</a>
+&gt; Concussions<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+  ~[wc:title_student_begin_css]Athletic Concussion Tracking~[wc:title_student_end_css]
+  <!-- start of content and bounding box -->
+  <div class="box-round">
+    <table class="linkDescList">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="concussions"></tbody>
+    </table>
+    <div class="button-row">
+      <a class="button" href="edit_concussions.html?id=-1&frn=~[gpv:frn]">Add</a>
+    </div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+  ~[wc:admin_footer_frame_css]
+</body>
+</html><!-- non framed -->

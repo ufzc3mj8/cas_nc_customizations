@@ -1,0 +1,25 @@
+{
+  "students" : [
+    ~[tlist_sql;
+      SELECT rownum
+      , tm.id
+      , s.lastfirst
+      , s.student_number
+      FROM S_NC_AE_TEAMMEMBERS tm
+      JOIN students s
+      ON tm.studentid = s.id
+      WHERE tm.teamid = ~[gpv:id]
+      ORDER BY s.lastfirst]
+    {
+      "rownum" : "~(rownum)",
+      "id" : "~(id)",
+      "name" : "~(name)",
+      "studentnumber" : "~(student_number;t)",
+      "eligible" : ""
+    },
+    [/tlist_sql]
+    {}
+  ]
+}
+
+

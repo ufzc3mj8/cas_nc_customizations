@@ -1,0 +1,18 @@
+{
+    "students":[
+            ~[SetPostValue:dothisfor=selected]
+            ~[x:GetDoThisForStudents]
+            ~[RepeatForEach:Students]
+        {
+            "student_number":"~(student_number)",
+            "curstudid":"~(curstudid)",
+            "frn":"~(frn)",
+            "grade_level":"~(grade_level)",
+            "lastfirst":"~(lastfirst)",
+            "schoolname": "~(schoolname)",
+            "dob": "~(dob)",
+            "entry_date":"~(entrydate)"
+        }[between:Students],
+        [/RepeatForEach:Students]
+    ]
+}

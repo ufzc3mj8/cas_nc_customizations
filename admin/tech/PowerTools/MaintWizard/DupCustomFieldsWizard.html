@@ -1,0 +1,701 @@
+<html>
+<head>
+<title>Duplicate Custom Field Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Custom Fields Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Custom Fields Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate custom fields in All Schools</h1>
+<p>
+Use this wizard to repair duplicate Custom Fields. This process will export the custom fields data into text files, then remove the duplicate Custom Fields after you verify the export records are valid to be imported. Upon deletion of the duplicate custom fields, you must import the export files back in using quick import.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+<div id="iframe" style="display:none"><iframe></iframe></div>
+<!-- start of content and bounding box -->
+~[if.~[x:version]>=7.0]
+<div class="box-round">
+[else]
+<table border="0" cellspacing="0" cellpadding="0" align="center">
+	<tr>
+		<td colspan="2" background="/images/bond_3000_top.gif" align="right"><img src="/images/bound_box_top_right1.gif" width="15" height="9" alt="" border="0"></td>
+		<td width="25"><img src="/images/bound_box_top_right2.gif" width="25" height="9" alt="" border="0"></td>
+	</tr>
+	<tr>
+		<td width="23" background="/images/bond_box_left_edge.gif"><img src="/images/spacer.gif" width="23" height="1"></td>
+		<td>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td>
+[/if]
+
+<!-- Enter Content Here -->	
+<p id="top_container" style="text-align:center"></p>
+<div id="Output"></div>
+<script type="text/javascript">
+previousOutput = new String();
+// f is the number of fields in each download.
+// n[table] is the file number of the download for the table
+// i[table] is the record number for that table.
+// l[table] is the length of the array for that table.
+var f=(49);
+// Export from the Students Table
+var nStudents=(1);
+var GoodDCIDStudents=new Array()
+var BadDCIDStudents=new Array()
+var FieldnameStudents=new Array()
+~[tlist_sql;
+	SELECT rownum
+	, f1.dcid GoodDCID
+	, f2.dcid BadDCID
+	, f1.name
+	FROM ps.fieldstable f1
+	LEFT JOIN ps.fieldstable f2
+	ON f1.name = f2.name
+	AND f1.fileno = f2.fileno
+	WHERE f1.dcid < f2.dcid
+	AND f1.fileno = 100
+	AND f1.dcid = (
+		SELECT MIN(dcid)
+		FROM ps.fieldstable
+		WHERE fileno = f2.fileno
+		AND name = f2.name)
+	ORDER BY f2.name
+	]
+GoodDCIDStudents[~(rownum)] = ~(result1);
+BadDCIDStudents[~(rownum)] = ~(result2);
+FieldnameStudents[~(rownum)]= '~(result3)';
+[/tlist_sql]
+iStudents=(1);
+lStudents=(GoodDCIDStudents.length);
+function CheckStudentCount()
+	{
+	document.getElementById('CorrectButton').disabled = true;
+	if (lStudents == 0)
+		{
+		CheckTeachersCount();
+		}
+	else
+		{
+		SelectStudentsTable();
+		};
+	};
+function SelectStudentsTable()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat("Exporting Students data. File number " + nStudents + ".<br>This process may take some time to complete. Please wait.<br>");
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectAllStudents()\" src=\"/admin/tech/dde/home.html?filenum=1\">");
+	};
+function SelectAllStudents()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"StudentsExport()\" src=\"/admin/tech/dde/home.html?filenum=1&searchselectall=Select+all+records+in+this+table&ac=dde\">");
+	};
+function StudentsExport()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"StudentsPopulate()\" src=\"/admin/tech/dde/exportrecords.html\">");
+	};
+function StudentsPopulate()
+	{
+	previousInnerHTML = ("Student_Number\r\n");
+	if (lStudents <= (nStudents * f))
+		{
+		while (iStudents < lStudents)
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameStudents[iStudents] + "\r\n");
+			iStudents++;
+			};
+		window.frames[0].document.forms[0].action = 'Students-Export-' + nStudents + '.text';
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Student' + nStudents + '\" value=\"Click here after Students-Export-' + nStudents + '.text has finished downloading\" enabled=\"true\" onClick=\"StudentsLast();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		}
+	else
+		{
+		while (iStudents <= (nStudents * f))
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameStudents[iStudents] + "\r\n");
+			iStudents++;
+			};
+		window.frames[0].document.forms[0].action = 'Students-Export-' + nStudents + '.text';
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Student' + nStudents + '\" value=\"Click here after Students-Export-' + nStudents + '.text has finished downloading\" enabled=\"true\" onClick=\"StudentsNext();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		};
+	};
+function StudentsLast ()
+	{
+	document.getElementById('Student' + nStudents).disabled = true;
+	CheckTeachersCount();
+	};
+function StudentsNext()
+	{
+	document.getElementById('Student' + nStudents).disabled = true;
+	SelectStudentsTable();
+	nStudents++;
+	};
+// Export from the Teachers table
+var nTeachers=(1);
+var GoodDCIDTeachers=new Array()
+var BadDCIDTeachers=new Array()
+var FieldnameTeachers=new Array()
+~[tlist_sql;
+	SELECT rownum
+	, f1.dcid GoodDCID
+	, f2.dcid BadDCID
+	, f1.name
+	FROM ps.fieldstable f1
+	LEFT JOIN ps.fieldstable f2
+	ON f1.name = f2.name
+	AND f1.fileno = f2.fileno
+	WHERE f1.dcid < f2.dcid
+	AND f1.fileno = 200
+	AND f1.dcid = (
+		SELECT MIN(dcid)
+		FROM ps.fieldstable
+		WHERE fileno = f2.fileno
+		AND name = f2.name)
+	ORDER BY f2.name
+	]
+GoodDCIDTeachers[~(rownum)] = ~(result1);
+BadDCIDTeachers[~(rownum)] = ~(result2);
+FieldnameTeachers[~(rownum)]= '~(result3)';
+[/tlist_sql]
+var iTeachers=(1);
+var lTeachers=(GoodDCIDTeachers.length);
+function CheckTeachersCount()
+	{
+	if (lTeachers == 0)
+		{
+		CheckCoursesCount();
+		}
+	else
+		{
+		SelectTeachersTable();
+		};
+	};
+function SelectTeachersTable()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat("Exporting Teachers data. File number " + nTeachers + ".<br>This process may take some time to complete. Please wait.<br>");
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	document.getElementById('iframe').innerHTML = ("<iframe width=\"100\" height=\"600\" onload=\"SelectAllTeachers()\" src=\"/admin/tech/dde/home.html?filenum=5\">");
+	};
+function SelectAllTeachers()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe width=\"100%\" height=\"600\" onload=\"TeachersExport()\" src=\"/admin/tech/dde/home.html?filenum=5&searchselectall=Select+all+records+in+this+table&ac=dde\">");
+	};
+function TeachersExport()
+	{
+	document.getElementById('iframe').innerHTML = ('<iframe width=\"100%\" height=\"600\" onload=\"TeachersPopulate()\" src=\"/admin/tech/dde/exportrecords.html\">');
+	};
+function TeachersPopulate()
+	{
+	previousInnerHTML = ("TeacherNumber\r\n");
+	if (lTeachers <= (nTeachers * f))
+		{
+		while (iTeachers < lTeachers)
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameTeachers[iTeachers] + "\r\n");
+			iTeachers++;
+			};
+		window.frames[0].document.forms[0].action = 'Teachers-Export-' + nTeachers + '.text';
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Teacher' + nTeachers + '\" value=\"Click here after Teachers-Export-' + nTeachers + '.text has finished downloading\" enabled=\"true\" onClick=\"TeachersLast();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		}
+	else
+		{
+		while (iTeachers <= (nTeachers * f))
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameTeachers[iTeachers] + "\r\n");
+			iTeachers++;
+			};
+		window.frames[0].document.forms[0].action = 'Teachers-Export-' + nTeachers + '.text';
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Teacher' + nTeachers + '\" value=\"Click here after Teachers-Export-' + nTeachers + '.text has finished downloading\" enabled=\"true\" onClick=\"TeachersNext();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		nTeachers++;
+		};
+	};
+function TeachersLast ()
+	{
+	document.getElementById('Teacher' + nTeachers).disabled = true;
+	CheckCoursesCount();
+	};
+function TeachersNext()
+	{
+	document.getElementById('Teacher' + nTeachers).disabled = true;
+	SelectTeachersTable();
+	nTeachers++;
+	};
+// Export from the Courses Table
+var nCourses=(1);
+var GoodDCIDCourses=new Array()
+var BadDCIDCourses=new Array()
+var FieldnameCourses=new Array()
+~[tlist_sql;
+	SELECT rownum
+	, f1.dcid GoodDCID
+	, f2.dcid BadDCID
+	, f1.name
+	FROM ps.fieldstable f1
+	LEFT JOIN ps.fieldstable f2
+	ON f1.name = f2.name
+	AND f1.fileno = f2.fileno
+	WHERE f1.dcid < f2.dcid
+	AND f1.fileno = 300
+	AND f1.dcid = (
+		SELECT MIN(dcid)
+		FROM ps.fieldstable
+		WHERE fileno = f2.fileno
+		AND name = f2.name)
+	ORDER BY f2.name
+	]
+GoodDCIDCourses[~(rownum)] = ~(result1);
+BadDCIDCourses[~(rownum)] = ~(result2);
+FieldnameCourses[~(rownum)]= '~(result3)';
+[/tlist_sql]
+var iCourses=(1);
+var lCourses=(GoodDCIDCourses.length);
+function CheckCoursesCount()
+	{
+	if (lCourses == 0)
+		{
+		CheckSectionsCount();
+		}
+	else
+		{
+		SelectCoursesTable();
+		};
+	};
+function SelectCoursesTable()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat("Exporting Courses data. File number " + nCourses + ".<br>This process may take some time to complete. Please wait.<br>");
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectAllCourses()\" src=\"/admin/tech/dde/home.html?filenum=2\">");
+	};
+function SelectAllCourses()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"CoursesExport()\" src=\"/admin/tech/dde/home.html?filenum=2&searchselectall=Select+all+records+in+this+table&ac=dde\">");
+	};
+function CoursesExport()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"CoursesPopulate()\" src=\"/admin/tech/dde/exportrecords.html\">");
+	};
+function CoursesPopulate()
+	{
+	previousInnerHTML = ("Course_Number\r\n");
+	if (lCourses <= (nCourses * f))
+		{
+		while (iCourses < lCourses)
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameCourses[iCourses] + "\r\n");
+			iCourses++;
+			};
+		window.frames[0].document.forms[0].action = ('Courses-Export-' + nCourses + '.text');
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Course' + nCourses + '\" value=\"Click here after Courses-Export-' + nCourses + '.text has finished downloading\" enabled=\"true\" onClick=\"CoursesLast();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		}
+	else
+		{
+		while (iCourses <= (nCourses * f))
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameCourses[iCourses] + "\r\n");
+			iCourses++;
+			};
+		window.frames[0].document.forms[0].action = ('Courses-Export-' + nCourses + '.text');
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Course' + nCourses + '\" value=\"Click here after Courses-Export-' + nCourses + '.text has finished downloading\" enabled=\"true\" onClick=\"CoursesNext();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		nCourses++;
+		};
+	};
+function CoursesLast ()
+	{
+	document.getElementById('Course' + nCourses).disabled = true;
+	CheckSectionsCount();
+	};
+function CoursesNext()
+	{
+	document.getElementById('Course' + nCourses).disabled = true;
+	SelectCoursesTable();
+	nCourses++;
+	};
+// Export from the Sections Table
+var fSections=(f-1);
+var nSections=(1);
+var GoodDCIDSections=new Array()
+var BadDCIDSections=new Array()
+var FieldnameSections=new Array()
+~[tlist_sql;
+	SELECT rownum
+	, f1.dcid GoodDCID
+	, f2.dcid BadDCID
+	, f1.name
+	FROM ps.fieldstable f1
+	LEFT JOIN ps.fieldstable f2
+	ON f1.name = f2.name
+	AND f1.fileno = f2.fileno
+	WHERE f1.dcid < f2.dcid
+	AND f1.fileno = 400
+	AND f1.dcid = (
+		SELECT MIN(dcid)
+		FROM ps.fieldstable
+		WHERE fileno = f2.fileno
+		AND name = f2.name)
+	ORDER BY f2.name
+	]
+GoodDCIDSections[~(rownum)] = ~(result1);
+BadDCIDSections[~(rownum)] = ~(result2);
+FieldnameSections[~(rownum)]= '~(result3)';
+[/tlist_sql]
+var iSections=(1);
+var lSections=(GoodDCIDSections.length);
+function CheckSectionsCount()
+	{
+	if (lSections == 0)
+		{
+		ExportsComplete();
+		}
+	else
+		{
+		SelectSectionsTable();
+		};
+	};
+function SelectSectionsTable()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat("Exporting Sections data. File number " + nSections + ".<br>This process may take some time to complete. Please wait.<br>");
+	document.getElementById('Output').innerHTML = previousOutput;
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectAllSections()\" src=\"/admin/tech/dde/home.html?filenum=3\">");
+	};
+function SelectAllSections()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SectionsExport()\" src=\"/admin/tech/dde/home.html?filenum=3&searchselectall=Select+all+records+in+this+table&ac=dde\">");
+	};
+function SectionsExport()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SectionsPopulate()\" src=\"/admin/tech/dde/exportrecords.html\">");
+	};
+function SectionsPopulate()
+	{
+	previousInnerHTML = ("Course_Number\r\n");
+	if (lSections <= (nSections * fSections))
+		{
+		while (iSections < lSections)
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameSections[iSections] + "\r\n");
+			iSections++;
+			};
+		window.frames[0].document.forms[0].action = ('Sections-Export-' + nSections + '.text');
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Section' + nSections + '\" value=\"Click here after Sections-Export-' + nSections + '.text has finished downloading\" enabled=\"true\" onClick=\"SectionsLast();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		}
+	else
+		{
+		while (iSections <= (nSections * fSections))
+			{
+			previousInnerHTML = previousInnerHTML.concat(FieldnameSections[iSections] + "\r\n");
+			iSections++
+			};
+		window.frames[0].document.forms[0].action = ('Sections-Export-' + nSections + '.text');
+		window.frames[0].document.getElementById('tt').value = previousInnerHTML;
+		setTimeout('window.frames[0].document.forms[0].submit()',2000);
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('<input type=\"button\" id=\"Section' + nSections + '\" value=\"Click here after Sections-Export-' + nSections + '.text has finished downloading\" enabled=\"true\" onClick=\"SectionsNext();\"></p>');
+		document.getElementById('Output').innerHTML = previousOutput;
+		nSections++;
+		};
+	};
+function SectionsLast ()
+	{
+	document.getElementById('Section' + nSections).disabled = true;
+	ExportsComplete();
+	};
+function SectionsNext()
+	{
+	document.getElementById('Section' + nSections).disabled = true;
+	SelectSectionsTable();
+	nSections++;
+	};	
+// Finish the export process and begin the removal process
+	
+function ExportsComplete()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat('<p><table width=\"400"\><thead><tr><th><font style="bold" color="red">WARNING!!!</th></td></thead><tbody><tr><td>It is imperitive that you verify the integrity of the export files before continuing. If you open the exports in a spreadsheet viewer, do not save them as they may remove any leading zeroes from fields. Verify that no fields have carriage returns in them, or you may lose the data tied to any fields which may be exported after that field.<p>If you have verified that your export sheets are correct, please click the \"Remove Duplicate Fields\" button.</td></tr></tbody></table> <p>');
+	previousOutput = previousOutput.concat('<input type=\"button\" id=\"RemoveFields\" value=\"Remove Duplicate Fields\" onclick=\"RemoveAllFields();\"><p>');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	};
+function RemoveAllFields()
+	{
+	document.getElementById('RemoveFields').disabled = true;
+	iStudents = 1;
+	iTeachers = 1;
+	iCourses = 1;
+	iSections = 1;
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"StudentsRecordCheck()\" src=\"/admin/tech/usm/home.html?filenum=007\">");
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat('This process may be time consuming, and each field delete may take up to 2 minutes to complete.<br>');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	};
+function StudentsRecordCheck()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput - previousOutput.concat('Checking Students Record count');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	if (iStudents < lStudents)
+		{
+		SelectStudentsFields();
+		}
+	else
+		{
+		TeachersRecordCheck();
+		};
+	};	
+function SelectStudentsFields()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat('Removing duplicate of field ' + FieldnameStudents[iStudents] + ' from the Students table');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	document.getElementById('iframe').innerHTML =  ('<iframe onload=\"CheckVerifyStudentsFields()\" src=\"/admin/studentfields/modifyfield.html?frn=007' + BadDCIDStudents[iStudents] + '\">');
+	};
+function CheckVerifyStudentsFields()
+	{
+	window.frames[0].document.forms[0].target= '_self';
+	setTimeout('window.frames[0].document.forms[0].getElementsByTagName(\'input\')[1].checked = \'checked\';', 100);
+	setTimeout('ClickDeleteButtonStudents()',100);
+	};
+function ClickDeleteButtonStudents()
+	{
+	window.frames[0].document.forms[0].getElementsByTagName('input')[7].click();
+	setTimeout('document.getElementById(\'iframe\').onload = DisplayStudentsSuccess();', 120000);
+	iStudents++;
+	};
+function DisplayStudentsSuccess()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat(': Deleted<br>');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	StudentsRecordCheck();
+	};
+function TeachersRecordCheck()
+	{
+	if (iTeachers < lTeachers)
+		{
+		SelectTeachersFields();
+		}
+	else
+		{
+		CoursesRecordCheck();
+		};
+	};	
+function SelectTeachersFields()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat('Removing duplicate of field ' + FieldnameTeachers[iTeachers] + ' from the Teachers table');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	document.getElementById('iframe').innerHTML =  ('<iframe onload=\"CheckVerifyTeachersFields()\" src=\"/admin/facultyfields/modifyfield.html?frn=007' + BadDCIDTeachers[iTeachers] + '\">');
+	};
+function CheckVerifyTeachersFields()
+	{
+	window.frames[0].document.forms[0].target= '_self';
+	setTimeout('window.frames[0].document.forms[0].getElementsByTagName(\'input\')[1].checked = \'checked\';', 100);
+	setTimeout('ClickDeleteButtonTeachers()',100);
+	};
+function ClickDeleteButtonTeachers()
+	{
+	window.frames[0].document.forms[0].getElementsByTagName('input')[7].click();
+	setTimeout('document.getElementById(\'iframe\').onload = DisplayTeachersSuccess();', 120000);
+	iTeachers++;
+	};
+function DisplayTeachersSuccess()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat(': Deleted<br>');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	TeachersRecordCheck();
+	};
+function CoursesRecordCheck()
+	{
+	if (iCourses < lCourses)
+		{
+		SelectCoursesFields();
+		}
+	else
+		{
+		SectionsRecordCheck();
+		};
+	};	
+function SelectCoursesFields()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat('Removing duplicate of field ' + FieldnameCourses[iCourses] + ' from the Courses table');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	document.getElementById('iframe').innerHTML =  ('<iframe onload=\"CheckVerifyCoursesFields()\" src=\"/admin/coursefields/modifyfield.html?frn=007' + BadDCIDCourses[iCourses] + '\">');
+	};
+function CheckVerifyCoursesFields()
+	{
+	window.frames[0].document.forms[0].target= '_self';
+	setTimeout('window.frames[0].document.forms[0].getElementsByTagName(\'input\')[1].checked = \'checked\';', 100);
+	setTimeout('ClickDeleteButtonCourses()',100);
+	};
+function ClickDeleteButtonCourses()
+	{
+	window.frames[0].document.forms[0].getElementsByTagName('input')[7].click();
+	setTimeout('document.getElementById(\'iframe\').onload = DisplayCoursesSuccess();', 120000);
+	iCourses++;
+	};
+function DisplayCoursesSuccess()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat(': Deleted<br>');
+	toBottom();
+	document.getElementById('Output').innerHTML = previousOutput;
+	CoursesRecordCheck();	
+	};
+function SectionsRecordCheck()
+	{
+	if (iSections < lSections)
+		{
+		SelectSectionsFields();
+		}
+	else
+		{
+		Complete();
+		};
+	};	
+function SelectSectionsFields()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat('Removing duplicate of field ' + FieldnameSections[iSections] + ' from the Sections table');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	document.getElementById('iframe').innerHTML =  ('<iframe onload=\"CheckVerifySectionsFields()\" src=\"/admin/sectionfields/modifyfield.html?frn=007' + BadDCIDSections[iSections] + '\">');
+	};
+function CheckVerifySectionsFields()
+	{
+	window.frames[0].document.forms[0].target= '_self';
+	setTimeout('window.frames[0].document.forms[0].getElementsByTagName(\'input\')[1].checked = \'checked\';', 100);
+	setTimeout('ClickDeleteButtonSections()',100);
+	};
+function ClickDeleteButtonSections()
+	{
+	window.frames[0].document.forms[0].getElementsByTagName('input')[7].click();
+	setTimeout('document.getElementById(\'iframe\').onload = DisplaySectionsSuccess();', 120000);
+	iSections++;
+	};
+function DisplaySectionsSuccess()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat(': Deleted<br>');
+	toBottom();
+	document.getElementById('Output').innerHTML = previousOutput;
+	SectionsRecordCheck();
+	};
+function Complete()
+	{
+	previousOutput = document.getElementById('Output').innerHTML;
+	previousOutput = previousOutput.concat('All Duplicate Custom Fields have been removed.');
+	document.getElementById('Output').innerHTML = previousOutput;
+	toBottom();
+	};
+// Display the page
+previousOutput = new String();
+if (lStudents == 2)
+	{
+	previousOutput = previousOutput.concat("There is <b>" + (lStudents-1) + "</b> field in the <b>Students</b> table which is duplicated.<br />");
+	}
+else if (lStudents > 0) 
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lStudents-2) + "</b> fields in the <b>Students</b> table which are duplicated.<br />");
+	}
+else
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lStudents) + "</b> fields in the <b>Students</b> table which are duplicated.<br />");
+	};
+if (lTeachers == 2)
+	{
+	previousOutput = previousOutput.concat("There is <b>" + (lTeachers-1) + "</b> field in the <b>Teachers</b> table which is duplicated.<br />");
+	}
+else if (lTeachers > 0) 
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lTeachers-2) + "</b> fields in the <b>Teachers</b> table which are duplicated.<br />");
+	}
+else
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lTeachers) + "</b> fields in the <b>Teachers</b> table which are duplicated.<br />");
+	};
+if (lCourses == 2)
+	{
+	previousOutput = previousOutput.concat("There is <b>" + (lCourses-1) + "</b> field in the <b>Courses</b> table which is duplicated.<br />");
+	}
+else if (lCourses > 0)
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lCourses-2) + "</b> fields in the <b>Courses</b> table which are duplicated.<br />");
+	}
+else
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lCourses) + "</b> fields in the <b>Courses</b> table which are duplicated.<br />");
+	};
+if (lSections == 2)
+	{
+	previousOutput = previousOutput.concat("There is <b>" + (lSections-1) + "</b> field in the <b>Sections</b> table which is duplicated.<br />");
+	}
+else if (lSections > 0)
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lSections-2) + "</b> fields in the <b>Sections</b> table which are duplicated.<br />");
+	}
+else
+	{
+	previousOutput = previousOutput.concat("There are <b>" + (lSections) + "</b> fields in the <b>Sections</b> table which are duplicated.<br />");
+	};	
+previousOutput = previousOutput.concat("<p><input type=\"button\" id=\"CorrectButton\" value=\"Click here to export the Fields\"  enabled=\"true\" onClick=\"ExportFieldsClick();this.disabled=true;\"></p>");
+document.getElementById('Output').innerHTML = previousOutput;
+function ExportFieldsClick()
+	{
+	document.getElementById('CorrectButton').disabled = true;
+	CheckStudentCount();
+	};
+</script>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

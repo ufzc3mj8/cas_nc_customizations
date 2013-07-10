@@ -1,0 +1,49 @@
+<table id="tabledata">
+	<thead>
+		<th>Date</th>
+		<th>Cycle Day ID</th>
+		<th>Bell Schedule ID</th>
+		<th>Membership Value</th>
+	</thead>
+	<tbody>
+	~[tlist_sql;
+	SELECT to_char(c1.Date_value, 'MM/DD/YYYY')
+	, to_char(c1.Date_value, 'MM/DD/YYYY')
+	, CASE
+    WHEN c1.cycle_day_id = 0 THEN '<font color="red">BLANK</font>'
+    ELSE (Select Day_name from ps.cycle_day where id = c1.cycle_day_id) END
+	, CASE
+    WHEN c1.bell_schedule_id = 0 THEN '<font color="red">BLANK</font>'
+    ELSE (Select name from ps.bell_schedule where id = c1.bell_schedule_id) END
+	, c1.membershipvalue
+	FROM ps.calendar_day c1
+	WHERE insession = 1
+	AND (cycle_day_id =0
+	OR bell_schedule_id = 0
+	OR membershipvalue = 0)
+	AND c1.schoolid = ~[v.curschoolid]
+	~[if.~(gpv.curyearonly)=1]
+	AND c1.date_value >= (
+		SELECT t1.firstday
+		FROM ps.terms t1
+		WHERE t1.yearid = trunc(~[v.curtermid]/100)
+		AND t1.id like '%00'
+		AND t1.schoolid = ~[v.curschoolid])
+	AND c1.date_value <= (
+		SELECT t1.lastday
+		FROM ps.terms t1
+		WHERE t1.yearid = trunc(~[v.curtermid]/100)
+		AND t1.id like '%00'
+		AND t1.schoolid = ~[v.curschoolid])
+	[/if]
+	]
+
+		<tr class="~[evenoddrow]">
+			<td><a href="/admin/schoolsetup/calendarsetup/calendarsetup.html?scheddate=~(c1.Date_value)" target="Powertools">~(Date_value;t)</a></td>
+			<td>~(cycle_day_id;t)</td>
+			<td>~(bell_schedule_id;t)</td>
+			<td>~(membershipvalue;t)</td>
+		</tr>
+			[/tlist_sql]
+	</tbody>
+</table>

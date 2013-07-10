@@ -1,0 +1,39 @@
+<div class="grouptitle">ATTENDANCE INFORMATION</div>
+{{#emptyArrayCheck this.length}}
+    <table class="attendancelisting">
+      <thead>
+        <tr>
+          <th class="attendanceyear theader">Year</th>
+          <th class="spacer">&nbsp;</th>
+          <th class="attendanceschool theader">School</th>
+          <th class="spacer">&nbsp;</th>
+          <th class="attendanceschoolname theader">School Name</th>
+          <th class="spacer">&nbsp;</th>
+          <th class="attendancegrade theader">Grade</th>
+          <th class="spacer">&nbsp;</th>
+          <th class="attendancenum theader">Days Present</th>
+          <th class="spacer">&nbsp;</th>
+          <th class="attendancenum theader">Absent</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each this}}
+        {{#if entrydate}}
+        <tr>
+          <td class="attendanceyear">{{year}}}</td>
+          <td class="spacer">&nbsp;</td>
+          <td class="attendanceschool">{{schoolnumber}}</td>
+          <td class="spacer">&nbsp;</td>
+          <td class="attendanceschoolname">{{schoolname}}</td>
+          <td class="spacer">&nbsp;</td>
+          <td class="attendancegrade">{{gradeLevel}}</td>
+          <td class="spacer">&nbsp;</td>
+          <td class="attendancenum">{{totalDaysPresent}}</td>
+          <td class="spacer">&nbsp;</td>
+          <td class="attendancenum">{{totalDaysAbsent}}</td>
+        </tr>
+        {{/if}}
+        {{/each}}
+      </tbody>
+    </table>
+{{/emptyArrayCheck}}

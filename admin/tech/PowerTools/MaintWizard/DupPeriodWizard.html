@@ -1,0 +1,212 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Duplicate Periods Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Periods Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate Periods Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate periods in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to repair duplicate periods. This process will repair all attendance, attendancequeue, attendance_taken, and bell schedule records, then remove the duplicate Periods.
+</p>
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+var GoodID = new Array()
+var BadID = new Array()
+var AttCount = new Array()
+var AttQueueCount = new Array()
+var AttTakenCount = new Array()
+var BellScheduleCount = new Array()
+~[tlist_sql;
+SELECT rownum
+, p2.dcid BadDCID
+, p1.id GoodID
+, p2.id BadID
+, (SELECT COUNT(*)
+	FROM ps.attendance
+	WHERE periodid = p2.id) attcount
+, (SELECT COUNT(*)
+	FROM ps.attendancequeue
+	WHERE periodid = p2.id) attqueuecount
+, (SELECT COUNT(*)
+	FROM PS.attendance_taken
+	WHERE periodid = p2.id) atttakencount
+, (SELECT COUNT(*)
+	FROM PS.bell_schedule_items
+	WHERE period_id = p2.id) bellschedulecount
+FROM ps.period p1
+INNER JOIN ps.period p2
+ON p1.schoolid = p2.schoolid
+AND p1.year_id = p2.year_id
+AND p1.period_number = p2.period_number
+AND p1.id < p2.id
+WHERE p1.id = (
+	SELECT MIN(ID)
+	FROM ps.period
+	WHERE schoolid = p2.schoolid
+	AND year_id = p2.year_id
+	AND period_number = p2.period_number)
+~[if.is.a.school]AND p2.Schoolid = ~[v.curschoolid][/if]
+]
+BadDCID[~(rownum)] = '~(baddcid)';
+GoodID[~(rownum)] = '~(goodid)';
+BadID[~(rownum)] = '~(badid)';
+AttCount[~(rownum)] = '~(attCount)';
+AttQueueCount[~(rownum)] = '~(attQueueCount)';
+AttTakenCount[~(rownum)] = '~(AttTakenCount)';
+BellScheduleCount[~(rownum)] = '~(BellScheduleCount)';
+[/tlist_sql]
+var i = (1);
+var l = (BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = ('There are no duplicate periods.');
+	}
+else
+	{
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' duplicate period to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' duplicate periods to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<p><input type=\'Submit\' id=\'CorrectButton\' value=\'Click here to correct the duplicate periods\'  enabled=\'true\' onClick=\'ButtonClick()\;this.value=\"Correcting Records\"\'></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').value = 'Correcting Records';
+	document.getElementById('CorrectButton').disabled = true;
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if (AttCount[i] == 0)
+			{
+			selectAttQueueTable();
+			}
+		else
+			{
+			// Select the Attendance Table
+			document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectCorrect()\" src=\"/admin/tech/usm/home.html?filenum=157\">");
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All duplicate periods have been corrected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+function SelectCorrect()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayModify()\" src=\"/admin/tech/usm/home.html?fieldnum_1=8&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function displayModify()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectAttQueueTable()\" src=\"/admin/tech/usm/home.html?fieldnum=8&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function selectAttQueueTable()
+	{	
+	if (AttQueueCount[i] == 0)
+		{
+		selectAttTakenTable();
+		}
+	else
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectCorrectAttQueue()\" src=\"/admin/tech/usm/home.html?filenum=48\">");
+		};
+	};
+function SelectCorrectAttQueue()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayModifyAttQueue()\" src=\"/admin/tech/usm/home.html?fieldnum_1=18&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function displayModifyAttQueue()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectAttTakenTable()\" src=\"/admin/tech/usm/home.html?fieldnum=18&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function selectAttTakenTable()
+	{	
+	if (AttTakenCount[i] == 0)
+		{
+		selectBellScheduleItemsTable();
+		}
+	else
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectCorrectAttTaken()\" src=\"/admin/tech/usm/home.html?filenum=172\">");
+		};
+	};
+function SelectCorrectAttTaken()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayModifyAttTaken()\" src=\"/admin/tech/usm/home.html?fieldnum_1=4&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function displayModifyAttTaken()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectBellScheduleItemsTable()\" src=\"/admin/tech/usm/home.html?fieldnum=4&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function selectBellScheduleItemsTable()
+	{	
+	if (BellScheduleCount[i] == 0)
+		{
+		selectPeriodTable();
+		}
+	else
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectCorrectBellScheduleItems()\" src=\"/admin/tech/usm/home.html?filenum=134\">");
+		};
+	};
+function SelectCorrectBellScheduleItems()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayModifyBellScheduleItems()\" src=\"/admin/tech/usm/home.html?fieldnum_1=3&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function displayModifyBellScheduleItems()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"selectPeriodTable()\" src=\"/admin/tech/usm/home.html?fieldnum=3&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function selectPeriodTable()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectBadPeriodRecord()\" src=\"/admin/tech/usm/home.html?filenum=138\">");
+	};
+function SelectBadPeriodRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"deleteBadRecord()\" src=\"/admin/tech/usm/home.html?fieldnum_1=1&comparator1=%3D&value=" + BadID[i] + "&ac=usm&search=Search+all\">");
+	};
+function deleteBadRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/tech/usm/home.html?fieldnum=0&modifytext=&verifydelete=yes&delete=Delete+Selected+Records\">");
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

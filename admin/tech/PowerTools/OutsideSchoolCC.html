@@ -1,0 +1,66 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Section Enrollments Outside the School Enrollments</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]<content tag="breadcrumbs"><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Section Enrollments Outside the School Enrollments</content>~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Section Enrollments Outside the School Enrollments<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Students with Section Enrollments Outside the School Enrollments in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+This report selects any student who has a section enrollment which is not contained within a valid school enrollment.
+<p>
+Selecting a record will take you to the students all enrollments page, where the enrollment may be corrected.
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+		YAHOO.widget.DataTable.Formatter.AllEnrollments = PowerTools.AllEnrollmentsLink; 
+		YAHOO.widget.DataTable.Formatter.CourseSection = PowerTools.CourseSection; 		
+		
+        var myColumnDefs = [
+            {key:"Student", label:"Student", minWidth: 150,sortable:true,formatter: "AllEnrollments"},
+            {key:"CourseNumber", label:"Course.Section", minWidth: 100,sortable:true,formatter: "CourseSection"},
+            {key:"CourseName", label:"Course Name", minWidth: 150,sortable:true},
+            {key:"DateEnrolled", label:"Date Enrolled", minWidth: 100,sortable:true, formatter: "date"},
+			{key:"DateLeft", label:"Date Left", minWidth: 100,sortable:true,formatter: "date"},
+			{key:"SchoolName", label:"School Name", minWidth: 200,sortable:true}
+            ];
+		
+        var myDataSource = new YAHOO.util.DataSource("DataSource/OutsideSchoolCC.html?curyearonly=~(gpv.curyearonly)"); 
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: ["DCID","Student","SchoolName","CourseNumber","SectionNumber","CourseName",{key: "DateEnrolled", parser: "date"},{key: "DateLeft", parser: "date"}]
+        };
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: ~(gpv.maxlines),
+					containers : ['top_container','bottom_container'],
+					template: PowerTools.templateCY()
+                }),
+				sortedBy : {key:"Student", dir:YAHOO.widget.DataTable.CLASS_ASC},
+				MSG_LOADING : PowerTools.LoadingMessage()
+        };
+        var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+                
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

@@ -1,0 +1,19 @@
+<div class="grouptitle">TESTING INFORMATION</div>
+{{#emptyArrayCheck this.length}}
+<div class="testscorename testheader">Test Name / Score Name</div>
+    <div class="cellspacing">&nbsp;</div>
+<div class="testscore testheader">Score</div>
+<div class="cellspacing">&nbsp;</div>
+<div class="testscore testheader">Test Date</div>
+{{#each this}}
+{{#if scorename}}
+{{#newtest}}
+<div class="testname">{{testname}}&nbsp;</div>
+<div class="testdate">{{testdate}}&nbsp;</div>
+{{/newtest}}
+<div class="testscorename">{{scorename}}&nbsp;</div>
+<div class="cellspacing">&nbsp;</div>
+<div class="testscore">{{alphascore}}&nbsp;</div>
+{{/if}}
+{{/each}}
+{{/emptyArrayCheck}}

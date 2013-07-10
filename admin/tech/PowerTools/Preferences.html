@@ -1,0 +1,58 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>User Preferences</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+<form action="/admin/changesrecorded.white.html" method="POST" target="_parent">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; User Preferences
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; User Preferences<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>User Preferences </h1>
+<p>
+Use this page to set your user preferences for reports
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><table border="0" cellspacing="0" cellpadding="4">
+	<tr bgcolor="#edf3fe">
+		<td class="bold">Default number of rows on each report</td>
+		<td>
+			<select name="[pref]PowerTools-maxlines-U~[x:userid]">
+				<option value="25">25 Rows</option>
+				<option value="50">50 Rows</option>
+				<option value="100">100 Rows</option>
+				<option value="500">500 Rows</option>
+				<option value="100000">Max Rows</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class="bold">Default Years to display (For reports with this option)</td>
+		<td>
+			<select name="[pref]PowerTools-curyearonly-U~[x:userid]">
+				<option value="0">All Years</option>
+				<option value="1">Current Year</option>
+			</select>
+		</td>
+	</tr>
+	<tr bgcolor="#edf3fe">
+		<td class="bold">Expand navigation menu by default (Overrides automatic collapse when running diagnostic reports)</td>
+		<td><input type="checkbox" name="[pref]PowerTools-navigation-menu-expanded-U~[x:userid]"></td>
+	</tr>
+</table>
+<p id="bottom_container" style="text-align:center"></p>
+<tr>
+<td colspan="2" align="right"><input type="hidden" name="ac" value="prim">~[submitbutton]</td>
+<td>&nbsp;</td>
+</tr>
+~[x:insertfile;PowerToolsFooter.html]
+</form>

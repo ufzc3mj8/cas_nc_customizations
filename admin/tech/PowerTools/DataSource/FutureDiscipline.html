@@ -1,0 +1,33 @@
+<table id="tabledata">
+<thead>
+	<th>LDCID</th>
+	<th>SDCID</th>
+	<th>Student</th>
+	<th>Date</th>
+	<th>Title</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT l1.dcid
+, s1.dcid
+, s1.lastfirst
+, to_char(l1.discipline_actiondate, 'MM/DD/YYYY')
+, l1.entry
+FROM ps.log l1
+LEFT JOIN ps.students s1
+ON l1.studentid = s1.id
+WHERE l1.discipline_actiondate > CURRENT_TIMESTAMP
+AND l1.logtypeid = '-100000'
+ORDER BY s1.lastfirst
+, l1.discipline_actiondate
+	]
+	<tr class="~[evenoddrow]">
+		<td>~(l1.dcid;t)</td>
+		<td>~(s1.dcid;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s1.discipline_actiondate;t)</td>
+		<td>~(l1.entry;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

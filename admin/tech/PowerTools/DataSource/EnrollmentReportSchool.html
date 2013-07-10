@@ -1,0 +1,541 @@
+<table id="tabledata">
+<thead>
+	<th>Report</th>
+	<th>Count</th>
+</thead>
+<tbody>
+	<tr>
+		<td><b>School Enrollments</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="OverlappingSchool.html">Overlapping School Enrollments</a></td>
+		<td><a href="OverlappingSchool.html">
+		~[tlist_sql;
+	SELECT SUM(count)
+	FROM (SELECT count(*) as count
+	FROM PS.REENROLLMENTS r1
+	, ps.reenrollments r2
+	, ps.students s1
+	WHERE r1.entrydate >= r2.entrydate
+	AND r1.entrydate < r2.exitdate
+	AND r1.exitdate > r1.entrydate
+	AND r1.studentid = r2.studentid
+	AND r1.id < r2.id
+	AND r1.studentid = s1.id
+	AND s1.schoolid = ~[v.curschoolid]
+	UNION ALL
+	SELECT count(*) as count
+	FROM ps.reenrollments r1
+	, ps.students s1
+	WHERE r1.entrydate < r1.exitdate
+		AND r1.studentid = s1.id
+		AND s1.schoolid = ~[v.curschoolid]
+		AND ((r1.entrydate >= s1.entrydate
+		AND r1.entrydate < s1.exitdate
+    AND r1.exitdate > s1.entrydate)
+	OR (r1.exitdate > s1.entrydate
+		AND r1.exitdate <= s1.exitdate)
+		AND s1.schoolid = ~[v.curschoolid]
+	OR (s1.entrydate >= r1.entrydate
+		AND r1.exitdate >= s1.exitdate
+    AND s1.entrydate != r1.exitdate
+		AND s1.schoolid = ~[v.curschoolid])))
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="InvalidSchool.html">Reverse School Enrollments</a></td>
+		<td><a href="InvalidSchool.html">
+		~[tlist_sql;
+SELECT SUM(count)
+FROM (
+SELECT count(*) as count
+FROM ps.students s1
+WHERE s1.schoolid = ~[v.curschoolid]
+AND (s1.entrydate > s1.exitdate
+OR s1.exitdate is null)
+UNION ALL
+SELECT count(*) as count
+FROM ps.students s1
+, ps.reenrollments r1
+WHERE r1.schoolid = ~[v.curschoolid]
+AND r1.studentid = s1.id
+AND (
+r1.entrydate > r1.exitdate
+OR r1.exitdate is null))
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="Pastpending.html">Invalid Pending Transfers</a>
+		</td>
+		<td><a href="Pastpending.html">
+		~[tlist_sql;
+SELECT count(*)
+FROM ps.students s1
+where s1.enrollment_transfer_date_pend < CURRENT_TIMESTAMP
+AND s1.enrollment_transfer_date_pend <> to_date('01-JAN-1900','DD-MON-YYYY')
+AND s1.schoolid = ~[v.curschoolid]]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="FutureActiveSchool.html">Invalid Future Enrollment Dates</a></td>
+		<td><a href="FutureActiveSchool.html">
+		~[tlist_sql;
+SELECT count(*)
+FROM PS.students s1
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.terms t1
+  WHERE s1.entrydate = t1.firstday
+  AND s1.schoolid = t1.schoolid
+  AND t1.yearid * 100 = t1.id)
+AND s1.schoolid = ~[v.curschoolid]
+AND entrydate > CURRENT_TIMESTAMP
+AND enroll_status = 0
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+
+	</tr>
+	<tr>
+		<td><a href="OutsideYTSchool.html">School Enrollments Outside the Years and Terms</a></td>
+		<td><a href="OutsideYTSchool.html">
+		~[tlist_sql;
+SELECT Sum(count)
+FROM (
+SELECT count(*) as count
+FROM PS.students s1
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.terms t1
+  WHERE s1.exitdate >= t1.firstday
+  AND s1.exitdate <= t1.lastday +1
+  AND s1.entrydate >= t1.firstday
+  AND s1.entrydate <= t1.lastday +1
+  AND s1.schoolid = t1.schoolid)
+AND s1.schoolid = ~[v.curschoolid]
+AND s1.exitdate > s1.entrydate
+UNION ALL
+SELECT count(r1.id) as count
+FROM PS.students s1
+, ps.reenrollments r1
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.terms t1
+  WHERE r1.exitdate >= t1.firstday
+  AND r1.exitdate <= t1.lastday +1
+  AND r1.entrydate >= t1.firstday
+  AND r1.entrydate <= t1.lastday +1
+  AND r1.schoolid = t1.schoolid)
+AND r1.exitdate > r1.entrydate
+AND r1.studentid = s1.id
+AND r1.schoolid = ~[v.curschoolid])
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="IncompleteTransfers.html">Incomplete School Transfers</a></td>
+		<td><a href="IncompleteTransfers.html">
+		~[tlist_sql;
+SELECT count(*)
+FROM ps.students s1
+WHERE s1.schoolid != s1.enrollment_schoolid
+AND s1.schoolid = ~[v.curschoolid]
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="InvalidTrack.html">Students with Invalid Tracks</a></td>
+		<td><a href="InvalidTrack.html">
+		~[tlist_sql;
+SELECT SUM(Count)
+FROM (
+	SELECT Count(*) as count
+	FROM ps.students s1
+	WHERE s1.track NOT IN ('A','B','C','D','E','F')
+	AND s1.schoolid = ~[v.curschoolid]
+	UNION ALL
+	SELECT Count(*) as count
+	FROM ps.reenrollments r1
+	where r1.track NOT IN ('A','B','C','D','E','F')
+	AND r1.schoolid = ~[v.curschoolid])
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+~[if.~[displaypref:PowerTools-Hide-Padded-School-Enrollment-Report]<1]
+	<tr>
+		<td><a href="PaddedSchoolEnrollments.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Students with Padded School Enrollments *</a></td>
+		<td><a href="PaddedSchoolEnrollments.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+		~[tlist_sql;
+SELECT SUM(Count)
+FROM (
+SELECT count(*) as count
+FROM ps.students s1
+WHERE s1.entrydate < s1.exitdate
+AND s1.schoolid = ~[v.curschoolid]
+AND (
+NOT EXISTS (
+  SELECT *
+  FROM ps.cc c3
+  WHERE c3.dateenrolled = s1.entrydate
+  AND c3.studentid = s1.id)
+OR NOT EXISTS (
+  SELECT *
+  FROM ps.cc c4
+  WHERE c4.dateleft = s1.exitdate
+  AND c4.studentid = s1.id)
+)
+~[if#curyearonly.~(gpv.curyearonly)=1]AND s1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=s1.schoolid)
+    AND (s1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=s1.schoolid)
+[/if#curyearonly]
+UNION ALL
+SELECT count(*) as count
+FROM ps.reenrollments r1
+INNER JOIN ps.students s1
+on r1.studentid = s1.id
+WHERE r1.entrydate < r1.exitdate
+AND s1.schoolid = ~[v.curschoolid]
+AND (
+NOT EXISTS (
+  SELECT *
+  FROM ps.cc c3
+  WHERE c3.dateenrolled = r1.entrydate
+  AND c3.studentid = r1.studentid)
+OR NOT EXISTS (
+  SELECT *
+  FROM ps.cc c4
+  WHERE c4.dateleft = r1.exitdate
+  AND c4.studentid = r1.studentid)
+)
+~[if#curyearonly.~(gpv.curyearonly)=1]AND r1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=r1.schoolid)
+    AND (r1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=r1.schoolid)
+[/if#curyearonly]
+
+	)
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+[/if]
+	<tr>
+		<td><a href="MissingRace.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Student Missing Race/Ethnicity</a></td>
+		<td><a href="MissingRace.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+		~[tlist_sql;
+		SELECT count(*)
+		FROM ps.students s1
+		LEFT JOIN ps.schools s3
+		ON s1.schoolid = s3.school_number
+		WHERE (s1.ethnicity IS NULL
+      OR (SELECT COUNT(*)
+        FROM ps.studentrace s2
+        WHERE s2.studentid = s1.id)=0
+      ~[if.~[displaypref:PowerTools-Hispanic-Only-Qualifies]<1]
+      OR s1.fedethnicity NOT IN (0,1,2))
+	 [else]
+	 AND s1.fedethnicity NOT IN (0,1,2))
+	 [/if]
+    AND s1.schoolid = ~[v.curschoolid]
+		~[if.~(gpv.curyearonly)=1]AND s1.entrydate >= (SELECT FIRSTDAY
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+      AND Schoolid=s1.schoolid)
+    AND (s1.exitdate-1) <= (SELECT LastDay
+      FROM ps.terms
+      WHERE id = (TRUNC(~[v.curtermid]/100)*100)
+       AND Schoolid=s1.schoolid)
+      [/if]
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Section Enrollments</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="OverlappingCC.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Overlapping Section Enrollments *</a></td>
+		<td><a href="OverlappingCC.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+				~[tlist_sql;
+				SELECT count(*)
+				FROM PS.CC C1
+				, PS.CC C2
+				, ps.students s1
+				, ps.courses c3
+				WHERE C1.StudentID = C2.StudentID
+				AND ABS(C1.SectionID) = ABS(C2.SectionID)
+				AND C1.DCID > C2.DCID
+				AND C1.Dateenrolled >= C2.Dateenrolled
+				AND C2.Dateleft > C1.Dateenrolled
+				AND c1.studentid = s1.id
+				AND c1.course_number = c3.course_number
+				AND s1.schoolid = ~[v.curschoolid]
+				~[if.~(gpv.curyearonly)=1]AND trunc(abs(c1.termid)/100) = trunc(~[v.curtermid]/100)[/if]
+				]~(count;t)
+				[/tlist_sql]
+				</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="InvalidCC.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Reverse Section Enrollments *</a></td>
+		<td><a href="InvalidCC.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+		~[tlist_sql;
+			SELECT COUNT(*)
+			FROM PS.CC C1
+			INNER JOIN ps.students s1
+			ON c1.studentid = s1.id
+			WHERE c1.dateenrolled > c1.dateleft
+			AND s1.schoolid = ~[v.curschoolid]
+			~[if.~(gpv.curyearonly)=1]AND trunc(abs(c1.termid)/100) = trunc(~[v.curtermid]/100)[/if]
+			]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="OutsideSchoolCC.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Section Enrollments Outside School Enrollments *</a></td>
+		<td><a href="OutsideSchoolCC.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+			~[tlist_sql;
+				SELECT count(*)
+				FROM ps.cc c1
+				INNER JOIN ps.students s1
+				ON c1.studentid = s1.id
+				LEFT JOIN ps.courses c2
+				ON c1.course_number = c2.course_number
+				LEFT JOIN ps.schools s2
+				ON s1.schoolid = s2.school_number
+				WHERE NOT EXISTS (
+					SELECT *
+					FROM ps.reenrollments r1
+					WHERE c1.dateenrolled >= r1.entrydate
+					AND c1.dateenrolled <= r1.exitdate
+					AND c1.dateleft >= r1.entrydate
+					AND c1.dateleft <= r1.exitdate
+					AND c1.studentid = r1.studentid)
+				AND c1.schoolid = ~[v.curschoolid]
+				~[if.~(gpv.curyearonly)=1]AND trunc(abs(c1.termid)/100) = trunc(~[v.curtermid]/100)[/if]
+				AND NOT EXISTS (
+					SELECT *
+					FROM ps.students s1
+					WHERE c1.dateenrolled >= s1.entrydate
+					AND c1.dateenrolled <= s1.exitdate
+					AND c1.dateleft >= s1.entrydate
+					AND c1.dateleft <= s1.exitdate
+					AND c1.studentid = s1.id)
+				AND c1.dateleft >= c1.dateenrolled
+				AND c1.schoolid = ~[v.curschoolid]
+				~[if.~(gpv.curyearonly)=1]AND trunc(abs(c1.termid)/100) = trunc(~[v.curtermid]/100)[/if]
+				ORDER BY s1.lastfirst
+			]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+
+	<tr>
+		<td><a href="DupPeriodEnrollment.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">Duplicate Period Enrollments *</a></td>
+		<td><a href="DupPeriodEnrollment.html?curyearonly=~(gpv.curyearonly)&maxlines=~(gpv.maxlines)">
+		~[tlist_sql;
+SELECT count(*)
+FROM (
+  SELECT c1.dcid dcid
+	, s1.dcid sdcid
+    , s1.lastfirst lastfirst
+    , s1.student_number student_number
+    , s1.schoolid schoolid
+    , c1.dateenrolled dateenrolled
+    , c1.dateleft dateleft
+    , s3.period_number period_number
+    , s3.cycle_day_letter cycle_day_letter
+	, c1.termid termid
+  FROM ps.cc c1
+  INNER JOIN ps.students s1
+  ON c1.studentid = s1.id
+  LEFT JOIN ps.section_meeting s3
+  ON s3.sectionid = abs(c1.sectionid)
+) cc1
+, (
+  SELECT c1.dcid dcid
+    , s1.lastfirst
+    , s1.student_number student_number
+    , s1.schoolid schoolid
+    , c1.dateenrolled dateenrolled
+    , c1.dateleft dateleft
+    , s3.period_number period_number
+    , s3.cycle_day_letter cycle_day_letter
+  FROM ps.cc c1
+  INNER JOIN ps.students s1
+  ON c1.studentid = s1.id
+  LEFT JOIN ps.section_meeting s3
+  ON s3.sectionid = abs(c1.sectionid)
+) cc2
+WHERE (cc1.dcid != cc2.dcid
+AND cc1.dateenrolled > cc2.dateenrolled
+OR cc1.dcid > cc2.dcid
+AND cc1.dateenrolled = cc2.dateenrolled)
+AND cc1.student_number = cc2.student_number
+AND cc1.period_number = cc2.period_number
+AND cc1.cycle_day_letter = cc2.cycle_day_letter
+AND cc1.dateenrolled >= cc2.dateenrolled
+AND cc1.dateenrolled < cc2.dateleft
+AND cc1.schoolid = cc2.schoolid
+AND cc1.schoolid = ~[v.curschoolid]
+~[if.~(gpv.curyearonly)=1]AND trunc(cc1.termid/100) = trunc(~[v.curtermid]/100)[/if]
+ORDER BY cc1.lastfirst
+]~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Special Program Enrollments</b></td><td><b>Count</b></td>
+	</tr>
+	<tr>
+		<td><a href="OverlappingSpEnrollments.html">Overlapping Special Program Enrollments</a></td>
+		<td><a href="OverlappingSpEnrollments.html">
+		~[tlist_sql;
+SELECT count(*)
+FROM ps.spenrollments s1
+, ps.spenrollments s2
+, ps.students s3
+, ps.schools s4
+, ps.gen g1
+WHERE s1.studentid = s2.studentid
+AND s1.programid = s2.programid
+AND (s1.dcid != s2.dcid
+  AND s1.enter_date > s2.enter_date
+  OR s1.dcid > s2.dcid
+  AND s1.enter_date = s2.enter_date)
+AND s1.enter_date < s2.exit_date
+AND s1.studentid = s3.id
+AND s1.schoolid = s4.school_number
+AND s1.programid = g1.id
+AND s1.schoolid = '~[v.curschoolid]'
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="InvalidSpEnrollments.html">Reverse Special Program Enrollments</a></td>
+		<td><a href="InvalidSpEnrollments.html">
+		~[tlist_sql;
+SELECT count(*)
+FROM ps.spEnrollments s1
+WHERE s1.enter_date > s1.exit_date
+AND s1.exit_date != '01/01/1900'
+AND s1.schoolid = ~[v.curschoolid]
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+~[if.~[displaypref:PowerTools-Hide-SPEnrollments-Reports]<1]
+	<tr>
+		<td><a href="OutsideSchoolSpEnrollments.html">Special Program Enrollments not within School Enrollments</a></td>
+		<td><a href="OutsideSchoolSpEnrollments.html">
+		~[tlist_sql;
+SELECT count(*)
+FROM ps.spenrollments s2
+INNER JOIN ps.students s1
+ON s2.studentid = s1.id
+LEFT JOIN ps.schools s3
+ON s2.schoolid = s3.school_number
+WHERE NOT EXISTS (
+  SELECT *
+  FROM ps.students
+  WHERE s2.enter_date BETWEEN s1.entrydate AND s1.exitdate
+  AND s2.exit_date BETWEEN s1.entrydate AND s1.exitdate
+  AND s2.schoolid = s1.schoolid
+  )
+AND NOT EXISTS (
+  SELECT *
+  FROM ps.reenrollments r1
+  WHERE s2.enter_date BETWEEN r1.entrydate AND r1.exitdate
+  AND s2.exit_date BETWEEN r1.entrydate AND r1.exitdate
+  AND r1.schoolid = s2.schoolid
+  )
+AND s1.schoolid = ~[v.curschoolid]
+]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="SpEnrollmentBadGrade.html">Special Program Enrollments with invalid grade levels</a></td>
+		<td><a href="SpEnrollmentBadGrade.html">
+		~[tlist_sql;
+		SELECT sum(count)
+		FROM (
+		SELECT count(*) as count
+		FROM ps.students s1
+		LEFT JOIN ps.spenrollments s2
+		ON s1.id = s2.studentid
+		LEFT JOIN ps.gen g1
+		ON s2.programid = g1.id
+		WHERE s1.entrydate <= s2.enter_date
+		AND s1.exitdate >= s2.exit_date
+		AND s1.grade_level != s2.gradelevel
+		AND s1.schoolid = ~[v.curschoolid]
+		UNION ALL
+		SELECT count(*) as count
+		FROM ps.reenrollments r1
+		INNER JOIN ps.students s1
+		ON r1.studentid = s1.id
+		LEFT JOIN ps.spenrollments s2
+		ON r1.studentid = s2.studentid
+		LEFT JOIN ps.gen g1
+		ON s2.programid = g1.id
+		WHERE r1.entrydate <= s2.enter_date
+		AND r1.exitdate >= s2.exit_date
+		AND r1.grade_level != s2.gradelevel
+		AND r1.schoolid = ~[v.curschoolid])
+		]
+			~(count;t)
+			[/tlist_sql]
+			</a>
+		</td>
+	</tr>
+[/if]
+</tbody>
+</table>

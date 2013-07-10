@@ -1,0 +1,32 @@
+<table id="tabledata">
+<thead>
+	<th>DCID</th>
+	<th>Report Name</th>
+	<th>Report Type</th>
+</thead>
+<tbody>
+	~[tlist_sql;
+		SELECT r1.dcid
+		, r1.name
+		, CASE
+		  WHEN r1.type = '500'
+		  THEN 'Object Report'
+		  WHEN r1.type = '110'
+		  THEN 'Report Card Report'
+		  WHEN r1.type = '100'
+		  THEN 'Form Letter'
+		  WHEN r1.type = '80'
+		  THEN 'Mailing Label'
+		  END Type
+		FROM ps.reports r1
+		WHERE r1.name like '% '
+		ORDER BY r1.name
+	]
+	<tr class="~[evenoddrow]">
+		<td>~(g1.dcid;t)</td>
+		<td>~(g1.name;t)</td>
+		<td>~(g1.type;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

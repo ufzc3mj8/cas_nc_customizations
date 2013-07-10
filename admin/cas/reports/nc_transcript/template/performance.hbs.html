@@ -1,0 +1,30 @@
+<div class="grouptitle clearfix">PERFORMANCE INFORMATION</div>
+<div id="gpacumulativedatelabel">Cumulative GPA Total Points are Calculated as of the end of ~[date;dateformat=dd/mm/yyyy]</div>
+<div id="gpacumulativedate" class="halfpagecol"></div>
+<div class="halfpagecol">
+  <div class="gpalabel">Cumulative GPA Weighted:</div>
+  <div class="gpadata">{{weightedgpa}}</div>
+  <div class="gpalabel">Cumulative GPA Unweighted:</div>
+  <div class="gpadata">{{simplegpa}}</div>
+  <div class="gpalabel">Class Rank{{#if classrank}} as of {{rankdate}}{{/if}}:</div>
+  <div class="gpadata">{{#if classrank}}{{classrank}} out of {{rankoutof}}{{else}}Not Ranked{{/if}}</div>
+</div>
+<div class="halfpagecol">
+  <div class="gpalabel">Total Points Weighted:</div>
+  <div class="gpadata">&nbsp;{{#if weighted}}{{toFixed weighted 4}}{{/if}}</div>
+  <div class="gpalabel">Total Points Unweighted:</div>
+  <div class="gpadata">&nbsp;{{#if unweighted}}{{toFixed unweighted 4}}{{/if}}</div>
+  <div class="gpalabel">
+    Total Credits:
+    <div style="float:right;">Earned: {{#if earnedcredits}}{{toFixed earnedcredits 3}}{{else}}0{{/if}}</div>
+  </div>
+  <div class="gpadata">
+    &nbsp;
+    <div style="float:right;">Potential: {{#if potentialcredits}}{{toFixed potentialcredits 3}}{{else}}0{{/if}}</div>
+  </div>
+</div>
+<div style="width:100%;">
+Note: All courses taken at the middle school for high school requirement(s) will not calculate in the GPA.
+<br>
+Note: High School Earned Credits only are calculated.
+</div>

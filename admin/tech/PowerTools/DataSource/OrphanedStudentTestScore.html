@@ -1,0 +1,69 @@
+<table id="tabledata">
+<thead>
+	<tr>
+		<th>DCID</td>
+		<th>ID</td>
+		<th>Student</td>
+		<th>StudentID</td>
+		<th>Test Name</td>
+		<th>Test ID</td>
+		<th>Student Test ID</td>
+		<th>Test Score</td>
+		<th>Test Score ID</td>
+		<th>Test Date</td>
+		<th>School Name</td>
+		<th>School Number</td>
+	</tr>
+</thead>
+<tbody>
+	~[tlist_sql;
+SELECT s1.dcid
+, s1.id
+, s2.lastfirst
+, s1.studentid
+, t2.Name
+, s3.testid
+, s1.studenttestid
+, t1.Name
+, s1.testscoreid
+, to_char(s3.test_date, 'MM/DD/YYYY')
+, s4.name
+, s3.schoolid
+FROM ps.studenttestscore s1
+LEFT JOIN ps.students s2
+ON s1.studentid = s2.id
+LEFT JOIN ps.testscore t1
+ON s1.testscoreid = t1.id
+LEFT JOIN ps.studenttest s3
+ON s1.studenttestid = s3.id
+LEFT JOIN ps.schools s4
+ON s3.schoolid = s4.school_number
+LEFT JOIN ps.test t2
+ON s3.testid = t2.id
+WHERE (s2.id IS NULL
+OR t1.ID IS NULL
+OR s3.id IS NULL
+OR t2.ID IS NULL
+OR (s4.name IS NULL
+	and s3.schoolid != 0))
+~[if.is.a.school]AND s2.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY s1.ID
+	]
+
+	<tr>
+		<td>~(r1.dcid;t)</td>
+		<td>~(r1.id;t)</td>
+		<td>~(s1.lastfirst;t)</td>
+		<td>~(s1.id;t)</td>
+		<td>~(t2.testname;t)</td>
+		<td>~(s3.testid;t)</td>
+		<td>~(s1.studenttestid;t)</td>
+		<td>~(t1.name;t)</td>
+		<td>~(s1.testscoreid;t)</td>
+		<td>~(s3.test_date;t)</td>
+		<td>~(s4.name;t)</td>
+		<td>~(s4.schoolid;t)</td>
+	</tr>
+			[/tlist_sql]
+</tbody>
+</table>

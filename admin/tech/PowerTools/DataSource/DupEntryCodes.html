@@ -1,0 +1,23 @@
+<table id="tabledata">
+	<thead>
+		<th>Entry Code</th>
+		<th>Count</th>
+	</thead>
+	<tbody>
+	~[tlist_sql;
+SELECT g1.name
+, count(*)
+FROM ps.gen g1
+WHERE Cat = 'entrycodes'
+GROUP BY g1.name
+HAVING COUNT(*) > 1
+ORDER BY g1.name
+  ]
+
+	<tr>
+		<td>~(Code;t)</a></td>
+		<td>~(count;t)</td>
+	</tr>
+			[/tlist_sql]
+	</tbody>
+</table>

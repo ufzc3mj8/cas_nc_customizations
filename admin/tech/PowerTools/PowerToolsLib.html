@@ -1,0 +1,196 @@
+~[if.~[x:version]>=7.0]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+[else]
+<link href="/images/powerschool.css" rel="stylesheet">
+[/if]
+<link rel="stylesheet" type="text/css" href="/scripts/yui/2.7.0/paginator/assets/skins/sam/paginator.css">
+<link rel="stylesheet" type="text/css" href="/scripts/yui/2.7.0/datatable/assets/skins/sam/datatable.css">
+<script type="text/javascript" src="/scripts/yui/2.7.0/utilities/utilities.js"></script>
+<script type="text/javascript" src="/scripts/yui/2.7.0/paginator/paginator-min.js"></script>
+<script type="text/javascript" src="/scripts/yui/2.7.0/datasource/datasource-min.js"></script>
+<script type="text/javascript" src="/scripts/yui/2.7.0/datatable/datatable-min.js"></script>
+<!-- There is a defect in the YUI which prevents sorting when the datatable is embedded into an HTML table. This javascript corrects that defect -->
+<script type="text/javascript">
+YAHOO.widget.DataTable.prototype.getTdEl = function(cell) {var Dom = YAHOO.util.Dom,lang = YAHOO.lang,elCell,el = Dom.get(cell);
+// Validate HTML element
+if(el && (el.ownerDocument == document)) {
+// Validate TD element
+if(el.nodeName.toLowerCase() != "td") {
+// Traverse up the DOM to find the corresponding TR element
+elCell = Dom.getAncestorByTagName(el, "td");
+}else {elCell = el;}
+// Make sure the TD is in this TBODY
+if(elCell && (elCell.parentNode.parentNode == this._elTbody)) {
+// Now we can return the TD element
+return elCell;}}else if(cell) {var oRecord, nColKeyIndex;if(lang.isString(cell.columnKey) && lang.isString(cell.recordId)) {oRecord = this.getRecord(cell.recordId);var oColumn = this.getColumn(cell.columnKey);if(oColumn) {nColKeyIndex = oColumn.getKeyIndex();}}if(cell.record && cell.column && cell.column.getKeyIndex) {oRecord = cell.record;nColKeyIndex = cell.column.getKeyIndex();}var elRow = this.getTrEl(oRecord);if((nColKeyIndex !== null) && elRow && elRow.cells && elRow.cells.length > 0) {return elRow.cells[nColKeyIndex] || null;}}return null;};
+</script>
+<style type="text/css">
+#paginated {
+text-align: center;
+}
+#paginated table {
+margin-left:auto; margin-right:auto;
+}
+#paginated, #paginated .yui-dt-loading {
+text-align: center; background-color: transparent;
+}
+img.percentImage {
+background: white url(/images/percentImage_back.png) top left no-repeat;
+padding: 0;
+margin: 1px 0 0 0;
+background-position: 1px 0;
+}
+</style>
+<script type="text/javascript">
+DDAPerms = new String();
+Schoolid = '~(schoolid)';
+function ProgressDisplay(){p=(Math.round(-250*(100-(100*(i-1)/(l-1)))))/100;r=((Math.round((i-1)/(l-1)*10000))/100).toFixed(2);document.getElementById('Progress').innerHTML = '<table><tr><td align=\"right\" width=\"50\">Progress: </td><td rowspan=\"2\"><img src=\"/images/percentImage.png\" id=\"ProgressBar\" alt=\"' + r + '%\" class=\"percentImage\" width=\"250\" style=\"background-position: ' + p + 'px 0pt\;\" /></td></tr><tr><td align=\"right\">' + r + '%</td></tr>';};
+function toBottom(){window.scrollTo(0, document.body.scrollHeight);};
+// Display the success message and show the next record button
+function displayNext(){ProgressDisplay();i++;RecordCheck();};
+var PowerTools = {
+// The temlate for reports with the ability to limit to current year
+templateCY : function() {return '{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} <select name="maxlines" ONCHANGE="location = this.options[this.selectedIndex].value;"><option value="?curyearonly=~(gpv.curyearonly)&maxlines=25" ~[if.~(gpv.maxlines)=25]selected[/if]>25 Rows</option><option value="?curyearonly=~(gpv.curyearonly)&maxlines=50" ~[if.~(gpv.maxlines)=50]selected[/if]>50 Rows</option><option value="?curyearonly=~(gpv.curyearonly)&maxlines=100" ~[if.~(gpv.maxlines)=100]selected[/if]>100 Rows</option><option value="?curyearonly=~(gpv.curyearonly)&maxlines=500" ~[if.~(gpv.maxlines)=500]selected[/if]>500 Rows</option><option value="?curyearonly=~(gpv.curyearonly)&maxlines=100000" ~[if.~(gpv.maxlines)=100000]selected[/if]>Max Rows</option></select> <select name="curyearonly" ONCHANGE="location = this.options[this.selectedIndex].value;"><option value="?curyearonly=0&maxlines=~(gpv.maxlines)" ~[if.~(gpv.curyearonly)=0]selected[/if]>All Years</option><option value="?curyearonly=1&maxlines=~(gpv.maxlines)" ~[if.~(gpv.curyearonly)=1]selected[/if]>Current Year</option></select>';},
+// The temlate for reports with the ability to limit to current year
+templateCYOnly : function() {return '<B>Filter these reports for </b><select name="curyearonly" ONCHANGE="location = this.options[this.selectedIndex].value;"><option value="?curyearonly=0&maxlines=~(gpv.maxlines)" ~[if.~(gpv.curyearonly)=0]selected[/if]>All Years</option><option value="?curyearonly=1&maxlines=~(gpv.maxlines)" ~[if.~(gpv.curyearonly)=1]selected[/if]>Current Year</option></select>';},
+// The custom loading progress bar
+LoadingMessage : function() {return 'Loading Data<br /><img src="/images/loadingbarblue.gif">';},
+// The number of rows per page displayed when loading a report
+RowsPerPage : function() {return '~[if.~[displaypref:PowerTools-maxlines-U~[x:userid]]>0]~[displaypref:PowerTools-maxlines-U~[x:userid]][else]25[/if]';},
+// Format the Course field to be Course.Section
+CourseSection : function(elCell, oRecord, oColumn, oData){var CourseNumber = oRecord.getData("CourseNumber");var SectionNumber = oRecord.getData("SectionNumber");elCell.innerHTML = CourseNumber + "." + SectionNumber;},
+// Create a check to see if the attendance code exists
+AttCodeExistCheck : function(elCell, oRecord, oColumn, oData){var attcode = oRecord.getData("AttCode");var attcodeid = oRecord.getData("AttCodeID");var attreccodeid = oRecord.getData("AttRecCodeID");if (!attcode && !attcodeid){elCell.innerHTML = '<font color=\"red\">Attendance Code ID ' + attreccodeid + ' does not exist';}else if (!attcode){elCell.innerHTML = '(Present)'}else{elCell.innerHTML = attcode;};},
+// Create a check to see if the course.section exists
+CourseSectionExistCheck : function(elCell, oRecord, oColumn, oData){var sectionid = oRecord.getData("SectionID");var coursescoursenumber = oRecord.getData("CoursesCourseNumber");var sectionnumber = oRecord.getData("SectionNumber");var recordsectionid = oRecord.getData("RecordSectionID");var sectionscoursenumber = oRecord.getData("SectionsCourseNumber");if (!sectionid){elCell.innerHTML = '<font color="red">Section ID ' + recordsectionid + ' does not exist</font>';}else if (!coursescoursenumber){elCell.innerHTML = '<font color="red">Course Number ' + sectionscoursenumber + ' does not exist</font>';}else{elCell.innerHTML = sectionscoursenumber + "." + sectionnumber;};},
+// Create a check to see if the fee exists
+FeeExistCheck : function(elCell, oRecord, oColumn, oData){var feename = oRecord.getData("FeeName");var feeid = oRecord.getData("FeeID");if (!feename){elCell.innerHTML = '<font color=\"red\">Fee ID ' + feeid + ' does not exist';}else{elCell.innerHTML = feename;};},
+// Create a check to see if the grade level is valid for the school
+GradeLevelValidCheck : function(elCell, oRecord, oColumn, oData){var schoolid = oRecord.getData("SchoolID");var gradelevel = oRecord.getData("GradeLevel");var schoolhighgrade = oRecord.getData("SchoolHighGrade");var schoollowgrade = oRecord.getData("SchoolLowGrade");var schoolname = oRecord.getData("School");if ((schoolid == '999999') && (gradelevel != '99')){elCell.innerHTML = '<font color=\"red\">Enrollment is at Graduated students, but grade level is ' + gradelevel + '</font>';}else if (!schoolname || ((gradelevel >= schoollowgrade) && (gradelevel <= schoolhighgrade))){elCell.innerHTML = gradelevel;}else {elCell.innerHTML = '<font color=\"red\">' + schoolname + ' does not have a grade level of ' + gradelevel + '</font> ';};},
+// Create a check to see if the school is valid for this record (no district office)
+ValidSchoolCheck : function (elCell, oRecord, oColumn, oData){var school = oRecord.getData("School");var schoolnumber = oRecord.getData("SchoolID");if (schoolnumber == '0') {elCell.innerHTML = '<font color=\"red\">District Office</font>';} else if (!school) {elCell.innerHTML = '<font color=\"red\">School number ' + schoolnumber + ' does not exist';} else {elCell.innerHTML = school;};},
+// Create a check to see if the period exists
+PeriodExistCheck : function(elCell, oRecord, oColumn, oData){var period = oRecord.getData("Period");var periodid = oRecord.getData("PeriodID");if (!period && (periodid != 0)){elCell.innerHTML = '<font color=\"red\">Period ID ' + periodid + ' does not exist';}else{elCell.innerHTML = period;};},
+// Create a check to see if the special program exists
+ProgramExistCheck : function(elCell, oRecord, oColumn, oData){var program = oRecord.getData("Program");var programid = oRecord.getData("ProgramID");if (!program){elCell.innerHTML = '<font color=\"red\">Program ID ' + programid + ' does not exist';}else{elCell.innerHTML = program;};},
+// Create a check to see if the race code exists
+RaceCodeExistCheck : function(elCell, oRecord, oColumn, oData){var racecode = oRecord.getData("RaceCode");var racecodeid = oRecord.getData("RaceCodeID");if (!racecode){elCell.innerHTML = '<font color=\"red\">Race code \"' + racecodeid + '\" does not exist';}else{elCell.innerHTML = racecode;};},
+// Create a check to see if the school exists
+SchoolExistCheck : function(elCell, oRecord, oColumn, oData){var school = oRecord.getData("School");var schoolnumber = oRecord.getData("SchoolID");if (schoolnumber == '0'){elCell.innerHTML = 'District Office';}else if (!school){elCell.innerHTML = '<font color=\"red\">School number ' + schoolnumber + ' does not exist';}else{elCell.innerHTML = school;};},
+// Create a check to see if the school exists where the district office is not a valid school
+SchoolExistNoDistrictCheck : function(elCell, oRecord, oColumn, oData){var school = oRecord.getData("School");var schoolnumber = oRecord.getData("SchoolID");if (schoolnumber == '0'){elCell.innerHTML = '<font color=\"red\">District Office should not have these records</font>';}else if (!school){elCell.innerHTML = '<font color=\"red\">School number ' + schoolnumber + ' does not exist';}else{elCell.innerHTML = school;};},
+// Create a check to see if the standard exists
+StandardExistCheck : function(elCell, oRecord, oColumn, oData){var standard = oRecord.getData("Standard");var standardid = oRecord.getData("StandardID");if (!standard){elCell.innerHTML = '<font color=\"red\">Standard ID ' + standardid + ' does not exist';}else{elCell.innerHTML = standard;};},
+// Create a check to see if the student exists
+StudentExistCheck : function(elCell, oRecord, oColumn, oData){var student = oRecord.getData("Student");var studentid = oRecord.getData("StudentID");if (!student){elCell.innerHTML = '<font color=\"red\">Student ID ' + studentid + ' does not exist';}else{elCell.innerHTML = student;};},
+// Create a check to see if the teacher exists
+TeacherExistCheck : function(elCell, oRecord, oColumn, oData){var teacher = oRecord.getData("Teacher");var teacherid = oRecord.getData("TeacherID");if (!teacher){elCell.innerHTML = '<font color=\"red\">Teacher ID ' + teacherid + ' does not exist';}else{elCell.innerHTML = teacher;};},
+// Create a check to see if the test score exists
+TermExistCheck : function(elCell, oRecord, oColumn, oData){var termid1 = oRecord.getData("TermID1");var termid2 = oRecord.getData("TermID2");if (!termid1){elCell.innerHTML = '<font color=\"red\">TermID '  + termid2 + ' does not exist';}else{elCell.innerHTML = termid1;};},
+// Create a check to see if the test score exists
+TestExistCheck : function(elCell, oRecord, oColumn, oData){var test = oRecord.getData("Test");var testid = oRecord.getData("TestID");var studenttestid = oRecord.getData("StudentTestID");if (!testid){elCell.innerHTML = '<font color=\"red\">StudentTestID '  + studenttestid + ' does not exist';}else if (!test){elCell.innerHTML = '<font color=\"red\">Test ID ' + testid + ' does not exist';}else{elCell.innerHTML = test;};},
+// Create a check to see if the teacher exists
+TestScoreExistCheck : function(elCell, oRecord, oColumn, oData){var testscore = oRecord.getData("TestScore");var testscoreid = oRecord.getData("TestScoreID");if (!testscore){elCell.innerHTML = '<font color=\"red\">Test Score ID ' + testscoreid + ' does not exist';}else{elCell.innerHTML = testscore;};},
+// Create a link to the Activities Page
+ActivitiesLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Name");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/activitiessetup/edit.html?frn=006" + DCID +"' target=Powertools>" + name + "</a>";},
+// Create a link to the students All Enrollments page
+AllEnrollmentsLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + "&ac=suv;lsp=/admin/students/allenrollments.html' target=PowerTools>" + name + "</a>";},
+// Create a link to the students Meeting Attendance page
+AttendanceLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");var atttype = oRecord.getData("AttendanceType");if (atttype == 'Meeting'){elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + "&ac=suv;lsp=/admin/attendance/view/meeting.html' target=Powertools>" + name + "</a>";}else {elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + "&ac=suv;lsp=/admin/attendance/view/daily.html' target=Powertools>" + name + "</a>";};},
+// Create a link to the Bell Schedule page to display the items in the bell schedule
+BellScheduleItemsLink : function(elCell, oRecord, oColumn, oData){var BellScheduleName = oRecord.getData("BellScheduleName");var DCID = oRecord.getData("DCID");var ID = oRecord.getData("ID");var SchoolName = oRecord.getData("SchoolName");var YearID = oRecord.getData("YearID");elCell.innerHTML = "<a href='/admin/schoolsetup/bellschedules/items.html?frn=133" + DCID + "&id=" + ID + "&name=" + BellScheduleName + " at " + SchoolName + " for " + YearID + "' target=Powertools>" + BellScheduleName + "</a>";},
+// Create a link to the Course Groups Page
+CourseGroupsLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Name");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/coursegroups/edit.html?frn=006" + DCID +"' target=Powertools>" + name + "</a>";},
+// Create a dynamic link to the Edit Sections page for all records, formatting the Course Number to be Course.Section
+CourseSectionLink : function(elCell, oRecord, oColumn, oData){var CourseNumber = oRecord.getData("CourseNumber");var SectionNumber = oRecord.getData("SectionNumber");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/sections/edit.html?frn=003" + DCID + "' target=PowerTools>" + CourseNumber + "." + SectionNumber + "</a>";},
+// Create a link to the students Demographics Page
+DemographicsLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + "&ac=suv;lsp=/admin/students/generaldemographics.html' target=Powertools>" + name + "</a>";},
+// Create a link to the Grade Scales setup Page
+GradeScalesLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Name");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/marks/editscale.html?frn=090" + DCID +"' target=Powertools>" + name + "</a>";},
+// Create a link to the Reports Page
+ReportsLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Name");var DCID = oRecord.getData("DCID");var Type = oRecord.getData("Type");if (Type == 'Object Report'){elCell.innerHTML = "<a href='/admin/objectreports/new.html?frn=022" + DCID +"' target=Powertools>" + name + "</a>";}else if (Type == 'Mailing Label'){elCell.innerHTML = "<a href='/admin/mailinglabels/edit.html?frn=022" + DCID +"' target=Powertools>" + name + "</a>";}else if (Type == 'Form Letter'){elCell.innerHTML = "<a href='/admin/formletters/edit.html?frn=022" + DCID +"' target=Powertools>" + name + "</a>";}else if (Type == 'Report Card'){elCell.innerHTML = "<a href='/admin/reportcards/edit.html?frn=022" + DCID +"' target=Powertools>" + name + "</a>";};},
+// Create a link to the Standards setup Page
+StandardsLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Identifier");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/standards/editstandard.html?frn=053" + DCID +"' target=Powertools>" + name + "</a>";},
+// Create a link to the Standard Conversion Grade setup Page
+StdConversionLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Name");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/stdconversiontable/editscale.html?frn=006" + DCID +"' target=Powertools>" + name + "</a>";},
+// Create a link to the students Previous Grades Page
+PreviousGradesLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + "&ac=suv;lsp=/admin/students/previousgrades.html' target=Powertools>" + name + "</a>";},
+// Create a link to the students Schedule Setup page
+ScheduleSetupLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + ";l)&ac=suv;lsp=/admin/students/schedulesetup.html' target=PowerTools>" + name + "</a>";},
+// Create a link to the students Special Programs Page
+SpecialProgramsLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + ";l)&ac=suv;lsp=/admin/students/specialprograms.html' target=PowerTools>" + name + "</a>";},
+// Create a link to the teachers Edit Info Page
+TeacherEditLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Teacher1");var DCID1 = oRecord.getData("DCID1");elCell.innerHTML = "<a href='/admin/faculty/home.html?frn=005" + DCID1 + "' target=Powertools>" + name + "</a>";},
+// Create a link to the students Lunch Transactions page
+TransactionsLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + ";l)&ac=suv;lsp=/admin/students/transactions.html' target=PowerTools>" + name + "</a>";},
+// Create a link to the students Transfer Info page
+TransferInfoLink : function(elCell, oRecord, oColumn, oData){var name = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/students/home.html?frn=001" + DCID + ";l)&ac=suv;lsp=/admin/students/transferinfo.html' target=PowerTools>" + name + "</a>";}
+};
+var PowerToolsDataLink = {
+// Create a link to a record in DDA for the Attendance table
+DDAAttendanceLink : function(elCell, oRecord, oColumn, oData){var AttendanceID = oRecord.getData("AttendanceID");var DCID = oRecord.getData("AttendanceDCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=157" + DCID + "' target=Powertools>" + AttendanceID + "</a>";},
+// Create a link to a record in DDA for the Attendance_Time table
+DDAAttendanceTimeLink : function(elCell, oRecord, oColumn, oData){var AttendanceTimeID = oRecord.getData("AttendanceTimeID");var DCID = oRecord.getData("AttendanceTimeDCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=158" + DCID + "' target=Powertools>" + AttendanceTimeID + "</a>";},
+// Create a link to a record in DDA for the CC table
+DDACCLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=004" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the FeeTransaction table
+DDAFeeTransactionLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=147" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the HonorRoll table
+DDAHonorRollLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=034" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the PGFinalGrades table
+DDAPGFinalGradesLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=095" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the Reenrollments table
+DDAReenrollmentsLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=018" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the Sections table
+DDASectionLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=003" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the SpEnrollments table
+DDASpEnrollmentsLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=041" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the StandardsGrades table
+DDAStandardsGradesLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=099" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDA for the StoredGrades table
+DDAStoredGradesLink : function(elCell, oRecord, oColumn, oData){var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=031" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDA for the StudentRace table
+DDAStudentRaceLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=201" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDA for the Students table
+DDAStudentsLink : function(elCell, oRecord, oColumn, oData){var Student = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=001" + DCID + "' target=Powertools>" + Student + "</a>";},
+// Create a link to a record in DDA for the StudentTestScores table
+DDAStudentTestScoreLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=089" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDA for the Teacher table
+DDATeacherRaceLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=202" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDA for the Termbins table
+DDATermBinsLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/usm/home.html?mcr=033" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDE for the Attendance table
+DDEAttendanceLink : function(elCell, oRecord, oColumn, oData){var AttendanceID = oRecord.getData("AttendanceID");var DCID = oRecord.getData("AttendanceDCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=157" + DCID + "' target=Powertools>" + AttendanceID + "</a>";},
+// Create a link to a record in DDA for the Attendance_Time table
+DDEAttendanceTimeLink : function(elCell, oRecord, oColumn, oData){var AttendanceTimeID = oRecord.getData("AttendanceTimeID");var DCID = oRecord.getData("AttendanceTimeDCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=158" + DCID + "' target=Powertools>" + AttendanceTimeID + "</a>";},
+// Create a link to a record in DDE for the CC table
+DDECCLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=004" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the FeeTransaction table
+DDEFeeTransactionLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=147" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the HonorRoll table
+DDEHonorRollLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=034" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the PGFinalGrades table
+DDEPGFinalGradesLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=095" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the Reenrollments table
+DDEReenrollmentsLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=018" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the Sections table
+DDESectionLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=003" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the SpEnrollments table
+DDESpEnrollmentsLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=041" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the StandardsGrades table
+DDEStandardsGradesLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=099" + DCID + "' target=Powertools>" + ID + "</a>";},
+// Create a link to a record in DDE for the StoredGrades table
+DDEStoredGradesLink : function(elCell, oRecord, oColumn, oData){var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=031" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDE for the StudentRace table
+DDEStudentRaceLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=201" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDE for the Students table
+DDEStudentsLink : function(elCell, oRecord, oColumn, oData){var Student = oRecord.getData("Student");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=001" + DCID + "' target=Powertools>" + Student + "</a>";},
+// Create a link to a record in DDE for the StudentTestScores table
+DDEStudentTestScoreLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=089" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDE for the Teacher table
+DDETeacherRaceLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=202" + DCID + "' target=Powertools>" + DCID + "</a>";},
+// Create a link to a record in DDE for the Termbins table
+DDETermBinsLink : function(elCell, oRecord, oColumn, oData){var ID = oRecord.getData("ID");var DCID = oRecord.getData("DCID");elCell.innerHTML = "<a href='/admin/tech/dde/home.html?mcr=033" + DCID + "' target=Powertools>" + DCID + "</a>";}
+};
+</script>

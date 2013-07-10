@@ -1,0 +1,42 @@
+{
+  ~[x:GetDoThisForStudents]
+  ~[RepeatForEach:Students]
+  "student-~(id)"       :   [
+    ~[tlist_sql;
+      SELECT sts.studentid
+      , t.name
+      , to_char(st.test_date, 'mm/dd/yyyy')
+      , ts.name
+      , sts.percentscore
+      , sts.numscore
+      , sts.alphascore
+      FROM studenttestscore sts
+      JOIN studenttest st
+      ON sts.studenttestid = st.id
+      JOIN test t
+      ON st.testid = t.id
+      JOIN testscore ts
+      ON sts.testscoreid = ts.id
+      FULL JOIN s_nc_academic_studenttest ast
+      ON st.dcid = ast.studenttestdcid
+      WHERE sts.studentid = ~(id)
+      AND (ast.show_on_transcript != 'N' or ast.show_on_transcript IS NULL)
+      ORDER BY st.test_date
+      , t.name
+    ]
+    {
+      "studentid"       : "~(studentid)",
+      "testname"        : "~(t.name)",
+      "testdate"        : "~(st.test_date)",
+      "scorename"       : "~(ts.name)",
+      "percentscore"    : "~(sts.percentscore)",
+      "numscore"        : "~(sts.numscore)",
+      "alphascore"      : "~(sts.alphascore)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+
+  [between:Students],
+  [/RepeatForEach:Students]
+}

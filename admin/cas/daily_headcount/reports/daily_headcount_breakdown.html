@@ -1,0 +1,58 @@
+<div class="injectable" data-inject-location="#content-main h1" data-inject-how="append"> Daily Headcount Summary as of ~[gpv:eaodate]</div>
+<script type="text/javascript">
+  function loadTable() {
+    $j.getJSON("/admin/cas/daily_headcount/reports/json/daily_headcount_breakdown.json.html?dothisfor=~[gpv:dothisfor]&eaodate=~[gpv:eaodate]", function(result) {
+      $j.each(result.grades, function() {
+        if (this.grade) {
+          $j('#graderows').append('<tr align="center">' +
+              '<td>' + this.grade + '</td>' +
+              '<td>' +
+              '<a title="Total" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=total&gradelevel=' + this.grade + '&attendance=all" >' + (this.enrolled_present_students + this.enrolled_absent_students + this.prior_present_students + this.prior_absent_students + this.enrolled_present_reenrollments + this.enrolled_absent_reenrollments + this.prior_present_reenrollments + this.prior_absent_reenrollments) + '</a>' +
+              '<br/>' +
+              '<a title="Present" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=total&gradelevel=' + this.grade + '&attendance=present"><font color="#3333cc" title="Present">' + (this.enrolled_present_students + this.prior_present_students + this.enrolled_present_reenrollments + this.prior_present_reenrollments) + '</font></a>' +
+              ' / ' +
+              '<a title="Absent" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=total&gradelevel=' + this.grade + '&attendance=absent"><font color="#ff66cc" title="Absent">' + (this.enrolled_absent_students + this.prior_absent_students + this.enrolled_absent_reenrollments + this.prior_absent_reenrollments) + '</font></a>' +
+              '</td>' +
+              '<td>' +
+              '<a title="Total" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=current&gradelevel=' + this.grade + '&attendance=all" ><font title="Total">' + (this.enrolled_present_students + this.enrolled_absent_students + this.enrolled_present_reenrollments + this.enrolled_absent_reenrollments) + '</font></a>' +
+              '<br/>' +
+              '<a title="Present" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=current&gradelevel=' + this.grade + '&attendance=present"><font color="#3333cc" title="Present">' + (this.enrolled_present_students + this.enrolled_present_reenrollments) + '</font></a>' +
+              ' / ' +
+              '<a title="Absent" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=current&gradelevel=' + this.grade + '&attendance=absent"><font color="#ff66cc" title="Absent">' + (this.enrolled_absent_students + this.enrolled_absent_reenrollments) + '</font></a>' +
+              '</td>' +
+              '<td>' +
+              '<a title="Total" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=prior&gradelevel=' + this.grade + '&attendance=all" ><font title="Total">' + (this.prior_present_students + this.prior_absent_students + this.prior_present_reenrollments + this.prior_absent_reenrollments) + '</font></a>' +
+              '<br/>' +
+              '<a title="Present" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=prior&gradelevel=' + this.grade + '&attendance=present"><font color="#3333cc" title="Present">' + (this.prior_present_students + this.prior_present_reenrollments) + '</font></a>' +
+              ' / ' +
+              '<a title="Absent" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsModal.html?eaodate=~[gpv:eaodate]&status=prior&gradelevel=' + this.grade + '&attendance=absent"><font color="#ff66cc" title="Absent">' + (this.prior_absent_students + this.prior_absent_reenrollments) + '</font></a>' +
+              '</td>' +
+              '<td>' +
+              '<a title="Total" href="" style="visibility: visible; " class="dialogM" dialogcontent="/admin/cas/daily_headcount/reports/listStudentsNoEnrollmentsModal.html?eaodate=~[gpv:eaodate]&gradelevel=' + this.grade + '"><font color="#ff66cc" title="Total">' + (this.students_no_courses) + '</font></a>' +
+              '</tr>');
+        }
+      });
+      $j('#headcountTable').removeAttr('style');
+      $j('#loading_page').hide();
+    });
+  }
+  $j(function() {
+    loadTable();
+    displayStudentSelection();
+  });
+</script>
+~[wc:CAS]
+<div id="loading_page" class="feedback-alert">Loading data, please wait. This may take several minutes.</div>
+<table class="linkDescList grid" style="display:none;" id="headcountTable">
+  <thead>
+    <tr>
+      <th>Grade Level</th>
+      <th>Total In Grade<br />Present / Absent</th>
+      <th>Enrolled on ~[gpv:eaodate]<br />Present / Absent</th>
+      <th>Enrolled Before ~[gpv:eaodate]<br />Present / Absent on Enrollment Date</th>
+      <th>No Course Enrollments on Start Date</th>
+    </tr>
+  </thead>
+  <tbody id="graderows">
+  </tbody>
+</table>

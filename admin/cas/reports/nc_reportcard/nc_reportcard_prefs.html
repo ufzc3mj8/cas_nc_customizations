@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>NC Report Card</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "nc_reportcard_prefs.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form target="_blank" action="/admin/cas/reports/nc_reportcard/nc_reportcard.html" method="POST" class="noSubmitLoading">
+  ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.start_page]</a> &gt; <a href="/admin/functions.html"
+                                                                                                                                                                     target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.special_functions]</a>
+  &gt; <a href="/admin/studentlist/functions.html">~[text:psx.html.admin_reports.studschedmatrixprefs.group_functions]</a> &gt; NC Report Card<!-- breadcrumb end -->
+  ~[wc:admin_navigation_css]
+
+  <h1>NC Report Card</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+
+    <table border="0" cellspacing="0" cellpadding="4">
+      <tr bgcolor="#f6f6f6">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.option]</td>
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.value]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.students_to_scan]</td>
+        <td>~[x:dothisfor;selected;enrolled]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.sort_order]</td>
+        <td><input type="radio" name="[prefschool]nc_reportcard_sort" value="lastfirst,gt,grade_level,gt" checked>~[text:psx.html.admin_reports.studschedmatrixprefs.last_name]<br>
+          <input type="radio" name="[prefschool]nc_reportcard_sort" value="grade_level,gt,lastfirst,gt">~[text:psx.html.admin_reports.studschedmatrixprefs.grade_level]<br>
+          <input type="radio" name="[prefschool]nc_reportcard_sort" value="home_room,gt,lastfirst,gt">~[text:psx.html.admin_reports.studschedmatrixprefs.homeroom]
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Include Principal Signature Line
+        </td>
+        <td>
+          <input type="checkbox" name="[prefyearschool]nc_reportcard_principalsig">
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Include Parent Signature Line
+        </td>
+        <td>
+          <input type="checkbox" name="[prefyearschool]nc_reportcard_parentsig">
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">Teacher Comment Term</td>
+        <td>
+          <select id="commentterm" name="[prefyearschool]nc_reportcard_commentterm">
+            <option value="">
+            ~[tlist_sql;
+              SELECT storecode
+             , CASE
+                WHEN storecode = '~[displayprefyearschool:nc_reportcard_commentterm]'
+                THEN ' selected'
+                ELSE ''
+                END selection
+              , storecode
+              FROM (
+              SELECT distinct(storecode)
+              , date2
+              FROM termbins
+              WHERE schoolid = ~(schoolid)
+              AND yearid = ~(v.curyearid)
+              ORDER BY date2)]
+              <option value="~(result1)"~(selection)>~(result3)</option>
+            [/tlist_sql]
+          </select>
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">School Message (Printed on report)</td>
+        <td>
+          <textarea name="[prefyearschool]nc_reportcard_schoolmessage" rows="4" cols="40"></textarea>
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">Page Layout</td>
+        <td>
+          <select id="layout" radioDivPre="pagelayout" name="[prefyearschool]nc_reportcard_layout">
+            <option value=""></option>
+            <option value="portrait" radioDivGrp="portrait">Portrait</option>
+            <option value="landscape" radioDivGrp="landscape">Landscape</option>
+          </select>
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">Number of grade columns</td>
+        <td>
+          <select id="columns" radioDivPre="columnnum" name="[prefyearschool]nc_reportcard_columns">
+            <option value=""></option>
+            <option value="1" id="c1" radioDivGrp="1col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-portrait pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]=] class="hide"[/if]>1</div>
+            <option value="2" id="c2" radioDivGrp="2col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-portrait pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]=] class="hide"[/if]>2</div>
+            <option value="3" id="c3" radioDivGrp="3col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-portrait pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]=] class="hide"[/if]>3</div>
+            <option value="4" id="c4" radioDivGrp="4col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-portrait pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]=] class="hide"[/if]>4</div>
+            <option value="5" id="c5" radioDivGrp="5col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-portrait pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]=] class="hide"[/if]>5</div>
+            <option value="6" id="c6" radioDivGrp="6col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-portrait pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]=] class="hide"[/if]>6</div>
+            <option value="7" id="c7" radioDivGrp="7col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]#landscape] class="hide"[/if]>7</div>
+            <option value="8" id="c8" radioDivGrp="8col" radioDivPrefixes="pagelayout" radioDivGroups="pagelayout-landscape"~[if.~[displayprefyearschool:nc_reportcard_layout]#landscape] class="hide"[/if]>8</div>
+          </select>
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<1] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-1col columnnum-2col columnnum-3col columnnum-4col columnnum-5col columnnum-6col columnnum-7col columnnum-8col">
+        <td class="bold">Column 1 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col1date" value="~[displayprefyearschool:nc_reportcard_col1date]" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<2] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-2col columnnum-3col columnnum-4col columnnum-5col columnnum-6col columnnum-7col columnnum-8col">
+        <td class="bold">Column 2 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col2date" value="~[displayprefyearschool:nc_reportcard_col2date]" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<3] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-3col columnnum-4col columnnum-5col columnnum-6col columnnum-7col columnnum-8col">
+        <td class="bold">Column 3 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col3date" value="~[displayprefyearschool:nc_reportcard_col3date]" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<4] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-4col columnnum-5col columnnum-6col columnnum-7col columnnum-8col">
+        <td class="bold">Column 4 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col4date" value="~[displayprefyearschool:nc_reportcard_col4date]" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<5] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-5col columnnum-6col columnnum-7col columnnum-8col">
+        <td class="bold">Column 5 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col5date" value="~[displayprefyearschool:nc_reportcard_col5date]" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<6] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-6col columnnum-7col columnnum-8col">
+        <td class="bold">Column 6 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col6date" value="~[displayprefyearschool:nc_reportcard_col6date]" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<7] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-7col columnnum-8col">
+        <td class="bold">Column 7 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col7date" value="~[displayprefyearschool:nc_reportcard_col7date]" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]~[if.~[displayprefyearschool:nc_reportcard_columns]<8] hide[/if]" radioDivPrefixes="columnnum" radioDivGroups="columnnum-8col">
+        <td class="bold">Column 8 End Date</td>
+        <td>
+          <input type="text" class="psDateWidget" name="[prefyearschool]nc_reportcard_col8date" value="~[displayprefyearschool:nc_reportcard_col8date]" />
+        </td>
+      </tr>
+    </table>
+  <br>
+
+    <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+
+  ~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

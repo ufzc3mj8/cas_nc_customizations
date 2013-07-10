@@ -1,0 +1,17 @@
+{
+"codes" : [
+~[tlist_sql;
+SELECT name
+    , valuet
+FROM gen
+WHERE lower(cat) = 'exitcodes'
+ORDER BY sortorder
+]
+{
+"name" : "~(name;t)",
+"description" : "~(valuet;t)"
+},
+[/tlist_sql]
+{}
+]
+}

@@ -1,0 +1,231 @@
+<html>
+<head>
+<title>Non-Session Attendance Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Non-Session Attendance Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Non-Session Attendance Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing attendance on non-session days in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to remove attendance records that are invalid based on when the school, section, or student is in session. This process will remove all attendance records where the school, section, or student is not in session based on the options selected.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+var ErrorCheck = new Array()
+~[tlist_sql;
+SELECT rownum
+, a1.dcid
+, CASE
+  WHEN (
+	c1.insession = 0
+	OR c1.insession IS NULL)
+    AND a2.att_code IS NOT NULL
+    ~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+  THEN 'School is not in session'
+  WHEN (a1.att_date < s1.entrydate
+	OR a1.att_date >= s1.exitdate)
+    AND NOT EXISTS (
+      SELECT *
+      FROM ps.reenrollments r1
+      WHERE a1.studentid = r1.studentid
+      AND a1.att_date >= r1.entrydate
+      AND a1.att_date < r1.exitdate) 
+    ~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+  THEN 'Student not in school this day'
+  WHEN lower(a1.att_mode_code) = 'att_modemeeting'
+    ~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+    AND(
+    a1.att_date < c2.dateenrolled
+    OR
+    a1.att_date > c2.dateleft)
+  THEN 'Student not in section this day'
+  WHEN c3.letter NOT IN (
+      SELECT cycle_day_letter
+      FROM ps.section_meeting s2
+      WHERE s2.sectionid = ABS(c2.sectionid))
+    AND lower(a1.att_mode_code) like 'att_modemeeting'
+    ~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+  THEN 'Section not in session this day'
+  ELSE 'Section not in session this period'
+  END error
+FROM ps.attendance a1
+INNER JOIN ps.students s1
+ON a1.studentid = s1.id
+LEFT JOIN ps.schools s2
+ON a1.schoolid = s2.school_number
+LEFT JOIN ps.attendance_code a2
+ON a1.attendance_codeid = a2.id
+LEFT JOIN ps.calendar_day c1
+ON a1.att_date = c1.date_value
+AND a1.schoolid = c1.schoolid
+LEFT JOIN ps.cc c2
+ON a1.ccid = c2.id
+LEFT JOIN ps.cycle_day c3
+ON c1.cycle_day_id = c3.id
+WHERE a2.att_code IS NOT NULL
+~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+AND (
+	lower(a1.att_mode_code) like 'att_modemeeting'
+	AND (
+		c3.letter NOT IN (
+			SELECT cycle_day_letter
+			FROM ps.section_meeting s2
+			WHERE s2.sectionid = ABS(c2.sectionid)
+		)
+		OR (
+			a1.periodid NOT IN (
+				SELECT p1.id
+				FROM ps.period p1
+				, ps.section_meeting s2
+				WHERE s2.sectionid = ABS(c2.sectionid)
+				AND s2.period_number = p1.period_number
+				AND s2.schoolid = p1.schoolid
+			)
+		)
+		OR (
+			a1.periodid NOT IN (
+				SELECT period_id 
+				FROM ps.bell_schedule_items b1
+				WHERE b1.bell_schedule_id = c1.bell_schedule_id
+			)
+		)
+		OR (
+			a1.att_date < c2.dateenrolled
+			OR a1.att_date > c2.dateleft
+		)
+	)
+	OR (
+		lower(a1.att_mode_code) = 'att_modedaily'
+		AND (
+			a1.att_date < s1.entrydate
+			OR a1.att_date >= s1.exitdate
+		)
+		AND NOT EXISTS (
+			SELECT *
+			FROM ps.reenrollments r1
+			WHERE a1.studentid = r1.studentid
+			AND a1.att_date > r1.entrydate
+			AND r1.exitdate > a1.att_date
+		)
+	)
+	OR c1.insession = 0
+	OR (
+		c1.insession IS NULL
+		AND a2.att_code IS NOT NULL
+	)
+)
+	]
+BadDCID[~(rownum)] = '~(baddcid)';
+ErrorCheck[~(rownum)] = '~(error)';
+[/tlist_sql]
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = "There are no non-session attendance records.";
+	}
+else
+	{
+	// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' non-session attendance record to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' non-session attendance records to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<b>Remove attendance records where the following conditions exist:</b><br>\
+		<table>\
+		<tr><td><input type=\"checkbox\" id=\"SchoolDay\">School is not in session this day</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"StudentSchoolDay\">Student is not in school this day</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"StudentSectionDay\">Student is not in section this day</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"SectionDay\">Section is not in session this day</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"SectionPeriod\">Section is not in session this period</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"CheckAll\" onClick=\"SelectAll()\;\">Select / Deselect All</td></tr>\
+		</table>\
+		<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to remove the non-session attendance records\" enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function SelectAll()
+	{
+	if (document.getElementById('CheckAll').checked == true)
+		{
+		document.getElementById('SchoolDay').checked = true;
+		document.getElementById('StudentSchoolDay').checked = true;
+		document.getElementById('StudentSectionDay').checked = true;
+		document.getElementById('SectionDay').checked = true;
+		document.getElementById('SectionPeriod').checked = true;
+		}
+	else
+		{
+		document.getElementById('SchoolDay').checked = false;
+		document.getElementById('StudentSchoolDay').checked = false;
+		document.getElementById('StudentSectionDay').checked = false;
+		document.getElementById('SectionDay').checked = false;
+		document.getElementById('SectionPeriod').checked = false;
+		};
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById('CorrectButton').value='Correcting records';
+	document.getElementById('CorrectButton').disabled=true;
+	document.getElementById('SchoolDay').disabled=true;
+	document.getElementById('StudentSchoolDay').disabled=true;
+	document.getElementById('StudentSectionDay').disabled=true;
+	document.getElementById('SectionDay').disabled=true;
+	document.getElementById('SectionPeriod').disabled=true;
+	document.getElementById('CheckAll').disabled=true;
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if ((document.getElementById('SchoolDay').checked == true && ErrorCheck[i] == 'School is not in session') || (document.getElementById('StudentSchoolDay').checked == true && ErrorCheck[i] == 'Student not in school this day') || (document.getElementById('StudentSectionDay').checked == true && ErrorCheck[i] == 'Student not in section this day') || (document.getElementById('SectionDay').checked == true && ErrorCheck[i] == 'Section not in session this day') || (document.getElementById('SectionPeriod').checked == true && ErrorCheck[i] == 'Section not in session this period'))
+			{
+			document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/selectiondeletedframed.html?ac=prim&DR-157" + BadDCID[i] + "=delete\">");
+			}
+		else
+			{
+			i++
+			ProgressDisplay();
+			RecordCheck();
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All non-session Attendance records removed with the options selected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

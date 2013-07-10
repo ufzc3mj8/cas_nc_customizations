@@ -1,0 +1,68 @@
+<html>
+<!-- start right frame -->
+<!-- PT Version 2.0 -->
+<head>
+<title>Incomplete Calendar Days</title>
+~[wc:commonscripts]
+~[x:insertfile;PowerToolsLib.html]				
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Students with Incomplete Scheduling Setup
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Students with Incomplete Scheduling Setup<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]<!-- start of title -->
+<h1>~[if.~[v.curschoolid]=0]There are no calendar records at the District Office[/if]
+~[if.~[v.curschoolid]<>0]In-session Calendar Day Records with No Cycle Day, Bell Schedule, or Membership in ~[schoolname][/if]</h1>
+<p>
+This report selects any calendar day record that is in-session, however either the Cycle Day is blank, the Bell Schedule in blank, or the Membership value is 0.
+<p>
+Selecting a record will take you to the calendar setup for that record. Records may be corrected by populating the data for the day, or removing the in-session checkbox.
+<p><!-- end of title -->
+~[x:insertfile;PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p><div id="paginated"></div>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(function() {
+    ClientPagination = function() {
+
+		var myColumnDefs = [
+			{key:"Date", label:"Date", minWidth: 150,sortable:true},
+			{key:"CycleDay", label:"Cycle Day", minWidth: 100,sortable:true},
+			{key:"BellSchedule", label:"Bell Schedule", minWidth: 150,sortable:true},
+			{key:"Membership", label:"Membership Value", minWidth: 100,sortable:true}
+		];
+
+		var myDataSource = new YAHOO.util.DataSource("DataSource/CalendarIssues.html?curyearonly=~(gpv.curyearonly)"); 
+		myDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_HTMLTABLE;
+		myDataSource.responseSchema = {
+			fields: ["Date","CycleDay","BellSchedule","Membership"]
+		};
+
+        var oConfigs = {
+                paginator: new YAHOO.widget.Paginator({
+                    rowsPerPage: ~(gpv.maxlines),
+					containers : ['top_container','bottom_container'],
+					template: PowerTools.templateCY()
+                }),
+			sortedBy : {key:"Date", dir:YAHOO.widget.DataTable.CLASS_ASC},
+			MSG_LOADING : PowerTools.LoadingMessage()
+        };
+		
+		var myDataTable = new YAHOO.widget.DataTable("paginated", myColumnDefs, myDataSource, oConfigs
+		);
+
+		return {
+			oDS: myDataSource,
+			oDT: myDataTable
+		};
+	}();
+});
+</script>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;PowerToolsFooter.html]

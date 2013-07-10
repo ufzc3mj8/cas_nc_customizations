@@ -1,0 +1,202 @@
+<html>
+<!-- start right frame -->
+<head>
+<title>Duplicate FTE Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate FTE Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Duplicate FTE Records<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Repairing duplicate FTE's in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to repair duplicate FTE's. This process will correct the FTE's in the Students, Reenrollments, FTEGrade and Attendance Conversion tables, then remove the duplicate FTE.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+var GoodID = new Array()
+var BadID = new Array()
+var FTEGradeCount = new Array()
+var AttConvCount = new Array()
+var ReenrollmentCount = new Array()
+var StudentCount = new Array()
+~[tlist_sql;
+SELECT rownum
+, f2.dcid BadDCID
+, f1.id GoodID
+, f2.id BadID
+, (SELECT COUNT(*)
+	FROM ps.FTE_Grade
+	WHERE fteid = f2.id) FTEGradecount
+, (SELECT COUNT(*)
+	FROM PS.attendance_conversion_items
+	WHERE fteid = f2.id) AttConvCount
+, (SELECT COUNT(*)
+	FROM ps.reenrollments
+	WHERE fteid = f2.id) ReenrollmentCount
+, (SELECT COUNT(*)
+	FROM ps.students
+	WHERE fteid = f2.id) StudentCount
+FROM ps.fte f1
+INNER JOIN ps.fte f2
+ON f1.name = f2.name
+AND f1.schoolid = f2.schoolid
+AND f1.yearid = f2.yearid
+AND f1.id < f2.id
+WHERE f1.id = (
+	SELECT MIN(id)
+	FROM ps.fte
+	WHERE name = f2.name
+	AND schoolid = f2.schoolid
+	AND yearid = f2.yearid)
+~[if.is.a.school]AND f2.schoolid = ~[v.curschoolid][/if]
+ORDER BY f2.id
+		]
+BadDCID[~(rownum)] = '~(BadDCID)';
+GoodID[~(rownum)] = '~(GoodID)';
+BadID[~(rownum)] = '~(BadID)';
+FTEGradeCount[~(rownum)] = '~(FTEGradecount)';
+AttConvCount[~(rownum)] = '~(AttConvCount)';
+ReenrollmentCount[~(rownum)] = '~(ReenrollmentCount)';
+StudentCount[~(rownum)] = '~(StudentCount)';
+[/tlist_sql]
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Header').innerHTML = ("There are no duplicate Full-Time Equivalencies.");
+	}
+else
+	{
+	// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' duplicate full-time equivalency to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' duplicate full-time equivalencies to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to correct the duplicate FTEs\"  enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById("CorrectButton").value="Correcting Records";
+	document.getElementById("CorrectButton").disabled=true;
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if (FTEGradeCount[i] == 0)
+			{
+			SelectAttConvItemsTable();
+			}
+		else
+			{
+			document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectFTEGrade()\" src=\"/admin/tech/usm/home.html?filenum=160\">");
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All duplicate Full-Time Equivalencies corrected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+function SelectFTEGrade()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"ModifyFTEGrade()\" src=\"/admin/tech/usm/home.html?fieldnum_1=2&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function ModifyFTEGrade()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectAttConvItemsTable()\" src=\"/admin/tech/usm/home.html?fieldnum=2&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};	
+function SelectAttConvItemsTable()
+	{	
+	if (AttConvCount[i] == 0)
+		{
+		SelectReenrollmentsTable();
+		}
+	else
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectAttConv()\" src=\"/admin/tech/usm/home.html?filenum=132\">");
+		};
+	};
+function SelectAttConv()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayAttConv()\" src=\"/admin/tech/usm/home.html?fieldnum_1=2&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function displayAttConv()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectReenrollmentsTable()\" src=\"/admin/tech/usm/home.html?fieldnum=0&modifytext=&verifydelete=yes&delete=Delete+Selected+Records\">");
+	};
+function SelectReenrollmentsTable()
+	{	
+	if (ReenrollmentCount[i] == 0)
+		{
+		SelectStudentsTable();
+		}
+	else
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectReenrollmentsRecord()\" src=\"/admin/tech/usm/home.html?filenum=18\">");
+		};
+	};	
+function SelectReenrollmentsRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"ModifyReenrollmentRecord()\" src=\"/admin/tech/usm/home.html?fieldnum_1=21&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};	
+function ModifyReenrollmentRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectStudentsTable()\" src=\"/admin/tech/usm/home.html?fieldnum=21&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function SelectStudentsTable()
+	{	
+	if (StudentCount[i] == 0)
+		{
+		deleteBadFTE();
+		}
+	else
+		{
+		document.getElementById('iframe').innerHTML = ("<iframe onload=\"SelectStudentsRecord()\" src=\"/admin/tech/usm/home.html?filenum=1\">");
+		};
+	};
+function SelectStudentsRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"ModifyStudentRecord()\" src=\"/admin/tech/usm/home.html?fieldnum_1=129&comparator1=%3D&value=" + BadID[i] + "&value=&ac=usm&search=Search+all\">");
+	};
+function ModifyStudentRecord()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"deleteBadFTE()\" src=\"/admin/tech/usm/home.html?fieldnum=129&modifytext=" + GoodID[i] + "&modify=Modify+Selected+Records\">");
+	};
+function deleteBadFTE()
+	{
+	document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/selectiondeletedframed.html?ac=prim&DR-159" + BadDCID[i] + "=delete\">");
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]

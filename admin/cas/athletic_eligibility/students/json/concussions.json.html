@@ -1,0 +1,18 @@
+{
+  "concussions" : [
+    ~[tlist_sql;
+      SELECT id
+      , to_char(concussion_date, 'mm/dd/yyyy')
+      , replace(replace(replace(notes,CHR(13),'<br>'),CHR(10),''),'''','\''')
+      FROM S_NC_AE_CONCUSSION
+      WHERE studentid = ~(id)
+      ORDER BY concussion_date]
+    {
+      "id" : "~(id)",
+      "date" : "~(date)",
+      "notes" : "~(notes)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}

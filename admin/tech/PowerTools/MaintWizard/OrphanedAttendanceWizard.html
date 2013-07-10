@@ -1,0 +1,228 @@
+<html>
+<head>
+<title>Orphaned Attendance Wizard</title>
+~[wc:commonscripts]
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsLib.html]
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[if.~[x:version]>=7.0]
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+<a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned Attendance Wizard
+</content>
+~[wc:admin_navigation_frame_css]
+[else]
+~[wc:admin_header_frame]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech/home.html" target="_top">System Administrator</a> &gt; <a href="/admin/tech/Powertools/home.html" target="_top">PowerTools</a> &gt; Orphaned Attendance Wizard<!-- breadcrumb end -->~[wc:admin_navigation_frame]
+[/if]
+<!-- start of title -->
+<h1>Removing orphaned attendance records in ~[if.district.office]All Schools[else]~[schoolname][/if.district.office]</h1>
+<p>
+Use this wizard to remove orphaned attendance. This process will delete all attendance records where the student, attendance code, CC record, section, course, ~[if.district.office]school, [/if]or period number does not exist, based off the options selected.
+<p>
+<B>Notice:</b> In order to ensure the integrity of your data, do not leave the wizard or navigate PowerSchool in another window while this process is completing. Whenever performing any deletion of data, please make sure your backups are running. It is recommended to make a data pump backup of your data prior to running this wizard.
+<p>
+<!-- end of title -->
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsBorder.html]
+<!-- Enter Content Here -->
+<p id="top_container" style="text-align:center"></p>
+<div id='Header'></div>
+<div id='Progress'></div>
+<div id='Output'></div>
+<script type="text/javascript">
+previousOutput = new String();
+var BadDCID = new Array()
+var BadStudent = new Array()
+var BadAtt_Code = new Array()
+var BadCC = new Array()
+var BadSection = new Array()
+var BadCourse = new Array()
+var BadPeriod = new Array()
+var BadSchool = new Array()
+~[tlist_sql;
+SELECT rownum
+, a1.dcid
+, CASE
+  WHEN s1.id IS NULL
+  THEN '1'
+  ELSE '0'
+  END StudentCheck
+, CASE
+  WHEN a2.id IS NULL
+  THEN '1'
+  ELSE '0'
+  END Att_CodeCheck
+, CASE
+  WHEN c1.id IS NULL
+  AND a1.ccid != 0
+  THEN '1'
+  ELSE '0'
+  END CCCheck
+, CASE
+  WHEN s3.id IS NULL
+  AND a1.ccid != 0
+  THEN '1'
+  ELSE '0'
+  END SectionCheck
+, CASE
+  WHEN c2.course_number IS NULL
+  AND a1.ccid != 0
+  THEN '1'
+  ELSE '0'
+  END CourseCheck
+, CASE
+  WHEN p1.id IS NULL
+  AND a1.ccid != 0
+  THEN '1'
+  ELSE '0'
+  END PeriodCheck
+, CASE
+  WHEN s2.id IS NULL
+  THEN '1'
+  ELSE '0'
+  END SchoolCheck
+FROM ps.attendance a1
+LEFT JOIN ps.students s1
+ON a1.studentid = s1.id
+LEFT JOIN PS.attendance_code a2
+ON a1.attendance_codeid = a2.id
+LEFT JOIN ps.cc c1
+ON a1.ccid = c1.id
+LEFT JOIN ps.period p1
+ON a1.periodid = p1.id
+LEFT JOIN ps.schools s2
+ON a1.schoolid = s2.school_number
+LEFT JOIN ps.sections s3
+ON abs(c1.sectionid) = s3.id
+AND c1.sectionid != 0
+LEFT JOIN ps.courses c2
+ON c1.course_number = c2.course_number
+WHERE (s1.id IS NULL
+  OR a2.id IS NULL
+  OR (c1.id IS NULL
+    AND a1.ccid != 0)
+  OR (p1.id IS NULL
+    AND a1.periodid != 0)
+  OR s2.id IS NULL
+  OR (s3.ID IS NULL
+    AND abs(c1.sectionid) != 0)
+  OR (c2.course_number IS NULL
+    AND c1.course_number IS NOT NULL)
+)
+~[if.is.a.school]AND a1.schoolid = ~[v.curschoolid][/if.is.a.school]
+ORDER BY a1.ID
+	]
+BadDCID[~(rownum)] = '~(baddcid)';
+BadStudent[~(rownum)] = '~(badstudent)';
+BadAtt_Code[~(rownum)] = '~(badatt_code)';
+BadCC[~(rownum)] = '~(badcc)';
+BadSection[~(rownum)] = '~(badsection)';
+BadCourse[~(rownum)] = '~(badcourse)';
+BadPeriod[~(rownum)] = '~(badperiod)';
+BadSchool[~(rownum)] = '~(badschool)';
+[/tlist_sql]
+var i=(1);
+var l=(BadDCID.length);
+if (l==0)
+	{
+	document.getElementById('Output').innerHTML = "There are no orphaned attendance records.";
+	}
+else
+	{
+// Check the count of records to correct and display the messages accordingly
+	if (l == 2)
+		{
+		previousOutput = ('<p>There is ' + (l-1) + ' orphaned attendance record to be removed.</p>');
+		}
+	else
+		{
+		previousOutput = ('<p>There are ' + (l-1) + ' orphaned attendance records to be removed.</p>');
+		};
+	previousOutput = previousOutput.concat('<b>Remove orphaned records where the following conditions exist:</b><br>\
+		<table>\
+		<tr><td><input type=\"checkbox\" id=\"NoStudent\">Student does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoAtt_Code\">Attendance Code does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoCC\">CC Record does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoSection\">Section does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoCourse\">Course does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"NoPeriod\">Period does not exist</td></tr>\
+		<tr id=\"SchoolCheck\"><td><input type=\"checkbox\" id=\"NoSchool\">School does not exist</td></tr>\
+		<tr><td><input type=\"checkbox\" id=\"CheckAll\" onClick=\"SelectAll()\;\">Select / Deselect All</td></tr>\
+		</table>\
+		<p><input type=\"Submit\" id=\"CorrectButton\" value=\"Click here to delete the orphaned Attendance records\" enabled=\"true\" onClick=\"ButtonClick()\;\"></p>');
+	document.getElementById('Header').innerHTML = previousOutput;
+	if (Schoolid > 0)
+		{
+		document.getElementById("SchoolCheck").style.visibility="collapse";
+		};
+	};
+function SelectAll()
+	{
+	if (document.getElementById('CheckAll').checked == true)
+		{
+		document.getElementById('NoStudent').checked = true;
+		document.getElementById('NoAtt_Code').checked = true;
+		document.getElementById('NoCC').checked = true;
+		document.getElementById('NoSection').checked = true;
+		document.getElementById('NoCourse').checked = true;
+		document.getElementById('NoPeriod').checked = true;
+		if (Schoolid == 0)
+			{
+			document.getElementById('NoSchool').checked = true;
+			};
+		}
+	else
+		{
+		document.getElementById('NoStudent').checked = false;
+		document.getElementById('NoAtt_Code').checked = false;
+		document.getElementById('NoCC').checked = false;
+		document.getElementById('NoSection').checked = false;
+		document.getElementById('NoCourse').checked = false;
+		document.getElementById('NoPeriod').checked = false;
+		document.getElementById('NoSchool').checked = false	;
+		};
+	};
+function ButtonClick()
+	{
+	ProgressDisplay();
+	document.getElementById("CorrectButton").value="Correcting Records";
+	document.getElementById("CorrectButton").disabled=true;
+	document.getElementById('NoStudent').disabled = true;
+	document.getElementById('NoAtt_Code').disabled = true;
+	document.getElementById('NoCC').disabled = true;
+	document.getElementById('NoSection').disabled = true;
+	document.getElementById('NoCourse').disabled = true;
+	document.getElementById('NoPeriod').disabled = true;
+	document.getElementById('NoSchool').disabled = true;
+	document.getElementById('CheckAll').disabled = true;
+	RecordCheck();
+	};
+function RecordCheck()
+	{
+	if (i < l)
+		{
+		if ((document.getElementById('NoStudent').checked == true && BadStudent[i] == '1') || (document.getElementById('NoAtt_Code').checked == true && BadAtt_Code[i] == '1') || (document.getElementById('NoCC').checked == true && BadCC[i] == '1') || (document.getElementById('NoSection').checked == true && BadSection[i] == '1') || (document.getElementById('NoCourse').checked == true && BadCourse[i] == '1') || (document.getElementById('NoPeriod').checked == true && BadPeriod[i] == '1') || (document.getElementById('NoSchool').checked == true && BadSchool[i] == '1'))
+			{
+			document.getElementById('iframe').innerHTML = ("<iframe onload=\"displayNext()\" src=\"/admin/selectiondeletedframed.html?ac=prim&DR-157" + BadDCID[i] + "=delete\">");
+			}
+		else
+			{
+			i++
+			ProgressDisplay();
+			RecordCheck();
+			};
+		}
+	else
+		{
+		ProgressDisplay();
+		previousOutput = document.getElementById('Output').innerHTML;
+		previousOutput = previousOutput.concat('------------------<br>Complete<br>------------------<br>\
+			All orphaned Attendance records removed with the options selected.');
+		document.getElementById('Output').innerHTML = previousOutput;
+		toBottom();
+		};
+	};
+</script>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+~[x:insertfile;/admin/tech/PowerTools/PowerToolsFooter.html]
