@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html class="no-js">
+<!-- non framed -->
+<head>
+  <title>1509 Child Nutrition Extract</title>
+  <script type="text/javascript" src="/scripts/cas/modernizr-2.6.2.min.js"></script>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "1509_Linker_rephub.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+<!--  ~[wc:CAS]-->
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.start_page]</a> &gt; <a href="/admin/functions.html"
+                                                                                                                                                                   target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.special_functions]</a>
+&gt; <a href="/admin/studentlist/functions.html">~[text:psx.html.admin_reports.studschedmatrixprefs.group_functions]</a> &gt; 1509 Child Nutrition Extract<!-- breadcrumb end -->
+~[wc:admin_navigation_css]
+
+<h1>1509 Child Nutrition Extract</h1>
+<!-- start of content and bounding box -->
+<div class="box-round">
+  <script type="text/javascript" language="javascript" src="/scripts/cas/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/scripts/cas/ZeroClipboard.js"></script>
+<script type="text/javascript" charset="utf-8" src="/scripts/cas/TableTools.min.js"></script>
+<style type="text/css" title="currentStyle">
+  @import "/images/cas/css/DataTables_page.css";
+  @import "/images/cas/css/DataTables_table.css";
+  @import "/images/cas/css/TableTools.css";
+</style>
+<script type="text/javascript" charset="utf-8">
+  var $ = jQuery.noConflict();
+  $(document).ready(function() {
+    $('#example').dataTable({
+      "sDom"        : 'T<"clear"><"top"fi>rt<"bottom"lp<"clear">',
+      "sPaginationType" : "full_numbers",
+      "oTableTools" : {
+        "sSwfPath" : "/scripts/cas/swf/copy_csv_xls_pdf.swf",
+        "aButtons" : [
+          {
+            "sExtends"    : "copy",
+            "sButtonText" : "Copy to clipboard"
+          },
+          {
+            "sExtends"    : "xls",
+            "sButtonText" : "Save Extract (CSV)"
+          },
+          {
+            "sExtends"    : "pdf",
+            "sButtonText" : "Save to PDF"
+          },
+          {
+            "sExtends"    : "print",
+            "sButtonText" : "Print"
+          }
+        ]
+      }
+    });
+  });
+</script>
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+  <thead>
+    <tr>
+      <th>Student ID</th>
+      <th>SSN</th>
+      <th>Last Name</th>
+      <th>First Name</th>
+      <th>Birth Date</th>
+	  <th>Grade</th>
+	  <th>Long Name</th>
+	  <th>Homeroom</th>
+	  <th>Street Number</th>
+	  <th>Street Name</th>
+	  <th>Apartment</th>
+	  <th>City</th>
+	  <th>State</th>
+	  <th>Zip Code</th>
+	  <th>Parent</th>
+	  <th>Current Status</th>
+    </tr>
+  </thead>
+  <tbody>
+  ~[tlist_sql;select s.student_number, s.ssn, s.last_name surname, s.first_name, s.dob birth_date, s.grade_level grade, sch.name school_name,
+s.home_room homeroom, NVL(SubStr(trim(S.STREET),1,InStr(trim(S.STREET),' ')),' ') street_number,
+NVL(TRIM(SubStr(trim(S.STREET),InStr(trim(S.STREET),' '))),' ') street_name,
+CASE
+  WHEN InStr(trim(S.STREET),'Apt') <> 0 THEN
+  NVL(TRIM(SubStr(trim(S.STREET),InStr(trim(S.STREET),'Apt'))),' ')
+  ELSE ' '
+  END apt, s.city, s.state, s.zip zip_code, s.mother parent_last_name, s.exitdate
+from students s
+left join schools sch on s.schoolid = sch.school_number
+where s.entrydate > to_date('6/30/2012','mm/dd/yyyy')]
+    <tr>
+        <td>~(student_number;t)</td>
+        <td>~(ssn;t)</td>
+        <td>~(surname;t)</td>
+        <td>~(first_name;t)</td>
+        <td>~(birth_date;d)</td>
+        <td>~(grade;t)</td>
+        <td>~(school_name;t)</td>
+        <td>~(homeroom;t)</td>
+        <td>~(street_number;t)</td>
+        <td>~(street_name;t)</td>
+        <td>~(apartment;t)</td>
+        <td>~(city;t)</td>
+        <td>~(state;t)</td>
+        <td>~(zip_code;t)</td>
+        <td>~(parent_last_name;t)</td>
+        <td>~(exitdate;t)</td>
+    </tr>
+  [/tlist_sql]
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>Student ID</th>
+      <th>SSN</th>
+      <th>Last Name</th>
+      <th>First Name</th>
+      <th>Birth Date</th>
+	  <th>Grade</th>
+	  <th>Long Name</th>
+	  <th>Homeroom</th>
+	  <th>Street Number</th>
+	  <th>Street Name</th>
+	  <th>Apartment</th>
+	  <th>City</th>
+	  <th>State</th>
+	  <th>Zip Code</th>
+	  <th>Parent</th>
+	  <th>Current Status</th>
+    </tr>
+  </tfoot>
+</table>
+  <div class="button-row"></div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+
+</body>
+</html>
+<!-- non framed -->
