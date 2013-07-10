@@ -5,56 +5,41 @@
         ~[wc:commonscripts]
         <link href="/images/css/screen.css" rel="stylesheet" media="screen">
         <link href="/images/css/print.css" rel="stylesheet" media="print">
+        <style type="text/css">
+            span.male_tab{padding: 0 130px;}
+            span.male_tabbox{padding: 0 58px;}
+            span.female_tab{padding: 0 115px;}
+            span.female_tabbox{padding: 0 58px;}
+        </style>
     </head>
     <body>
-    <form action="/admin/changesrecorded.white.html" method="POST">
-    ~[wc:admin_header_frame_css]
-    <!-- breadcrumb start -->
-    <a href="/admin/home.html" target="_top">Start Page</a> &gt; 
-    <a href="admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; 
-    NCMEP
-    <!-- breadcrumb end -->
-    ~[wc:admin_navigation_frame_css]
+    <form action="eligibility.html" method="POST">
+    ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a>
+    &gt; <a href="/admin/functions.html">~[text:psx.html.admin.functions.special_functions1]</a> &gt; <a href="/admin/cas/ncmep/migrant.html">Migrnat Administration</a> &gt; New COE<!-- breadcrumb end -->~[wc:admin_navigation_css]
 
-    ~[wc:title_student_begin_css]
-    North Carolina Migrant Education Program
-    ~[wc:title_student_end_css]
+    <h1>COE</h1>
 
     <ul class="tabs">
 
-    <li class="selected"><a href="family.html?frn=~(studentfrn)">Family</a></li>
-    <li><a href="eligibility.html?frn=~(studentfrn)">Eligibility</a></li>
-    <li><a href="children.html?frn=~(studentfrn)">Children</a></li>
+    <li class="selected"><a href="family.html">Family</a></li>
+    <li><a href="eligibility.html">Eligibility</a></li>
+    <li><a href="children.html">Children</a></li>
     </ul>
 
     <!-- start of content and bounding box -->
         <div class="box-round">
             <table border="0" cellspacing="0" cellpadding="4">
                 <tr class="~[evenoddrow]">
-                    <td>Male Parent/Guardian Last Name</td>
-                    <td>Male Parent/Guardian First Name</td>
-                    <td>Old Current Parent Last Name</td>
-                    <td>Old Current Parent First Name</td>
-                    <td></td>
-                    <td></td>
+                    <td>Male Parent/Guardian Last Name<span class="male_tab">Male Parent/Guardian First Name</span></td>
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td><input type="text" name="" value="" size="20"></td>
-                    <td><input type="text" name="" value="" size="20"></td>
-                    <td><input type="text" name="" value="" size="20"></td>
-                    <td><input type="text" name="" value="" size="20"></td>
+                    <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]GUARDIAN_MALE_LN" value="" size="30"><span class="male_tabbox"><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]GUARDIAN_MALE_FN" value="" size="30"></span></td>
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td>Female Parent/Guardian Last Name</td>
-                    <td>Female Parent/Guardian First Name</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>Female Parent/Guardian Last Name<span class="female_tab">Female Parent/Guardian First Name</span></td>
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td><input type="text" name="" value="" size="20"></td>
-                    <td><input type="text" name="" value="" size="20"></td>
+                    <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]GUARDIAN_FEMALE_LN" value="" size="30"><span class="female_tabbox"><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]GUARDIAN_FEMALE_FN" value="" size="30"></span></td>
                 </tr>
             </table>
             <table>
@@ -67,11 +52,22 @@
                     <td>Current Contact Phone</td>
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td><input type="text" name="[01]street" value="" size="30"></td>
-                    <td><select name="[01]city">
+                    <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]ADDRESS" value="" size="30"></td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]CITY">
                             <option value=""></option>
+                            ~[tlist_sql;
+                                SELECT
+                                    DISTINCT city
+                                FROM
+                                    ps.students
+                                WHERE
+                                    state = 'NC'
+                                ORDER BY city]
+                            <option value="~(city,t)" title="~(city,t)">~(city,t)</option>
+                            [/tlist_sql]
                         </select></td>
-                    <td><select name="[01]state">
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]STATE">
+                            <option value=""></option>
                             <option value="AL">AL</option>
                             <option value="AK">AK</option>
                             <option value="AZ">AZ</option>
@@ -105,7 +101,7 @@
                             <option value="NJ">NJ</option>
                             <option value="NM">NM</option>
                             <option value="NY">NY</option>
-                            <option value="NC" selected="selected">NC</option>
+                            <option value="NC">NC</option>
                             <option value="ND">ND</option>
                             <option value="OH">OH</option>
                             <option value="OK">OK</option>
@@ -124,9 +120,21 @@
                             <option value="WI">WI</option>
                             <option value="WY">WY</option>
                         </select></td>
-                    <td><input type="text" name="[01]zip" value="" size="8"></td>
-                    <td><input type="text" name="[01]home_phone" value="" size="15"></td>
-                    <td><input type="text" name="" value="" size="15"></td>
+                    <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]ZIP" value="" size="8"></td>
+                    <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]HOME_PHONE" value="" size="12"></td>
+                    <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]CONTACT_PHONE" value="" size="12"></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>Signed By</td>
+                    <td>Relationship to Eligible Child</td>
+                    <td>Signed Date</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td></td>
+                    <td></td>
+                    <td><input type="text" class="psDateWidget" name="" value="" size="10"></td>
                 </tr>
             </table>
         <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>

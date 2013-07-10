@@ -354,6 +354,12 @@ function populateYearSelects() {
   });
 }
 
+function populateClassification() {
+  $j.getJSON('json/classification.json.html?dcid=' + stuDcid, function(data) {
+    $j('#classification').val(data.classification);
+  });
+}
+
 function populateRace() {
   $j.getJSON('json/studentrace.json.html?dcid=' + stuDcid, function(data) {
     $j('#race').val(data.race);
@@ -367,6 +373,7 @@ function populateSchool() {
 }
 
 $j(function() {
+  populateClassification();
   populateSchool();
   populateRace();
   populateGradeSpan();

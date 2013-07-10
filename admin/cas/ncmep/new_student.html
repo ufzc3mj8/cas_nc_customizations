@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>North Carolina Migrant Education Program</title>
+        ~[wc:commonscripts]
+        <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+        <link href="/images/css/print.css" rel="stylesheet" media="print">
+        <script type="text/ecmascript">
+            function CalculateAge(DOB) {
+             if (DOB.value != '') {
+                now = new Date()
+                dob = DOB.value.split('/');
+                if (dob.length === 3) {
+                    born = new Date(dob[2], dob[1] * 1 - 1, dob[0]);
+                    age = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+                    if(isNaN(age))
+                    {
+                       document.getElementById('lblAge').innerHTML='';
+                       alert('Input date is incorrect!');
+                    }
+                    else
+                    {
+                     document.getElementById('lblAge').innerHTML = age;
+                    }
+                }
+            }
+        }
+        </script>
+        <script type="text/javascript">
+            function toggleDiv(stu){
+                if(document.getElementById(stu).style.display == 'none'){
+                    document.getElementById(stu).style.display = 'block';
+                }else{
+                    document.getElementById(stu).style.display = 'none';
+                }
+            }
+            
+            function findStudent(){
+                window.open('/admin/cas/ecdata.html','stuWindow','height=200,width=1000,left=300,top=300')
+            }
+            
+            $j("#addStudent").click(function () {
+                $("#searchStu").dialog({modal: true, height: 590, width: 1005 });
+            });
+        </script>
+        <style type="text/css">
+		.alternateTable:nth-of-type(odd) {background: #EDF3FE;}
+		.alternateTable:nth-of-type(even) {background: #D7EDF4;}
+		/*.alternateTable:nth-of-type(odd) {background: #D7EDF4;}*/
+	</style>
+    </head>
+    <body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+        ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a>
+    &gt; <a href="/admin/functions.html">~[text:psx.html.admin.functions.special_functions1]</a> &gt; <a href="/admin/cas/ncmep/migrant.html">Migrnat Administration</a> &gt; New COE<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+    <h1>COE</h1>
+
+    <ul class="tabs">
+
+    <li><a href="family.html">Family</a></li>
+    <li><a href="eligibility.html">Eligibility</a></li>
+    <li class="selected"><a href="children.html">Children</a></li>
+    </ul>
+
+    <!-- start of content and bounding box -->
+        <div class="box-round" id="divData">
+            <a id="addStudent" class="button" onclick="findStudent();">New Student</a>
+            
+            
+            <table id="tableData" class="alternateTable">
+                <tbody id="tbodyData">
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>Last Name</td>
+                    <td>First Name</td>
+                    <td>Middle</td>
+                    <td>Suffix</td>
+                    <td>Multiple Birth</td>
+                    <td>Mothers Maiden Name</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="[01]last_name" value="" size="20"></td>
+                    <td><input type="text" name="[01]first_name" value="" size="20"></td>
+                    <td><input type="text" name="[01]middle_name" value="" size="20"></td>
+                    <td><select name="">
+                            <option value=""></option>
+                            <option value="Jr">Jr</option>
+                            <option value="Sr">Sr</option>
+                            <option value="I">I</option>
+                            <option value="II">II</option>
+                            <option value="III">III</option>
+                            <option value="IV">IV</option>
+                            <option value="V">V</option>
+                        </select></td>
+                    <td><select name="">
+                            <option value=""></option>
+                            <option value="Y">Y</option>
+                            <option value="N">N</option>
+                        </select></td>
+                    <td><input type="text" name="" value="" size="20"></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>Race</td>
+                    <td>Sex</td>
+                    <td>Birthdate</td>
+                    <td>DOB Verification</td>
+                    <td>Age</td>
+                    <td>Birth City</td>
+                    <td>Birth State</td>
+                    <td>Birth Country</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><select name="[01]ethnicity">
+                            <option value=""></option>
+                            <option value="I">American Indian or Alaska Native</option>
+                            <option value="A">Asian</option>
+                            <option value="B">Black or African American</option>
+                            <option value="H">Hispanic</option>
+                            <option value="W">White</option>
+                            <option value="P">Native Hawaiian or Other Pacific Islander</option>
+                        </select></td>
+                    <td><select name="[01]gender">
+                            <option value=""></option>
+                            <option value="M">M</option>
+                            <option value="F">F</option>
+                        </select></td>
+                        <td><input type="text" class="psDateWidget" name="[01]dob" id="txtAge" value="" size="10" onblur="CalculateAge(this)"></td>
+                    <td><select name="[students.s_nc_migrant_student]dob_ver">
+                            <option value=""></option>
+                            <option value="1003">Baptismal or Church Certificate</option>
+                            <option value="1004">Birth Certificate</option>
+                            <option value="1005">Entry in Family Bible</option>
+                            <option value="1006">Hospital Certificate</option>
+                            <option value="1007">Parents Affidavit</option>
+                            <option value="1008">Passport</option>
+                            <option value="1009">Physicians Certificate</option>
+                            <option value="1010">Previously Verified School Records</option>
+                            <option value="1011">State-issued ID</option>
+                            <option value="1012">Drivers License</option>
+                            <option value="1013">Immigration Document</option>
+                            <option value="2382">Life Insurance Policy</option>
+                            <option value="9999">Other</option>
+                        </select></td>
+                    <td><span id="lblAge"> </span></td>
+                    <td><input type="text" name="[students.s_nc_migrant_student]birth_city" value="" size="30"></td>
+                    <td><select name="[students.s_nc_migrant_student]birth_state">
+                            <option value=""></option>
+                            <option value="AL">AL</option>
+                            <option value="AK">AK</option>
+                            <option value="AZ">AZ</option>
+                            <option value="AR">AR</option>
+                            <option value="CA">CA</option>
+                            <option value="CO">CO</option>
+                            <option value="CT">CT</option>
+                            <option value="DE">DE</option>
+                            <option value="DC">DC</option>
+                            <option value="FL">FL</option>
+                            <option value="GA">GA</option>
+                            <option value="HI">HI</option>
+                            <option value="ID">ID</option>
+                            <option value="IL">IL</option>
+                            <option value="IN">IN</option>
+                            <option value="IA">IA</option>
+                            <option value="KS">KS</option>
+                            <option value="KY">KY</option>
+                            <option value="LA">LA</option>
+                            <option value="ME">ME</option>
+                            <option value="MD">MD</option>
+                            <option value="MA">MA</option>
+                            <option value="MI">MI</option>
+                            <option value="MN">MN</option>
+                            <option value="MS">MS</option>
+                            <option value="MO">MO</option>
+                            <option value="MT">MT</option>
+                            <option value="NE">NE</option>
+                            <option value="NV">NV</option>
+                            <option value="NH">NH</option>
+                            <option value="NJ">NJ</option>
+                            <option value="NM">NM</option>
+                            <option value="NY">NY</option>
+                            <option value="NC">NC</option>
+                            <option value="ND">ND</option>
+                            <option value="OH">OH</option>
+                            <option value="OK">OK</option>
+                            <option value="OR">OR</option>
+                            <option value="PA">PA</option>
+                            <option value="RI">RI</option>
+                            <option value="SC">SC</option>
+                            <option value="SD">SD</option>
+                            <option value="TN">TN</option>
+                            <option value="TX">TX</option>
+                            <option value="UT">UT</option>
+                            <option value="VT">VT</option>
+                            <option value="VA">VA</option>
+                            <option value="WA">WA</option>
+                            <option value="WV">WV</option>
+                            <option value="WI">WI</option>
+                            <option value="WY">WY</option>
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_student]birth_country">
+                            <option value=""></option>
+                            <option value="USA">USA</option>
+                            <option value="MEX">MEX</option>
+                        </select></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>School Name</td>
+                    <td>School Code</td>
+                    <td>School Enrtry Date</td>
+                    <td>School Enroll Type</td>
+                    <td>Grade</td>
+                    <td>Immunization Avaliable</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="[students.s_nc_migrant_school]school_name" value=""></td>
+                    <td><input type="text" name="[students.s_nc_migrant_school]school_code" value=""></td>
+                    <td><input type="text" class="psDateWidget" name="[students.s_nc_migrant_school]enroll_date" value="" size="10"</td>
+                    <td><select name="[students.s_nc_migrant_school]enroll_type">
+                            <option value=""></option>
+                            <option value="RS">Regular School Enrollment</option>
+                            <option value="SS">Summer School</option>
+                        </select></td>
+                    <td><input type="text" name="[students.s_nc_migrant_school]grade" value="" size="4"></td>
+                    <td><select name="[students.s_nc_migrant_school]imm_avail">
+                            <option value=""></option>
+                            <option value="Y">Y</option>
+                            <option value="N">N</option>
+                        </select></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>LEA Name</td>
+                    <td>LEA Code</td>
+                    <td>Program Entry Date</td>
+                    <td>Program Enroll Type</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="[students.s_nc_migrant_school]lea_name" value=""></td>
+                    <td><input type="text" name="[students.s_nc_migrant_school]lea_code" value=""></td>
+                    <td><input type="text" class="psDateWidget" name="[students.s_nc_migrant_school]program_enroll_date" value="" size="10"</td>
+                    <td><select name="[students.s_nc_migrant_school]program_enroll_type">
+                            <option value=""></option>
+                            <option value="RU">Regular MEP Enrollment</option>
+                            <option value="SU">Summer MEP Enrollment;</option>
+                        </select></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>Qualifying Arrival Date</td>
+                    <td>Residency Date</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="psDateWidget" name="" value="" size="10"</td>
+                    <td><input type="text" class="psDateWidget" name="" value="" size="10"</td>
+                </tr>
+            </table>
+            </tbody>
+            </table>
+        <div class="button-row">
+<!--            <td align="center"><a href="coe.html?frn=~(studentfrn)" id="btnReturn" name="btnReturn" class="button">Return to COE List</a></td>  -->
+            <input type="hidden" name="ac" value="prim">~[submitbutton]
+        </div>
+        </div>
+    </div>
+    </body>
+</html>

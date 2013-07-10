@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>North Carolina Migrant Education Program</title>
+    ~[wc:commonscripts]
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+        ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; COE<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+        ~[wc:title_student_begin_css]School History~[wc:title_student_end_css]
+
+            <ul class="tabs">
+                <li><a href="student_coe.html">COE</a></li>
+                <li class="selected"><a href="school_history.html">Enrollment History</a></li>
+                <li><a href="supplemental_programs.html">Services</a></li>
+                <li><a href="student_profile.html">Student Profile</a></li>
+            </ul>
+<!-- start of content and bounding box -->
+        <div class="box-round">
+            <table class="tableToGrid paginateGrid">
+                <thead>
+                    <th>QA Date</th>
+                    <th>Res Date</th>
+                    <th>Enroll Date</th>
+                    <th>Withdraw Date</th>
+                    <th>Type</th>
+                    <th>Grade</th>
+                    <th>School Code</th>
+                    <th>Facility Name</th>
+                    ~[tlist_sql;
+                        
+                     ]
+                </thead>
+                <tbody>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                </tbody>
+                [/tlist_sql]
+            </table>
+        </div>
+    </form>
+</body>
+</html>

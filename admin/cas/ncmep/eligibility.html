@@ -5,26 +5,31 @@
         ~[wc:commonscripts]
         <link href="/images/css/screen.css" rel="stylesheet" media="screen">
         <link href="/images/css/print.css" rel="stylesheet" media="print">
+        <script language="javascript" type="text/javascript">
+            function DropDownTextToBox(objDropdown, strTextboxId) {
+               document.getElementById(strTextboxId).value = objDropdown.options[objDropdown.selectedIndex].value;
+               DropDownIndexClear(objDropdown.id);
+               document.getElementById(strTextboxId).focus();
+           }
+           function DropDownIndexClear(strDropdownId) {
+               if (document.getElementById(strDropdownId) != null) {
+                   document.getElementById(strDropdownId).selectedIndex = -1;
+               }
+           }
+        </script>
     </head>
     <body>
-    <form action="/admin/changesrecorded.white.html" method="POST">
-    ~[wc:admin_header_frame_css]
-    <!-- breadcrumb start -->
-    <a href="/admin/home.html" target="_top">Start Page</a> &gt; 
-    <a href="admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; 
-    NCMEP
-    <!-- breadcrumb end -->
-    ~[wc:admin_navigation_frame_css]
+    <form action="children.html" method="POST">
+    ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a>
+    &gt; <a href="/admin/functions.html">~[text:psx.html.admin.functions.special_functions1]</a> &gt; <a href="/admin/cas/ncmep/migrant.html">Migrnat Administration</a> &gt; New COE<!-- breadcrumb end -->~[wc:admin_navigation_css]
 
-    ~[wc:title_student_begin_css]
-    North Carolina Migrant Education Program
-    ~[wc:title_student_end_css]
+    <h1>COE</h1>
 
     <ul class="tabs">
 
-    <li><a href="family.html?frn=~(studentfrn)">Family</a></li>
-    <li class="selected"><a href="eligibility.html?frn=~(studentfrn)">Eligibility</a></li>
-    <li><a href="children.html?frn=~(studentfrn)">Children</a></li>
+    <li><a href="family.html">Family</a></li>
+    <li class="selected"><a href="eligibility.html">Eligibility</a></li>
+    <li><a href="children.html">Children</a></li>
     </ul>
 
     <!-- start of content and bounding box -->
@@ -35,16 +40,49 @@
                     <td>City</td>
                     <td>State</td>
                     <td>Country</td>
-                    <td>QAD</td>
+                    <td>Qualifying Arrival Date</td>
                 </tr>
                 <tr class="~[evenoddrow]">
+                    <td>
+                        
+                        <input name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]FROM_SCHOOL_DISTRICT" type="text" maxlength="50" id="TextboxFrom" tabindex="2" onchange="DropDownIndexClear('DropDownExTextboxFrom');" style="width: 242px; position: absolute; top: 138px; left: 27px; z-index: 2;" />
+                        
+                        <select name="DropDownExTextboxExample" id="DropDownExTextboxFrom" tabindex="1000" onchange="DropDownTextToBox(this,'TextboxFrom');" style="width: 265px; position: absolute; top: 138px; left: 27px; z-index: 1;">
+                            <option value=""></option>
+                            ~[tlist_sql;
+                                SELECT name
+                                FROM ps.schools
+                                ORDER BY name]
+                                <option value="~(name,t)" title="~(name,t)">~(name,t)</option>
+                            [/tlist_sql]
+                        </select>
+                        <script language="javascript" type="text/javascript">
+                            //Since the first <option> will be preselected the IndexClear function must fire once to clear that out.
+                            DropDownIndexClear("DropDownExTextboxExample");
+                        </script>
+                    </td>
+<!--                    
                     <td><select name="[students.s_nc_migrant_coe]from_school_district">
                             
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]from_city">
-                            
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]from_state">
+                        </select>
+                    </td>
+-->
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]FROM_CITY">
+                            <option value=""></option>
+                            ~[tlist_sql;
+                                SELECT
+                                    DISTINCT city
+                                FROM
+                                    ps.students
+                                WHERE
+                                    state = 'NC'
+                                ORDER BY city]
+                            <option value="~(city,t)" title="~(city,t)">~(city,t)</option>
+                            [/tlist_sql]
+                        </select>
+                    </td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]FROM_STATE">
+                            <option value=""></option>
                             <option value="AL">AL</option>
                             <option value="AK">AK</option>
                             <option value="AZ">AZ</option>
@@ -78,7 +116,7 @@
                             <option value="NJ">NJ</option>
                             <option value="NM">NM</option>
                             <option value="NY">NY</option>
-                            <option value="NC" selected="selected">NC</option>
+                            <option value="NC">NC</option>
                             <option value="ND">ND</option>
                             <option value="OH">OH</option>
                             <option value="OK">OK</option>
@@ -96,13 +134,15 @@
                             <option value="WV">WV</option>
                             <option value="WI">WI</option>
                             <option value="WY">WY</option>
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]from_country">
+                        </select>
+                    </td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]FROM_COUNTRY">
                             <option value=""></option>
                             <option value="USA">USA</option>
                             <option value="MEX">MEX</option>
-                        </select></td>
-                    <td><input type="text" class="psDateWidget" name="[students.s_nc_migrant_coe]qualifying_arrival_date" value="" size="10"></td>
+                        </select>
+                    </td>
+                    <td><input type="text" class="psDateWidget" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]QUALIFYING_ARRIVAL_DATE" value="" size="10"></td>
                 </tr>
                 <tr class="~[evenoddrow]">
                     <td><b>To</b> School District</td>
@@ -112,13 +152,46 @@
                     <td>Qualifying Move</td>
                 </tr>
                 <tr class="~[evenoddrow]">
+                    <td>
+                        
+                        <input name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]TO_SCHOOL_DISTRICT" type="text" maxlength="50" id="TextboxTo" tabindex="2" onchange="DropDownIndexClear('DropDownExTextboxTo');" style="width: 242px; position: absolute; top: 193px; left: 27px; z-index: 2;" />
+                        
+                        <select name="DropDownExTextboxExample" id="DropDownExTextboxTo" tabindex="1000" onchange="DropDownTextToBox(this,'TextboxTo');" style="width: 265px; position: absolute; top: 193px; left: 27px; z-index: 1;">
+                            <option value=""></option>
+                            ~[tlist_sql;
+                                SELECT name
+                                FROM ps.schools
+                                ORDER BY name]
+                                <option value="~(name,t)" title="~(name,t)">~(name,t)</option>
+                            [/tlist_sql]
+                        </select>
+                        <script language="javascript" type="text/javascript">
+                            //Since the first <option> will be preselected the IndexClear function must fire once to clear that out.
+                            DropDownIndexClear("DropDownExTextboxExample");
+                        </script>
+                    </td>
+<!--
                     <td><select name="[students.s_nc_migrant_coe]to_school_district">
                             
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]to_city">
-                            
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]to_state">
+                        </select>
+                    </td>
+-->
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]TO_CITY">
+                            <option value=""></option>
+                            ~[tlist_sql;
+                                SELECT
+                                    DISTINCT city
+                                FROM
+                                    ps.students
+                                WHERE
+                                    state = 'NC'
+                                ORDER BY city]
+                            <option value="~(city,t)" title="~(city,t)">~(city,t)</option>
+                            [/tlist_sql]
+                        </select>
+                    </td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]TO_STATE">
+                            <option value=""></option>
                             <option value="AL">AL</option>
                             <option value="AK">AK</option>
                             <option value="AZ">AZ</option>
@@ -152,7 +225,7 @@
                             <option value="NJ">NJ</option>
                             <option value="NM">NM</option>
                             <option value="NY">NY</option>
-                            <option value="NC" selected="selected">NC</option>
+                            <option value="NC">NC</option>
                             <option value="ND">ND</option>
                             <option value="OH">OH</option>
                             <option value="OK">OK</option>
@@ -170,13 +243,15 @@
                             <option value="WV">WV</option>
                             <option value="WI">WI</option>
                             <option value="WY">WY</option>
-                        </select></td>
+                        </select>
+                    </td>
                     <td></td>
-                    <td><select name="[students.s_nc_migrant_coe]qualifying_move">
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]QUALIFYING_MOVE">
                             <option value=""></option>
                             <option value="Current ">Current </option>
                             <option value="Previous">Previous</option>
-                        </select></td>
+                        </select>
+                    </td>
                 </tr>
                 <tr class="~[evenoddrow]">
                     <td>Children Moved</td>
@@ -186,28 +261,32 @@
                     <td></td>
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td><select name="[students.s_nc_migrant_coe]children_moved">
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]CHILDREN_MOVED">
                             <option value=""></option>
                             <option value="On own as worker">On own as worker</option>
                             <option value="With the worker">With the worker</option>
                             <option value="To join or precede the worker">To join or precede the worker</option>
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]moved_to_obtain">
+                        </select>
+                    </td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]MOVED_TO_OBTAIN">
                             <option value=""></option>
                             <option value="Qualifying Work – Obtained">Qualifying Work – Obtained</option>
                             <option value="Any Work – Obtained Qualifying">Any Work – Obtained Qualifying</option>
                             <option value="Qualifying Work – Did Not Obtain">Qualifying Work – Did Not Obtain</option>
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]temp_seas">
+                        </select>
+                    </td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]TEMP_SEAS">
                             <option value=""></option>
                             <option value="T">T</option>
                             <option value="S">S</option>
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]agri_fish">
+                        </select>
+                    </td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]AGRI_FISH">
                             <option value=""></option>
                             <option value="A">A</option>
                             <option value="F">F</option>
-                        </select></td>
+                        </select>
+                    </td>
                 </tr>
                 <tr class="~[evenoddrow]">
                     <td>If child(ren) moved "To join or precede the worker"</td>
@@ -217,24 +296,26 @@
                     <td></td>
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td>The worker moved on: <input type="text" class="psDateWidget" name="[students.s_nc_migrant_coe]worker_moved_on" value="" size="10"></td>
-                    <td><select name="[students.s_nc_migrant_coe]did_not_obtain_qual_work">
+                    <td>The worker moved on: <input type="text" class="psDateWidget" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]WORKER_MOVED_ON" value="" size="10"></td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]DID_NOT_OBTAIN_QUAL_WORK">
                             <option value=""></option>
                             <option value="Sought Work">Sought Work</option>
                             <option value="Has Prior History">Has Prior History</option>
                             <option value="Prior History / Sought Work">Prior History / Sought Work</option>
-                        </select></td>
-                    <td><select name="[students.s_nc_migrant_coe]temp_work_based_on">
+                        </select>
+                    </td>
+                    <td><select name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]TEMP_WORK_BASED_ON">
                             <option value=""></option>
                             <option value="Employer’s statement">Employer’s statement</option>
                             <option value="Verification of state documentation">Verification of state documentation</option>
                             <option value="Worker’s statement">Worker’s statement</option>
-                        </select></td>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
-                    <td>The child(ren) moved on: <input type="text" class="psDateWidget" name="[students.s_nc_migrant_coe]children_moved_on" value="" size="10"></td>
+                    <td>The child(ren) moved on: <input type="text" class="psDateWidget" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]CHILDREN_MOVED_ON" value="" size="10"></td>
                     <td></td>
-                    <td><input type="checkbox" name="[students.s_nc_migrant_coe]personal_subsistence" value="1">Personal Subsistence</td>
+                    <td><input type="checkbox" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]PERSONAL_SUBSISTENCE" value="1">Personal Subsistence</td>
                 </tr>
                 <tr class="~[evenoddrow]">
                     <td>Qualifying Activity</td>
@@ -244,16 +325,15 @@
                     <td></td>
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td><select name="[students.s_nc_migrant_coe]qualifying_activity">
-                            
-                        </select></td>
-                        <td><input type="text" name="[students.s_nc_migrant_coe]workers_name" size="30"></td>
+                    <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]QUALIFYING_ACTIVITY" value="" size="30"></td>
+                        <td><input type="text" name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]WORKERS_NAME" size="30"></td>
                     <td><select name="workers_relationship">
                             <option value=""></option>
                             <option value="Parent">Parent</option>
                             <option value="Guardian">Guardian</option>
                             <option value="Spouse">Spouse</option>
-                        </select></td>
+                        </select>
+                    </td>
                 </tr>
             </table>
             <table border="0" cellspacing="0" cellpadding="4">
@@ -264,9 +344,9 @@
                     
                 </tr>
                 <tr class="~[evenoddrow]">
-                    <td><textarea name="[students.s_nc_migrant_coe]children_moved_on_comment" cols="50" rows="5"></textarea></td>
-                    <td><textarea name="[students.s_nc_migrant_coe]moved_to_obtain_comment" cols="50" rows="5"></textarea></td>
-                    <td><textarea name="[students.s_nc_migrant_coe]temp_seas_comment" cols="50" rows="5"></textarea></td>
+                    <td><textarea name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]CHILDREN_MOVED_ON_COMMENT" cols="50" rows="5"></textarea></td>
+                    <td><textarea name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]MOVED_TO_OBTAIN_COMMENT" cols="50" rows="5"></textarea></td>
+                    <td><textarea name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]TEMP_SEAS_COMMENT" cols="50" rows="5"></textarea></td>
                 </tr>
             </table>
             <table border="0" cellspacing="0" cellpadding="4">
@@ -278,7 +358,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td><textarea name="[students.s_nc_migrant_coe]other_comment" cols="200" rows="3"></textarea></td>
+                    <td><textarea name="CF-[S_NC_MIGRANT_COE_ITEMS.S_NC_MIGRANT_COE_ITEMS:~(id)]OTHER_COMMENT" cols="175" rows="3"></textarea></td>
                 </tr>
             </table>
         <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>

@@ -1,29 +1,132 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>COE</title>
+    <title>North Carolina Migrant Education Program</title>
     ~[wc:commonscripts]
     <link href="/images/css/screen.css" rel="stylesheet" media="screen">
     <link href="/images/css/print.css" rel="stylesheet" media="print">
 </head>
 <body>
-    <form action="/admin/changesrecorded.white.html" method="POST">
-        ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; COE<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
-        ~[wc:title_student_begin_css]COE~[wc:title_student_end_css]
-<!-- start of content and bounding box -->
+    <form id=searchstu action="coe.html" method="GET">
+    ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a>
+    &gt; <a href="/admin/functions.html">~[text:psx.html.admin.functions.special_functions1]</a> &gt; <a href="/admin/cas/ncmep/migrant.html">Migrnat Administration</a> &gt; Student Search<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+    <h1>Migrant COE Search</h1>
+    <!-- start of content and bounding box -->
         <div class="box-round">
+            <div class="box-round cols" >
+                <h3>COE Search</h3>
+                <fieldset class="inline">
+                    <table>
+                        <tr class="~[evenoddrow]">
+                            <td>Last Name</td>
+                            <td>First Name</td>
+                            <td>Middle Name</td>
+                            <td>Student ID</td>
+                        </tr>
+                        <tr class="~[evenoddrow]">
+                            <td><input type="text" name="last_name" value="~[gpv:last_name]" size="30"></td>
+                            <td><input type="text" name="first_name" id="first_name" value="" size="30"></td>
+                            <td><input type="text" name="middle_name" id="middle_name" value="" size="30"></td>
+                            <td><input type="text" name="stuid" id="stuid" value="" size="30"></td>
+                        </tr>
+                        <tr class="~[evenoddrow]">
+                            <td>Birthdate</td>
+                            <td>Birth City</td>
+                            <td></td>
+                            <td>COE ID</td>
+                        </tr>
+                        <tr class="~[evenoddrow]">
+                            <td><input type="text" name="dob" id='dob' value="" size="30"></td>
+                            <td><input type="text" name="birth_city" id='birth_city' value="" size="30"></td>
+                            <td></td>
+                            <td><input type="text" name="coeid" id='coeid' value="" size="30"></td>
+                        </tr>
+                        <tr>
+                            <td><b>Male Parent</b></td>
+                            <td></td>
+                            <td><b>Female Parent</b></td>
+                            <td></td>
+                        </tr>
+                        <tr class="~[evenoddrow]">
+                            <td>Last Name</td>
+                            <td>First Name</td>
+                            <td>Last Name</td>
+                            <td>First Name</td>
+                        </tr>
+                        <tr class="~[evenoddrow]">
+                            <td><input type="text" name="male_ln" id='male_ln' value="" size="30"></td>
+                            <td><input type="text" name="male_fn" id='male_fn' value="" size="30"></td>
+                            <td><input type="text" name="female_ln" id='female_ln' value="" size="30"></td>
+                            <td><input type="text" name="female_fn" id='female_fn' value="" size="30"></td>
+                        </tr>
+                        
+                    </table>
+                </fieldset>
+                <div class="row-button">
+                <input type="hidden" name="term" value="~[x:scheduleinfo;curtermid]"><button type="submit" id="btnSearch" class="search"><em>&nbsp;</em></button>
+                </div>
+            </div>
+        </div>
+        <div class="box-round">
+
             <table class="tableToGrid paginateGrid">
                 <thead>
-                    <th>School Year</th>
-                    <th>QA Date</th>
-                    <th></th>
+                    <th>View</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Student Number</th>
+                    <th>Facility ID</th>
+                    <th>DOB</th>
+                    <th>Birth City</th>
+                    <th>Legal Father</th>
+                    <th>Legal Mother</th>
                 </thead>
                 <tbody>
-                    <td></td>
+                        ~[x:GetDoThisForStudents]
+                        ~[tlist_sql;
+                            SELECT
+                                stu.dcid,
+                                stu.last_name,
+                                stu.first_name,
+                                stu.middle_name,
+                                stu.student_number,
+                                stu.schoolid,
+                                to_char(stu.dob,'mm/dd/yyyy') dob,
+                                mstu.birth_city,
+                                stu.father,
+                                stu.mother
+                            FROM
+                                ps.students stu
+                            LEFT JOIN
+                                ps.s_nc_migrant_student mstu
+                                  ON mstu.studentsdcid = stu.dcid
+                            WHERE
+                                stu.last_name = '~[gpv:last_name]'
+                             OR stu.first_name = '~[gpv:first_name]'
+                             OR stu.middle_name = '~[gpv:middle_name]'
+                             OR stu.student_number = '~[gpv:stuid]'
+                             OR stu.dob = '~[gpv:dob]'
+                             OR mstu.birthcity = '~[gpv:birth_city]'
+                            AND rownum <= 120;alternatecolor]
+                    <tr>
+                        <td><a href="children.html?frn=001~(stu.dcid)">View</a></td>
+                        <td>~(stu.last_name,t)</td>
+                        <td>~(stu.first_name,t)</td>
+                        <td>~(stu.middle_name,t)</td>
+                        <td>~(stu.student_number,t)</td>
+                        <td>~(stu.schoolid,t)</td>
+                        <td>~(dob,t)</td>
+                        <td>~(mstu.birth_city,t)</td>
+                        <td>~(stu.father,t)</td>
+                        <td>~(stu.mother,t)</td>
+                    </tr>
+                        [/tlist_sql]
                 </tbody>
-                <td align="center"><a href="family.html?frn=~(studentfrn)" id="btnNew" name="btnNew" class="button">New</a></td>
             </table>
-        <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+            
+<!--        <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>   -->
         </div>
 </form>
 </body>

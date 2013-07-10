@@ -1,148 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Supplemental Programs</title>
+    <title>North Carolina Migrant Education Program</title>
     ~[wc:commonscripts]
     <link href="/images/css/screen.css" rel="stylesheet" media="screen">
     <link href="/images/css/print.css" rel="stylesheet" media="print">
-    <style type="text/css">
-	table.one { float: left; border: 1px solid; width: 600px }
-        table.two { float: left; border: 1px solid; width: 600px }
-    </style>
 </head>
 <body>
     <form action="/admin/changesrecorded.white.html" method="POST">
         ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; COE<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
-        ~[wc:title_student_begin_css]Supplemental Programs~[wc:title_student_end_css]
+        ~[wc:title_student_begin_css]Service Programs~[wc:title_student_end_css]
+
+            <ul class="tabs">
+                <li><a href="student_coe.html">COE</a></li>
+                <li><a href="school_history.html">Enrollment History</a></li>
+                <li class="selected"><a href="supplemental_programs.html">Services</a></li>
+                <li><a href="student_profile.html">Student Profile</a></li>
+            </ul>
 <!-- start of content and bounding box -->
         <div class="box-round">
-            <table class="one">
-                <tr class="headerRow">
-                    <td colspan="4">Add Single SP</td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td>Program</td>
-                    <td>Code</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td>Start Date</td>
-                    <td>End Date</td>
-                    <td>Funding</td>
-                    <td>Schedule</td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td><input type="text" name="" value="" size="10"></td>
-                    <td><input type="text" name="" value="" size="10"></td>
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Provider</td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <table class="two">
-                <tr class="headerRow">
-                    <td colspan="4">Add Group of SPs</td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td>SP Group</td>
-                    <td>SP Group Description</td>
-                    <td></td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td>Start Date</td>
-                    <td>End Date</td>
-                    <td>Schedule Override</td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td><input type="text" name="" value="" size="10"></td>
-                    <td><input type="text" name="" value="" size="10"></td>
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td>Funding Override</td>
-                    <td>Provider Override</td>
-                    <td></td>
-                </tr>
-                <tr class="~[evenoddrow]">
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td><select name="">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-        <div class="box-round">
-            <table class="tableToGrid paginateGrid">
-                <thead>
-                    <th>SP Code</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>SP Text</th>
-                    ~[tlist_sql;
-                        
-                     ]
-                </thead>
-                <tbody>
-                    <td>~(,t)</td>
-                    <td>~(,t)</td>
-                    <td>~(,t)</td>
-                    <td>~(,t)</td>
-                </tbody>
-                [/tlist_sql]
-            </table>
-        </div>
         <div class="box-round">
             <table class="tableToGrid paginateGrid">
                 <thead>
@@ -153,6 +29,96 @@
                     <th>Grade</th>
                     <th>Facility Name</th>
                     <th>School Code</th>
+                    ~[tlist_sql;
+                        
+                     ]
+                </thead>
+                <tbody>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                    <td>~(,t)</td>
+                </tbody>
+                [/tlist_sql]
+            </table>
+        </div>
+            <table>
+                <tr class="headerRow">
+                    <td colspan="5">Add Single Service</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Service</td>
+                    <td id="received">Referral Received</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><select name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_SUPP_PROGRAMS.S_NC_MIGRANT_SUPP_PROGRAMS:~(id)]CODE">
+                            <option value=""></option>
+                            ~[tlist_sql;
+                                SELECT g.name, g.value
+                                FROM gen g
+                                WHERE g.cat = 'service_codes'
+                                ORDER BY g.NAME;]
+                            <option value="~(g.name,t)">~(g.value,t)</option>
+                            [/tlist_sql]
+                        </select>
+                    </td>
+                    <td><input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_SUPP_PROGRAMS.S_NC_MIGRANT_SUPP_PROGRAMS:~(id)]REFERRAL_RECEIVED" id="received_check" value="Yes"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>Start Date</td>
+                    <td>End Date</td>
+                    <td>Funding</td>
+                    <td>Schedule</td>
+                    <td>Provider</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_SUPP_PROGRAMS.S_NC_MIGRANT_SUPP_PROGRAMS:~(id)]START_DATE" value="" size="10"></td>
+                    <td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_SUPP_PROGRAMS.S_NC_MIGRANT_SUPP_PROGRAMS:~(id)]END_DATE" value="" size="10"></td>
+                    <td><select name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_SUPP_PROGRAMS.S_NC_MIGRANT_SUPP_PROGRAMS:~(id)]FUNDING">
+                            <option value=""></option>
+                            <option value="Migrant">Migrant</option>
+                            <option value="Other">Other</option>
+                            <option value="Migrant + Other">Migrant + Other</option>
+                        </select>
+                    </td>
+                    <td><select name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_SUPP_PROGRAMS.S_NC_MIGRANT_SUPP_PROGRAMS:~(id)]SCHEDULE">
+                            <option value=""></option>
+                            <option value="Day Only">Day Only</option>
+                            <option value="Extended Day/Week">Extended Day/Week</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </td>
+                    <td><select name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_SUPP_PROGRAMS.S_NC_MIGRANT_SUPP_PROGRAMS:~(id)PROVIDER">
+                            <option value=""></option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Paraprofessional">Paraprofessional</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="box-round">
+            <table class="tableToGrid paginateGrid">
+                <thead>
+                    <th>Service</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Funding</th>
+                    <th>Scheduled</th>
+                    <th>Provider</th>
+                    <th>Received</th>
                     ~[tlist_sql;
                         
                      ]

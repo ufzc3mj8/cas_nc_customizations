@@ -1,0 +1,12 @@
+<tr>
+<td>School Year<td>
+<td>Interviewer</td>
+<td>Interview Date</td>
+<td>COE ID</td>
+</tr>
+<tr>
+<!--    <td><input type="text" name="" value="" readonly="true"><td>    -->
+<td>~(curyearid)</td>
+<td>~(interviewer)</td>
+<td>~(interview_date)</td>
+</tr>

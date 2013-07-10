@@ -1,4 +1,3 @@
-[
 ~[tlist_sql;
 SELECT
     wapt.studentsdcid,
@@ -22,8 +21,8 @@ LEFT JOIN
 LEFT JOIN
     ps.schools sch
       ON sch.school_number = stu.schoolid
-WHERE
-    (stu.schoolid=0 OR stu.schoolid=~(curschoolid))
+--WHERE
+--    STU.SCHOOLID LIKE CASE WHEN ~(curschoolid) = 0 THEN '%' ELSE to_char(~(curschoolid))
 ]
 {
 "studentdcid" : "~(wapt.studentsdcid;t)",
@@ -39,7 +38,6 @@ WHERE
 "student_number" : "~(stu.student_number;t)",
 "dob" : "~(dob;t)",
 "enroll_status" : "~(stu.enroll_status;t)"
-},
+}
 [/tlist_sql]
 {}
-]

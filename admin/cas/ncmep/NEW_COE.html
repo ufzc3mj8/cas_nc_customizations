@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New COE</title>
+    ~[wc:commonscripts]
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <script type="text/javascript">
+        $j(function()
+        {
+            $j("#school").change(function()
+            {
+                window.location='new_coe.html?' + this.value
+            });
+        });
+
+    </script>
+</head>
+<body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+    ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a>
+    &gt; <a href="/admin/functions.html">~[text:psx.html.admin.functions.special_functions1]</a> &gt; <a href="/admin/cas/ncmep/migrant.html">Migrnat Administration</a> &gt; New COE<!-- breadcrumb end -->~[wc:admin_navigation_css]
+<!-- start of content and bounding box -->
+        <div class="box-round">
+            <table>
+                <tr class="headerRow">
+                    <td colspan="2">COE</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Select LEA</td>
+                    <td><select name="">
+                            <option value=""></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Select School</td>
+                    <td><select name="school" id="school">
+                            <option value="">Select School</option>
+                            ~[tlist_sql;
+                            SELECT SCH.SCHOOL_NUMBER, SCH.NAME
+                            FROM PS.SCHOOLS SCH
+                            ORDER BY SCH.NAME;]
+                            <option value="school=~(sch.school_number)">~(sch.name)</option>
+                            [/tlist_sql]
+                        </select>
+                    </td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Select Student</td>
+                    <td><select name="student" id="student">
+                            <option value="">Select Student</option>
+                            ~[tlist_sql;
+                            SELECT STU.DCID, STU.LASTFIRST, STU.DOB
+                            FROM PS.STUDENTS STU
+                            WHERE STU.SCHOOLID = ~[gpv:school]
+                            ORDER BY STU.LASTFIRST;]
+                            <option value="student=~(stu.dcid)">~(stu.lastfrist)</option>
+                            [/tlist_sql]
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            </table>
+        <td align="center">
+<!--                <a href="family.html?frn=~(studentfrn)" id="btnNew" name="btnNew" class="button">New</a>    -->
+            <a href="family.html" id="btnNew" name="btnNew" class="button">New</a>
+        </td>
+        </div>
+</form>
+</body>
+</html>

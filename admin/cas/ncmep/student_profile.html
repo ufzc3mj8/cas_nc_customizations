@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>North Carolina Migrant Education Program</title>
+    ~[wc:commonscripts]
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <style type="text/css">
+        fieldset.a {
+            border: 1px solid black;
+            width :50%;
+            height: 150px;
+            padding : 10px;
+            margin : 0;
+            top: auto;
+            display : inline-block;
+            float: left;
+            
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
+        }
+        
+        fieldset.b {
+            border: 1px solid black;
+            width :50%;
+            height: 250px;
+            padding : 0;
+            margin : 0;
+            top: auto;
+            display : inline-block;
+            float: left;
+            
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        
+        fieldset.c {
+            border: 1px solid black;
+            padding : 5px;
+            margin : 0;
+        }
+    </style>
+</head>
+<body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+        ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; COE<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+        ~[wc:title_student_begin_css]Student Profile~[wc:title_student_end_css]
+
+            <ul class="tabs">
+                <li><a href="student_coe.html">COE</a></li>
+                <li><a href="school_history.html">Enrollment History</a></li>
+                <li><a href="supplemental_programs.html">Services</a></li>
+                <li class="selected"><a href="student_profile.html">Student Profile</a></li>
+            </ul>
+<!-- start of content and bounding box -->
+        <div class="box-round">
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>GED Received</td>
+                    <td>Medical Alert</td>
+                    <td>Medical Alert Type</td>                    
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>
+                        <select name="">
+                            <option value=""></option>
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </td>
+                    <td><input type="checkbox" name="" value="1"></td>
+                    <td>
+                        <select name="">
+                            <option value=""></option>
+                            <option value="Acute">Acute</option>
+                            <option value="Chronic">Chronic</option>
+                        </select>
+                    </td>
+                    </tr>
+            </table>
+            <h1>OSY Profile</h1>
+            <table>
+                <h2>Student Info</h2>
+                <tr class="~[evenoddrow]">
+                    <td>Date</td>
+                    <td>Completed by</td>
+                    <td>COE ID</td>
+                    <td>Address/Camp</td>
+                    <td>Phone</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="" value="" size="10"></td>
+                    <td><input type="text" name="" value=""></td>
+                    <td><input type="text" name="" value=""></td>
+                    <td><input type="text" name="" value=""></td>
+                    <td><input type="text" name="" value=""></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>Last Grade Attended</td>
+                    <td>Where</td>
+                    <td>Year</td>
+
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]LAST_GRADE_ATTENDED" value="" size="10"></td>
+                    <td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]WHERE_LAST" value=""></td>
+                    <td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]YEAR_LAST" value=""></td>
+                </tr>
+            </table>
+            <table>
+                <h3>Home Language</h3>
+                <tr class="~[evenoddrow]">
+                    <td><input type="checkbox" name="" id="english" value=""> English</td>
+                    <td><input type="checkbox" name="" id="spanish" value=""> Spanish</td>
+                    <td><input type="checkbox" name="" id="otherLang" value=""> Other:</td>
+                    <td><input type="text" name="" id="otherLangText" value="" size="30"></td>
+                    <td><select name="" id="">
+                            <option value=""></option>
+                            <option value=""></option>
+                            <option value=""></option>
+                            <option value=""></option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <h3>Health Needs</h3>
+                <tr class="~[evenoddrow]">
+                    <td><input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HEALTH_NEEDS[]" id="medical" value="Medical"> Medical</td>
+                    <td><input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HEALTH_NEEDS[]" id="vision" value="Vision"> Vision</td>
+                    <td><input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HEALTH_NEEDS[]" id="dental" value="Dental"> Dental</td>
+                    <td><input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HEALTH_NEEDS[]" id="urgent" value="Urgent"> Urgent</td>
+                    <td><input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HEALTH_NEEDS[]" id="otherHealth" value="Other"> Other:</td>
+                    <td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]OTHER_HEALTH_NEEDS" id="otherHealthText" value="" size="30"></td>
+                </tr>
+            </table>
+                <h3>Categories</h3>
+                <fieldset class="a">
+                    <legend>Expressed Interests In:</legend>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]EXPRESSED_INTERESTS_IN[]" value="Learning English">Learning English
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]EXPRESSED_INTERESTS_IN[]" value="Job Training">Job Training
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]EXPRESSED_INTERESTS_IN[]" value="Earning Diploma">Earning a Diploma
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]EXPRESSED_INTERESTS_IN[]" value="Not Sure">Not Sure
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]EXPRESSED_INTERESTS_IN[]" value="No Interest Indicated">No Interests Indicated
+                    </p>
+                </fieldset>
+                <fieldset class="a">
+                    <legend>Availability:</legend>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]AVAILABILITY[]" value="Days">Days
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]AVAILABILITY[]" value="Evenings">Evenings
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]AVAILABILITY[]" value="Weekends">Weekends
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]AVAILABILITY[]" value="Other">Other
+                    </p>
+                    <p>
+                        <textarea name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]OTHER_AVAILABILITY" cols="20" rows="3"></textarea>
+                    </p>
+                </fieldset>              
+                <fieldset class="a">
+                    <legend>Housing - Youth Lives:</legend>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HOUSING[]" value="With a Crew">With a Crew 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HOUSING[]" value="With non-work Friends">With Non-Work Friends
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HOUSING[]" value="With His/Her Parents">With His/Her Parents
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HOUSING[]" value="With Spouse &/or Kids">With Spouse &/or Kids
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HOUSING[]" value="Alone">Alone
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]HOUSING[]" value="Other">Other
+                    </p>
+                </fieldset>
+                <fieldset class="a">
+                    <legend>Reason for Leaving School:</legend>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]REASON_FOR_LEAVING[]" value="Lacking Credits">Lacking Credits
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]REASON_FOR_LEAVING[]" value="Needed to Work">Needed to Work
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]REASON_FOR_LEAVING[]" value="Missed State Test">Missed State Test
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]REASON_FOR_LEAVING[]" value="Not Interested/Disengaged">Not Interested / Disengaged
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]REASON_FOR_LEAVING[]" value="Suspended/Expelled">Suspended / Expelled
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]REASON_FOR_LEAVING[]" value="Other">Other:
+                        <textarea name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]OTHER_REASON_FOR_LEAVING" cols="40" rows="3"></textarea>
+                    </p>
+                </fieldset>
+                <fieldset class="b">
+                    <legend>Youth is a Candidate for:</legend>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="HS Diploma">HS Diploma 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="GED">GED
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="HEP">HEP 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Adulst Basic Ed.">Adult Basic Ed. 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="ESL/ELL">ESL/ELL
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="CAMP">CAMP 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Vocational Ed.">Vocational Ed. 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Job Training">Job Training 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Life Skills">Life Skills 
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="PASS">PASS
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Distance Learning">Distance Learning
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Mini-Lessons">Mini-Lessons
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Digital Edu. Resources">Digital Educational Resources
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Technology Classes">Technology Classes
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Parenting Classes">Parenting Classes
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Agriculture Saftey Classes">Agriculture Safety Classes
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]CANDIDATE_FOR[]" value="Other">Other
+                    </p>
+                    <p>
+                        <textarea name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]OTHER_CANDIDATE_FOR" cols="20" rows="3"></textarea>
+                    </p>
+                </fieldset>
+                <fieldset class="a">
+                    <legend>At Interview, Youth Received:</legend>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]YOUTH_RECEIVED[]" value="Educational Materials">Educational Materials
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]YOUTH_RECEIVED[]" value="Support Services">Support Services
+                    </p>
+                    <p>
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]YOUTH_RECEIVED[]" value="OSY Welcome Bag">OSY Welcome Bag
+                        <input type="checkbox" name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]YOUTH_RECEIVED[]" value="Referrals to Other Community Resources">Referrals to Other Community Resources (list in Comments)
+                    </p>
+                </fieldset>
+                <fieldset class="c">
+                    <legend>Comments</legend>
+                    <textarea name="CF-[STUDENTS:~(studentdcid;t).S_NC_MIGRANT_MISC.S_NC_MIGRANT_MISC:~(id)]OSY_PROFILE_COMMENTS" cols="80" rows="5"></textarea>
+                </fieldset>
+        </div>
+    </form>
+</body>
+</html>
