@@ -1,0 +1,116 @@
+<script type="text/javascript">
+    $j(document).ready( function() {
+        $j('#actionDuration').closest('tr').insertAfter($j('#actionBeginDate').closest('tr'));
+        $j('#actionBeginDate').change( function() {
+            calculateDuration('0');
+            $j('#actionDuration').focus();
+        });
+        $j('#actionDuration').change( function() {
+            calculateDuration('0');
+            checkSuspension();
+        });
+        $j('#actionCodesSelect').change( function() {
+            checkSuspension();
+        });
+        $j('#actionCodesSubCodeSelect').change( function() {
+            checkSuspension();
+        });
+        $j('#actionActualDuration').change( function() {
+            calculateDuration('1');
+        });
+    });
+
+    var dates = [~[tlist_sql;SELECT to_char(calendar_day.date_value,'fmmm/dd/yyyy')
+        FROM calendar_day 
+        INNER JOIN terms 
+          ON terms.schoolid = calendar_day.schoolid 
+          AND calendar_day.date_value BETWEEN terms.firstday AND terms.lastday
+          AND terms.id = ~(curyearid)00
+        WHERE calendar_day.schoolid = ~(curschoolid) AND calendar_day.insession = '1'
+        ORDER BY calendar_day.date_value]'~(1;t)',[/tlist_sql]''];
+
+    function checkSuspension() {
+        var actionCodeText = $j('#actionCodesSelect option:selected').text();
+        var actionSubCodeText = $j('#actionCodesSubCodeSelect option:selected').text();
+        var actionDuration = $j('#actionDuration').val();
+        if (
+            (actionSubCodeText.indexOf('OSS') >= 0
+            || actionSubCodeText.indexOf('ISS') >= 0
+            || actionCodeText.indexOf('Suspension') >= 0
+            || actionCodeText.indexOf('OOS') >= 0
+            ) && (parseInt(actionDuration) === 0 || actionDuration === "")) {
+            $j('#add_action_button').hide();
+            $j('#actionDuration').addClass('error').focus(); 
+        }
+        else
+        {
+            $j('#add_action_button').show();
+            $j('#actionDuration').removeClass('error');
+        }    
+    }
+    function calculateDuration(x) {
+        //START LOGIC TO ADD ERROR CLASSES TO FIELDS
+        var startDate = $j('#actionBeginDate').val();
+        var actionDuration = $j('#actionDuration').val();
+        if (actionDuration === '') {
+            $j('#add_action_button').hide();
+            $j('#actionDuration').addClass('error').focus();
+        } else {
+            $j('#add_action_button').show();
+            $j('#actionDuration').removeClass('error');
+        }
+        if (startDate === '') {
+            $j('#add_action_button').hide();
+            $j('#actionBeginDate').addClass('error').focus();
+        } else {
+            $j('#add_action_button').show();
+            $j('#actionBeginDate').removeClass('error');
+        }
+        //END LOGIC
+        //START LOGIC TO FIX ZERO-PADDED DATES
+        var beginDate = $j('#actionBeginDate').val();
+        var splitDate = beginDate.split(/\//);
+        for (i=0;i<=splitDate.length;i++) {
+            var value=splitDate[i]+'';
+            if (value.charAt(0) === "0") {
+                splitDate[i] = splitDate[i].substr(1);
+            }
+        }
+        beginDate = [splitDate[0], splitDate[1], splitDate[2]].join('/');
+        //END LOGIC
+        
+        if (x === '0') {
+            var actionDuration = $j('#actionDuration').val();
+        } else {
+            var actionDuration = $j('#actionActualDuration').val();
+        }
+        if (beginDate === "" || actionDuration === "") {
+            $j('#actionEndDate').val('');
+        } else {
+            var index = 0;
+            index = dates.indexOf(beginDate);
+            if (index === -1) {
+                alert('The date selected is not within the school year.\nYou may also not choose a day not in session (Saturday, Sunday, etc.)');
+                $j('#add_action_button').hide();
+                $j('#actionBeginDate').val('');
+                $j('#actionBeginDate').addClass('error');
+            } else {
+                index = index + Number(actionDuration);
+                $j('#add_action_button').show();
+                $j('#actionBeginDate').removeClass('error');
+                $j('#actionEndDate').val(dates[index]);
+                $j('#actionActualDuration').val(actionDuration);
+            }
+        }
+        var actualDuration = $j('#actionActualDuration').val();
+        if (actualDuration <= 10) {
+            $j('#durationCodesSelect option').filter( function() {
+                return this.text == 'Short Term';
+            }).attr('selected', true);
+        } else {
+            $j('#durationCodesSelect option').filter( function() {
+                return this.text == 'Long Term';
+            }).attr('selected', true);
+        }
+    };
+</script>

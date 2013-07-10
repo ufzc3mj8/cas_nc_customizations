@@ -1,0 +1,8 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('#nav-main-frame table tr:eq(1) td a').last().after(
+    '<BR><a href="/admin/students/studentpages/studentawards.html?frn=~(studentfrn)">Student Awards</a>'
+    +'<BR><a href="/admin/students/studentpages/studentemergency.html?frn=~(studentfrn)">Student Contacts</a>'
+    );
+})
+</script>

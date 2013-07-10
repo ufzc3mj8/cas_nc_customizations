@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "statereports.nc_overall_progress.content.footer.txt",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+</script>
+~[wc:CAS]
+
+<script type="text/javascript">
+$j('.stateDiv').append('<table cellspacing="0" cellpadding="0" border="0" align="center">\
+    <tbody>\
+      <tr class="headerRow">\
+        <td class="bold" width="25%">Custom Reports</td>\
+        <td class="bold" width="10%">Version</td>\
+        <td class="bold" width="65%">Description</td>\
+      </tr>\
+      <tr class="~[evenoddrow]">\
+        <td><a href="cas/reports/nc_overall_progress/nc_overall_progress_prefs.html?ac=reportselection&sectionid=~[gpv:sectionid]">Overall Progress Report</a></td>\
+        <td>1.0</td>\
+        <td>Overall Progress Report</td>\
+      </tr>\
+    </tbody>\
+  </table>');
+    $j(function() {
+      $j('form').before('<ul class="tabs">\
+        <li><a href="reports.html?ac=~[gpv:ac]&sectionid=~[gpv:sectionid]">System</a></li>\
+        <li class="selected"><a href="statereports.html?ac=~[gpv:ac]&sectionid=~[gpv:sectionid]">State</a></li>\
+        </ul>');
+    });
+
+</script>

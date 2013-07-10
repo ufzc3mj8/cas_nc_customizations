@@ -1,0 +1,16 @@
+<script type="text/javascript">
+	     $j(document).ready( function() {
+			  $j('.box-round').hide();
+			  
+			  // Hide all Delete elements
+			  setTimeout( function() {
+				       $j('.yui-dt0-col-del').each(function() {
+						    $j(this).hide();
+				       });
+				       $j('.box-round').show();
+				       $j('.edititem').click( function() {
+						    $j('#update_oral_button').hide();
+					});
+			  },1000);
+	     });
+</script>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>~[if.~(rn)=-99]~[text:psx.html.admin_entrycodes.edit.new][else]~[text:psx.html.admin_entrycodes.edit.edit][/if] Code Definition</title>
+~[wc:UI_js_includes]
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form action="home.html" method="POST">
+~[wc:admin_header_css]
+<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_entrycodes.edit.start_page]</a> &gt;
+<a href="/admin/district/home.html" target="_top">~[text:psx.html.admin_entrycodes.edit.district_setup]</a> &gt;
+<a href="/admin/cas/ec_codes/home.html">Code Category Definition</a> &gt;
+~[if.~(rn)=-99]New[else]Edit[/if] Code Category Definition<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>~[if.~(rn)=-99]~[text:psx.html.admin_entrycodes.edit.new1][else]~[text:psx.html.admin_entrycodes.edit.edit1][/if] Code Category Definition</h1><!-- start of content and bounding box -->
+<div class="box-round">
+
+<table>
+<tr bgcolor="#edf3fe">
+<td class="bold">Code shortname</td>
+<td><input type="text" name="[06]name" value="" size="15"></td>
+</tr>
+<tr>
+<td class="bold">Code Meaning</td>
+<td><input type="text" name="[06]value" value="" size="40"></td>
+</tr>
+<tr bgcolor="#edf3fe">
+<td class="bold">Sort Order</td>
+<td><input type="text" name="[06]sortorder" size="4" value=""></td>
+</tr>
+</table>
+
+<br>
+
+<div class="button-row"><input type="hidden" name="ac" value="prim"><input type="hidden" name="[06]cat" value="codedefs">~(deletebutton2)~[submitbutton]</div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

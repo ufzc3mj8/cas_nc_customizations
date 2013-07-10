@@ -1,0 +1,6 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('#button_accept').remove();
+    $j('#legal p').append(' <BR>Ability to accept suggested changes removed by NCDPI.');
+});
+</script>

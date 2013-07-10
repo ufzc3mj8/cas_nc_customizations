@@ -1,0 +1,49 @@
+<script>
+	$j(document).ready(function() {
+		$j("#gradPlans_treeBox").append('<input type="button" value="Add CTE Courses" onclick="addCteCourses();return false;" style="float:right">');
+	});
+	
+	$j.extend($j.expr[":"], {
+	    "starts-with": function(elem, i, data, set) {
+	        var text = $j.trim($j(elem).text()),
+	            term = data[3];
+	        
+	        return text.indexOf(term) === 0;
+	    },
+	
+	    "ends-with": function(elem, i, data, set) {
+	        var text = $j.trim($j(elem).text()),
+	            term = data[3];
+	        
+	        return text.lastIndexOf(term) === text.length - term.length;
+	    }
+	});
+	
+	$j('#students_gpentryyear_real').change(function(){
+		removeGradPlans($j('#students_gpentryyear_real').val());
+	});
+	
+	function addCteCourses(){
+		$j("span:starts-with('CTE')").each(function( index ) {
+			$j(this).click();
+		});
+	}
+	function removeGradPlans(yearEnter){
+		$j.ajax({
+			url: '/admin/students/GraduationPlanner/yearSelect.html',
+			data: 'year=' + yearEnter,  
+			success: function(data){
+				var nameArray=$j.parseJSON(data);
+				nameArray.pop();
+				$j.each(nameArray, function(i, item) {
+				    $j("span:contains('"+nameArray[i].name+"')").parent("div").parent("div").remove();
+				    console.log(nameArray[i].name);
+				});
+
+			}
+		});
+	}
+
+	
+	//$j("span:contains('CTE-1')").parent("div").parent("div").hide();
+</script>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>Code Category Definition</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form action="home.html" method="POST">
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_entrycodes.home.start_page]</a> &gt; <a href="/admin/district/home.html" target="_top">~[text:psx.html.admin_entrycodes.home.district_setup]</a> &gt; Code Category Definition<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>Code Definition</h1><!-- start of content and bounding box -->
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td align="center" colspan="3"><a href="edit.html?frn=006-99" id="btnNew" name="btnNew" class="button">~[text:psx.html.admin_entrycodes.home.new]</a></td>
+</tr>
+<tr bgcolor="#f6f6f6">
+<td class="bold">Code Category</td>
+<td class="bold">Description</td>
+<td align="center" class="bold">~[text:psx.html.admin_entrycodes.home.sort_order]</td>
+<td class="bold">Function</td>
+</tr>
+<tr bgcolor="#edf3fe">~[tlist;gen;cat=codedefs;alternatecolor;nonemessage=No Code Definitions were found;sortcmd;sortorder,&gt;]
+<td><a href="edit.html?frn=~(frn)">~(name)</a></td>
+<td><a href="edit.html?frn=~(frn)">~(value)</a></td>
+<td align="center"><input type="text" name="[06]sortorder" size="3" value=""></td>
+<td><a href="list.html?cat=~(name)&value=~(value)">View/Modify Codes</a></td>
+</tr>
+</table>
+<br>
+
+<div class="button-row"><input type="hidden" name="ac" value="prim"><input type="hidden" name="skippresavetrigger" value="TRUE">~[submitbutton]</div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+
+</body>
+</html><!-- non framed -->

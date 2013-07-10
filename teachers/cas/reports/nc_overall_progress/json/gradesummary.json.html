@@ -1,0 +1,75 @@
+{
+  ~[x:GetDoThisForStudents]
+  ~[RepeatForEach:Students]
+  "student-~(id)"       :   {
+    "academic" : [
+      ~[tlist_sql;
+        SELECT round((SUM(p_as.score)/SUM(p_a.pointspossible))*100,0) average
+        , SUM(p_a.pointspossible)
+        , SUM(p_as.score)
+        FROM psm_assignmentscore p_as
+        JOIN psm_sectionassignment p_sa
+        ON p_as.sectionassignmentid = p_sa.id
+        JOIN psm_assignment p_a
+        ON p_sa.assignmentid = p_a.id
+        JOIN psm_assignmentcategory p_ac
+        ON p_a.assignmentcategoryid = p_ac.id
+        JOIN psm_sectionenrollment p_se
+        ON p_as.sectionenrollmentid = p_se.id
+        JOIN sync_sectionmap s_sm
+        ON p_se.sectionid = s_sm.sectionid
+        JOIN sections s
+        ON s_sm.sectionsdcid = s.dcid
+        JOIN psm_student p_student
+        ON p_se.studentid = p_student.id
+        WHERE p_student.studentidentifier = ~(id)
+        AND s.id = ~[gpv:sectionid]
+        AND p_sa.dateassignmentdue BETWEEN to_date('~[gpv:startdate]','mm/dd/yyyy') AND to_date('~[gpv:enddate]','mm/dd/yyyy')
+        GROUP BY p_se.studentid]
+      {
+        "name"          : "Overall",
+        "average"       : "~(average)",
+        "tpp"           : "~(tpp)",
+        "tpe"           : "~(tpe)"
+      },
+      [/tlist_sql]
+      {}
+    ],
+    "categories" : [
+      ~[tlist_sql;
+        SELECT p_ac.name
+        , round((SUM(p_as.score)/SUM(p_a.pointspossible))*100,0) average
+        , SUM(p_a.pointspossible)
+        , SUM(p_as.score)
+        FROM psm_assignmentscore p_as
+        JOIN psm_sectionassignment p_sa
+        ON p_as.sectionassignmentid = p_sa.id
+        JOIN psm_assignment p_a
+        ON p_sa.assignmentid = p_a.id
+        JOIN psm_assignmentcategory p_ac
+        ON p_a.assignmentcategoryid = p_ac.id
+        JOIN psm_sectionenrollment p_se
+        ON p_as.sectionenrollmentid = p_se.id
+        JOIN sync_sectionmap s_sm
+        ON p_se.sectionid = s_sm.sectionid
+        JOIN sections s
+        ON s_sm.sectionsdcid = s.dcid
+        JOIN psm_student p_student
+        ON p_se.studentid = p_student.id
+        WHERE p_student.studentidentifier = ~(id)
+        AND s.id = ~[gpv:sectionid]
+        AND p_sa.dateassignmentdue BETWEEN to_date('~[gpv:startdate]','mm/dd/yyyy') AND to_date('~[gpv:enddate]','mm/dd/yyyy')
+        GROUP BY p_ac.name]
+      {
+        "name"          : "~(name)",
+        "average"       : "~(average)",
+        "tpp"           : "~(tpp)",
+        "tpe"           : "~(tpe)"
+      },
+      [/tlist_sql]
+      {}
+    ]
+  }
+  [between:Students],
+  [/RepeatForEach:Students]
+}

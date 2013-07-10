@@ -1,0 +1,174 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>W-APT Roster</title> 
+<!-- Required style sheets: screen.css, and print.css --> 
+	~[wc:commonscripts] 
+	<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+	<link href="/images/css/print.css" rel="stylesheet" media="print">
+        <script type="text/javascript" language="javascript" src="/admin/cas/scripts/tabletools/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="/admin/cas/scripts/tabletools/js/ZeroClipboard.js"></script>
+        <script type="text/javascript" src="/admin/cas/scripts/tabletools/js/TableTools.min.js"></script>
+        <style type="text/css" title="currentStyle">
+            @import "/admin/cas/scripts/tabletools/css/TableTools.css";
+        </style>
+        <script>
+            $j(document).ready( function () {
+                $j('#table_roster').dataTable( {
+                    "sDom": 'T<"clear">lfrtip',
+                    "oTableTools": {
+                        "sSwfPath": "/scripts/tabletools/swf/copy_csv_xls_pdf.swf",
+                    }
+                } );
+            } );
+        </script>
+</head> 
+<body> 
+	~[wc:admin_header_css] 
+    <div id="breadcrumbs"> 
+		<!-- breadcrumb start -->Your breadcrumbs go here<!-- breadcrumb end --> 
+    </div> 
+<!-- start of main menu and content --> 
+	~[wc:admin_navigation_css] 
+<!-- Start of Page --> 
+    <h1>W-APT Roster</h1>
+    
+        <ul class="tabs">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="search.html">Search</a></li>
+            <li><a href="data_entry.html">Data Entry</a></li>
+            <li class="selected"><a href="roster.html">Roster</a></li>
+        </ul>
+<!-- start of content area --> 
+	<div class="box-round"> 
+
+    <table id="table_roster">    
+    <thead>
+        <tr class="headerRow"> 
+            <th>Grade Span</th>
+            <th>Test Administered In</th>
+            <th>Classification</th>
+            <th>Test Date</th>
+            <th>LEA Code</th>
+            <th>School Code</th>
+            <th>Test Administrator</th>
+            <th>Grade</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>Student Number</th>
+            <th>Home Language</th>
+            <th>DOB</th>
+            <th>Speaking Raw</th>
+            <th>Speaking PL</th>
+            <th>Writing Raw</th>
+            <th>Writing PL</th>
+            <th>Listening Raw</th>
+            <th>Listening PL</th>
+            <th>Reading Raw</th>
+            <th>Reading PL</th>
+            <th>CPL</th>
+            <th>Adjusted CPL</th>
+            <th>LEP Status</th>
+            <th>LEP Tier</th>
+            <th>Born Outside US</th>
+            <th>Between 3 and 21</th>
+            <th>First Year In U.S. Schools</th>
+            <th>Year Returned to U.S. Schools</th>
+            <th>First Year OUT of U.S. Schools</th>
+            <th>Years In U.S. Schools</th>
+            <th>Immigrant</th>
+        </tr> 
+   </thead>
+   <tbody>
+        ~[tlist_sql;
+        SELECT
+            aud.grade_id Grade_Span,
+            sheet.grade_semester_id,
+            sheet.class_id,
+            to_char(sheet.test_dte,'mm/dd/yyyy') test_date,
+            aud.lea_code,
+            aud.school_code,
+            sheet.test_administrator,
+            stu.grade_level,
+            stu.first_name,
+            stu.last_name,
+            stu.gender,
+            stu.student_number,
+            ps_customfields.getcf('students',stu.id,'stu.primarylanguage') home_lang,
+            to_char(stu.dob,'mm/dd/yyyy') dob,
+            sheet.speaking_raw,
+            sheet.speaking_pl_id,
+            sheet.writing_raw,
+            sheet.writing_pl_id,
+            sheet.listening_raw,
+            sheet.listening_pl_id,
+            sheet.reading_raw,
+            sheet.reading_pl_id,
+            sheet.cpl,
+            sheet.adjusted_cpl,
+            sheet.lep_status_id,
+            sheet.tier_id,
+            aud.born_outside_us,
+            aud.between_3_21,
+            aud.first_school_year_id,
+            aud.returned_school_year_id,
+            aud.out_school_year_id,
+            '' yrs_us,
+            aud.immigrant
+        FROM
+            ps.students stu
+        LEFT JOIN
+            ps.s_nc_wapt_sheet_audit aud
+              ON aud.studentsdcid = stu.dcid
+        LEFT JOIN
+            ps.s_nc_wapt_sheet sheet
+              ON sheet.studentsdcid = stu.dcid
+              AND sheet.test_dte = aud.test_dte
+        WHERE
+            stu.schoolid LIKE CASE WHEN ~(curschoolid) = 0 THEN '%' ELSE to_char(~(curschoolid)) END
+        AND rownum <= 50;alternatecolor]
+        <tr>
+            <td>~(1,t)</td>
+            <td>~(2,t)</td>
+            <td>~(3,t)</td>
+            <td>~(4,t)</td>
+            <td>~(5,t)</td>
+            <td>~(6,t)</td>
+            <td>~(7,t)</td>
+            <td>~(8,t)</td>
+            <td>~(9,t)</td>
+            <td>~(10,t)</td>
+            <td>~(11,t)</td>
+            <td>~(12,t)</td>
+            <td>~(13,t)</td>
+            <td>~(14,t)</td>
+            <td>~(15,t)</td>
+            <td>~(16,t)</td>
+            <td>~(17,t)</td>
+            <td>~(18,t)</td>
+            <td>~(19,t)</td>
+            <td>~(20,t)</td>
+            <td>~(21,t)</td>
+            <td>~(22,t)</td>
+            <td>~(23,t)</td>
+            <td>~(24,t)</td>
+            <td>~(25,t)</td>
+            <td>~(26,t)</td>
+            <td>~(27,t)</td>
+            <td>~(28,t)</td>
+            <td>~(29,t)</td>
+            <td>~(30,t)</td>
+            <td>~(31,t)</td>
+            <td>~(32,t)</td>
+            <td>~(33,t)</td>
+        </tr>
+        [/tlist_sql]
+   </tbody> 
+   </table> 	 
+</div> 
+<!-- end of content area --> 
+	~[wc:admin_footer_css] 
+
+</body> 
+</html>

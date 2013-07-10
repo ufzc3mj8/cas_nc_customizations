@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Enroll In A Class At Another LEA</title>
+~[wc:UI_js_includes]
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.enrollinotherschool.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.enrollinotherschool.student_selection]</a> &gt; <a href="/admin/students/functions.html?frn=~(studentfrn)">~[text:psx.html.admin_students.enrollinotherschool.functions]</a> &gt; Enroll In A Class At Another LEA<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]Enroll In A Class At Another LEA~[wc:title_student_end_css]
+
+<!-- start of content and bounding box -->
+<ul class="tabs">
+    <li class="selected"><a href="/admin/students/enrollinotherlea.html?frn=~(studentfrn)">Enroll Student</a></li>
+    <li><a href="/admin/students/enrollinotherlea_requests.html?frn=~(studentfrn)">View Requests</a></li>
+    <!--<li><a href="/admin/students/enrollinotherlea_enrollments.html?frn=~(studentfrn)">View Enrollments</a></li>-->
+</ul>
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr class="~[evenoddrow;reset]">
+<td class="bold">Student Name</td>
+<td>~(studentname)</td>
+</tr>
+<tr class="~[evenoddrow]">
+<td class="bold">LEA Where Class Is Held</td>
+    <td>
+        <select name="LEA" id="LEA">
+            <option value="">Select an LEA</option>
+            ~[tlist_sql;SELECT to_char(p.value), (select to_char(p2.value) FROM PSODS.PREFS@DBL_PSODS p2 WHERE p2.name = 'districtname' AND p2.district_id = p.district_id)
+            FROM PSODS.PREFS@DBL_PSODS p
+            WHERE p.name = 'districtnumber'
+            ]<option value="~(districtnumber;t)">~(districtname;t)</option>[/tlist_sql]
+        </select>
+    </td>
+</tr>
+<tr class="~[evenoddrow]">
+<td class="bold">School Where Class Is Held</td>
+<td><div id="schoolContainer"></div>
+    
+</td>
+</tr>
+<tr class="~[evenoddrow]">
+<td class="bold">Enrollment Date</td>
+<td><input type="text" class="psDateWidget" name="enrolldate" value="~[short.date]" size="10" id="enrolldate"></td>
+</tr>
+<tr class="~[evenoddrow]">
+<td class="bold">Stop Date (for Wait List)</td>
+<td><input type="text" class="psDateWidget" name="stopdate" value="~(f.add;~(f.currentdate);7)" size="10" id="stopdate"></td>
+</tr>
+</table>
+<br>
+<div class="box-round" id="sectionList"></div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+<script type="text/javascript">
+    function validateEmail(email) { 
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    } 
+    $j(document).ready( function() {
+        //SET PASSWORD FOR BATCH FILE
+        var password = '';
+        password = $j('#WM_PASSWORD').val();
+        $j.trim(password);
+        if (password === '') {
+            var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+            var string_length = 8;
+            var randomstring = '';
+            for (var i=0; i<string_length; i++) {
+                var rnum = Math.floor(Math.random() * chars.length);
+                randomstring += chars.substring(rnum,rnum+1);
+            }
+            $j('#WM_PASSWORD').val(randomstring);
+        };
+        
+        //MONITOR CHANGES FOR LEA
+        $j('#LEA').change( function() {
+            //GET STUDENT EMAIL
+            var email = $j('#studEmail_0').val();
+            var condition = validateEmail(email);
+            if (!condition && $j(this).val() == '299') {
+                alert('Student has either blank or incorrect E-Mail Address\n\nYou must have a correct student email address to enroll in NCVPS.');
+                self.location="/admin/students/emailconfig.html?frn=~(studentfrn)";
+                $j('.box-round').remove();
+            } else {
+                $j('#schoolContainer').empty();
+                var leaid = $j(this).val();
+                $j.ajax({
+                    type    : 'POST',
+                    url     : 'enrollinotherlea_helper_schoolid.html?leaid='+leaid,
+                    success : function(data, x, xhrobj) {
+                        $j('#schoolContainer').append(data);
+                        $j('[name="schoolid"]').change( function() {
+                            $j('#sectionList').empty();
+                            var schoolid = $j(this).val();
+                            $j.ajax({
+                                type    : 'POST',
+                                url     : 'enrollinotherlea_helper.html?schoolid='+schoolid,
+                                success : function(data, x, xhrobj) {
+                                    $j('#sectionList').append(data);
+                                    $j('input[name="search"]').keyup(function(e){
+                                        var code = (e.keyCode ? e.keyCode : e.which);
+                                        if(code == 8) {
+                                                $j('tr.data-row').css("display", "");
+                                                $j('tr.data-row').removeClass('selected');
+                                        }
+                                        var searchterm = $j(this).val();
+                            
+                                        if(searchterm.length > 0) {
+                                            var match = $j('tr.data-row:contains("' + searchterm + '")');
+                                            var nomatch = $j('tr.data-row:not(:contains("' + searchterm + '"))');
+                                            //match.children().addClass('selected-cell');
+                                            match.addClass('selected');
+                                            nomatch.css("display", "none");
+                                        } else {
+                                            $j('tr.data-row').css("display", "");
+                                            $j('tr.data-row').removeClass('selected');
+                                            //$('tr.data-row td').removeClass('selected-cell');
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+            };
+        });
+    });
+    function addSection(lea, sec, obj) {
+        $j('.button').remove();
+        //$j('#button'+obj).remove();
+        $j('#td'+obj).toggleClass('loading');
+        $j('#td'+obj).html('Enrolling');
+        var currentdate = new Date(); 
+        var datetime = (currentdate.getMonth()+1) + "/"
+                + currentdate.getDate()  + "/" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        $j('#SECTION_ENTRY_DATE').val($j('#enrolldate').val());
+        $j('#DEST_LEA_CODE').val(lea);
+        $j('#DEST_SECTION_ID').val(sec);
+        $j('#SOURCE_LEA_CODE').val('~[displaypref:districtnumber]');
+        $j('#SOURCE_LEA_HOST').val('~[tlist_sql;SELECT CONFIGVALUE FROM CONFIGITEM WHERE NAME = 'com.pearson.powerschool.external.host']~(1;t)[/tlist_sql]');
+        $j('#STOP_DATE').val($j('#stopdate').val());
+        $j('#TIMEDATESTAMP').val(datetime);
+        $j('#mainForm').submit();
+    }
+    //function AttTime()
+    //{
+    //    var browserName=navigator.appName; 
+    //    
+    //    var now = new Date();
+    //    var NowYear = now.getYear();
+    //    if (NowYear < 2000) NowYear += 1900;  // Netscape fix
+    //    
+    //    var Today = now.getMonth()+1 + "/" + now.getDate() + "/" + NowYear;
+    //    var Hour;
+    //    var Time;
+    //    if ((now.getHours()) > 12)
+    //        { Hour = (now.getHours() - 12); }
+    //    else
+    //        { Hour = now.getHours(); }
+    //    
+    //    if (now.getHours() < 12)
+    //    {
+    //        if (now.getMinutes() < 10)
+    //            {Time = Hour + ":0" + now.getMinutes() + " AM"; }
+    //        else
+    //            {Time = Hour + ":" + now.getMinutes() + " AM"; }
+    //    }
+    //    else 
+    //    {
+    //        if (now.getMinutes() < 10)
+    //            {Time = Hour + ":0" + now.getMinutes() + " PM"; }
+    //        else
+    //            {Time = Hour + ":" + now.getMinutes() + " PM"; }
+    //    }
+    //}
+</script>
+<form id="mainForm" action="/admin/students/enrollinotherlea_requests.html?frn=~(studentfrn)" method="post">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]SECTION_ENTRY_DATE" value="" width="10" id="SECTION_ENTRY_DATE">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]SELECT_PROCESSED" value="" width="10" id="SECTION_ENTRY_DATE">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]DEST_LEA_CODE" value="" width="10" id="DEST_LEA_CODE">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]DEST_SECTION_ID" value="" width="10" id="DEST_SECTION_ID">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]SOURCE_LEA_CODE" value="" width="10" id="SOURCE_LEA_CODE">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]SOURCE_LEA_HOST" value="" width="10" id="SOURCE_LEA_HOST">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]STOP_DATE" value="" width="10" id="STOP_DATE">
+    <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:-1]TIMEDATESTAMP" value="" width="10" id="TIMEDATESTAMP">
+    <input type="hidden" name="[students]WM_PASSWORD" value="" id="WM_PASSWORD">
+    
+    <input type="hidden" name="ac" value="prim">
+</form>
+<div id="studentEmailHidden" style="display: none">
+    ~[brij_renderform:studentemail;:ListStudentEmails;:studentemail;:StoreStudentEmails]
+</div>
+
+</body>
+</html><!-- end right frame -->

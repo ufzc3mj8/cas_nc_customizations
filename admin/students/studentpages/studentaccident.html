@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Student Accident Log</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+	<style type="text/css">
+		.alternateTable:nth-of-type(odd) {background: #EDF3FE;}
+		.alternateTable:nth-of-type(even) {background: #D7EDF4;}
+	</style>
+</head>
+
+<body>
+
+<form action="/admin/students/studentpages/studentaccident.html?frn=~(studentfrn)" method="POST" id="mainForm">
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.modifydata.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.modifydata.student_selection]</a> &gt; Student Accident Log<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]Student Accident Log~[wc:title_student_end_css]
+
+<!-- start of content and bounding box -->
+<div class="box-round" id="divData">
+	<a id="addRecord" class="button">New Record</a>
+~[tlist_sql;SELECT
+studentsdcid,
+id,
+DATE_OF_INCIDENT,
+INCIDENT_TYPE_CODE,
+INJURY_DESC,
+ON_SCHOOL_PREMISES,
+HOW_WHERE_INCIDENT,
+LOCATION_CODE,
+LOCATION_NAME,
+TIME_OF_INCIDENT,
+FIRST_AID_PROVIDED,
+FIRST_AID_PROVIDED_BY,
+PARENT_NOTIFIED,
+PARENTS_NAME,
+POLICE_CALLED,
+SENT_HOME
+FROM S_NC_STUDENTACCIDENTS
+WHERE STUDENTSDCID = ~(RN)
+ORDER BY DATE_OF_INCIDENT]
+<table id="tableData" class="alternateTable">
+	<tbody>
+		<tr>
+			<td>Date of Incident</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]DATE_OF_INCIDENT" value="" size="12" maxlength="7" class="DATE"></td>
+			<td>Incident Type</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]INCIDENT_TYPE_CODE" value="" size="16" maxlength="11" class="NUMBER"></td>
+			<td>Injury Description</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]INJURY_DESC" value="" size="70" maxlength="65" class="VARCHAR2"></td>
+			<td>On School Premesis</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]ON_SCHOOL_PREMISES" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>How / Where</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]HOW_WHERE_INCIDENT" value="" size="125" maxlength="120" class="VARCHAR2"></td>
+			<td>Location</td><td>
+				<input type="hidden" name="LOCATION_CODE_VALUE" id="LOCATION_CODE_VALUE~(count;-)" value="~(LOCATION_CODE_VALUE;t)">"
+				<select name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]LOCATION_CODE" class="LOCATION_CODE" id="LOCATION_CODE~(count;-)">
+					<option value="">Select</option>
+				</select>
+				<input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]LOCATION_NAME" value="" size="55" maxlength="50" class="VARCHAR2"></td>
+		</tr>
+		<tr>
+			<td>Time</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]TIME_OF_INCIDENT" value="" size="12" maxlength="7" class="DATE"></td>
+			<td>First Aid?</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]FIRST_AID_PROVIDED" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>First Aid Provided</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]FIRST_AID_PROVIDED_BY" value="" size="35" maxlength="30" class="VARCHAR2"></td>
+			<td>Parent Notified</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]PARENT_NOTIFIED" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>Parent Name</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]PARENTS_NAME" value="" size="65" maxlength="60" class="VARCHAR2"></td>
+			<td>Police Called</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]POLICE_CALLED" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>Sent Home</td><td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:~(id)]SENT_HOME" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td id="~(id)">
+				<a name="editRecord" class="button">View/Edit Full Record</a>
+				<a name="deleteRecord" class="button">Delete Record</a>
+				<a name="deleteRecordCancel" class="button" style="display: none">Cancel Delete</a>
+				<a name="deleteRecordConfirm" class="button" style="display: none;background-color: Orange">Confirm Delete</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+	[/tlist_sql]
+<div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</div>
+
+
+<br>
+
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+<table id="clonedata" style="display: none" class="alternateTable">
+	<tbody id="tbodyCloneData">
+		<tr>
+			<td>Date of Incident</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]DATE_OF_INCIDENT" value="" size="12" maxlength="7" class="DATE"></td>
+			<td>Incident Type</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]INCIDENT_TYPE_CODE" value="" size="16" maxlength="11" class="NUMBER"></td>
+			<td>Injury Description</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]INJURY_DESC" value="" size="70" maxlength="65" class="VARCHAR2"></td>
+			<td>On School Premesis</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]ON_SCHOOL_PREMISES" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>How / Where</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]HOW_WHERE_INCIDENT" value="" size="125" maxlength="120" class="VARCHAR2"></td>
+			<td>Location</td><td>
+				<select name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]LOCATION_CODE" class="LOCATION_CODE" id="LOCATION_CODE~(count;-)">
+					<option value="">Select</option>
+				</select>
+				<input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]LOCATION_NAME" value="" size="55" maxlength="50" class="VARCHAR2"></td>
+		</tr>
+		<tr>
+			<td>Time</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]TIME_OF_INCIDENT" value="" size="12" maxlength="7" class="DATE"></td>
+			<td>First Aid?</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]FIRST_AID_PROVIDED" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>First Aid Provided</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]FIRST_AID_PROVIDED_BY" value="" size="35" maxlength="30" class="VARCHAR2"></td>
+			<td>Parent Notified</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]PARENT_NOTIFIED" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>Parent Name</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]PARENTS_NAME" value="" size="65" maxlength="60" class="VARCHAR2"></td>
+			<td>Police Called</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]POLICE_CALLED" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			<td>Sent Home</td><td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTACCIDENTS.S_NC_STUDENTACCIDENTS:!!!]SENT_HOME" value="" size="6" maxlength="1" class="VARCHAR2"></td>
+			
+			<td id="~(id)">
+				<a name="undoNewAward" class="button">Undo</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script type="text/javascript">
+	var cnt = 0;
+	$j(document).ready( function() {
+		$j('#addRecord').click( function() {
+			cnt = cnt-1;
+			var tdata = $j('#clonedata tbody').children().clone(true);
+			//tdata.attr("id","clonedata" + cnt);
+			tdata.find('input,select,textarea').each( function() {
+				var name = $j(this).attr("name");
+				//console.log($j(this));
+				//console.log(name);
+				name = name.replace('!!!',cnt);
+				//console.log(name);
+				$j(this).attr("name",name);
+			});
+			//console.log(tdata);
+			//tdata.show();
+			//$j('#tableData tbody').append(tdata); //Use for single row insertion
+			$j('.button-row').before(tdata); //Use for whole table insertion
+			//$j('#tbodyData').append(tdata);
+		});
+		$j('[name="deleteRecord"]').click( function() {
+			$j(this).hide().next().show().next().show();
+			//$j('#deleteRecord').hide();
+			//$j('#deleteRecordCancel').show();
+			//$j('#deleteRecordConfirm').show();
+		});
+		$j('[name="undoNewAward"]').click( function() {
+			$j(this).parent().parent().remove();
+		});
+		$j('[name="deleteRecordConfirm"]').click( function() {
+			var idToDelete = $j(this).parent().attr('id');
+			var formAction = $j('form').attr('action');
+			//DC-STUDENTS:19564.S_NC_MEDICINE.S_NC_MEDICINE:32=on
+			$j('.button-row').append('<input type="hidden" name="DC-STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:'+idToDelete+'" value="on">');
+			$j(this).parent().parent().remove();
+		});
+		$j('[name="deleteRecordCancel"]').click( function() {
+			$j(this).hide().next().hide();
+			$j(this).prev().show();
+			//$j('#deleteRecord').show();
+			//$j('#deleteRecordCancel').hide();
+			//$j('#deleteRecordConfirm').hide();
+		});
+		//START CODE BLOCK FOR AWARD TYPES
+		var award_types = {};
+		~[tlist_sql;SELECT g.name, g.value FROM gen g WHERE g.cat = 'award_types' ORDER BY g.sortorder]
+		award_types['~(1;t)'] = '~(2;t)';[/tlist_sql]
+		for(var ddRow in award_types){
+			var option1 = document.createElement("option");
+			option1.value=ddRow;
+			option1.text=award_types[ddRow];
+			$j('.AWARD_CATEGORY_CODE').append(option1);
+		}
+		$j('.AWARD_CATEGORY_CODE').each( function(i,v) {
+			var inputValue = $j('#AWARD_CATEGORY_CODE_VALUE'+i).val();
+			$j('#AWARD_CATEGORY_CODE'+i).val(inputValue);
+		});
+		//END CODE BLOCK FOR AWARD TYPES
+		
+	});
+</script>
+</body>
+</html><!-- end right frame -->

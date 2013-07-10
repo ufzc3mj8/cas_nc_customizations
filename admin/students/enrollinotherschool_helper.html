@@ -1,0 +1,50 @@
+	<h2>Enroll in section:</h2>
+	Search sections: <input type="text" name="search" />
+	<div style="height:250px; overflow-x:auto; display: block;">
+	<table id="courseData">
+		<thead>
+			<tr class="headerRow">
+				<td>Course Number</td>
+				<td>Course Name</td>
+                                <td>Section Number</td>
+                                <td>Teacher</td>
+                                <td>Expression</td>
+                                <td>Term</td>
+                                <td>Enrollment</td>
+                                <td>Enroll</td>
+			</tr>
+		</thead>
+		<tbody>
+			~[tlist_sql;SELECT sec.course_number, c.course_name, sec.section_number, t.lastfirst, sec.expression, terms.abbreviation,
+			CASE WHEN to_number(sec.no_of_students) >= to_number(sec.maxenrollment)
+			THEN 'IndianRed'
+			ELSE 'White'
+			END,
+			sec.no_of_students || '/' || sec.maxenrollment,
+			CASE WHEN to_number(sec.no_of_students) >= to_number(sec.maxenrollment)
+			THEN 'Y'
+			ELSE 'N'
+			END
+                            FROM sections sec
+                            INNER JOIN courses c ON c.course_number = sec.course_number
+                            INNER JOIN teachers t ON t.id = sec.teacher
+                            INNER JOIN terms ON terms.id = sec.termid AND terms.schoolid = sec.schoolid
+                            WHERE sec.schoolid = ~[gpv:schoolid] AND (sec.termid = ~(curtermid) OR sec.termid = ~(curyearid)00)
+                            ORDER BY c.course_name, sec.expression]
+			<tr class="data-row">
+				<td>~(course_number;t)</td>
+				<td>~(course_name;t)</td>
+                                <td>~(section_number;t)</td>
+                                <td>~(teacher;t)</td>
+                                <td>~(expression;t)</td>
+                                <td>~(term;t)</td>
+				<td bgcolor="~(bgcolor;t)" ~(bgcolor;t;if.test=IndianRed;then=class="bold";else=)>~(maxenrollment;t)</td>
+                                ~(disabled;t;if.test=Y;then=
+				<td id="td~(count;-)">DISABLED</td>
+				;else=
+				<td id="td~(count;-)"><a onClick="return addSection('~(course_number;t)','~(section_number;t)','~(count;-)')" class="button" id="button~(count;-)">Enroll</a></td>
+                                )
+			</tr>[/tlist_sql]
+		</tbody>
+	</table>
+	</div>

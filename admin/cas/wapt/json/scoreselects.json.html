@@ -1,0 +1,25 @@
+[
+~[tlist_sql;
+SELECT CASE
+WHEN test_id = 1
+THEN 'srselect'
+WHEN test_id = 2
+THEN 'wrselect'
+WHEN test_id = 3
+THEN 'lrselect'
+WHEN test_id = 4
+THEN 'rrselect'
+END selectname
+, max(raw_score_max)
+FROM S_NC_WAPT_DOM
+WHERE area = 'PROF_LEVEL_CONVERSION'
+AND range_id = ~[gpv:rangeid]
+AND active='Y'
+GROUP BY test_id]
+{
+"select" : "~(selectname;t)",
+"maxval" : "~(raw_score_max;t)"
+},
+[/tlist_sql]
+{}
+]

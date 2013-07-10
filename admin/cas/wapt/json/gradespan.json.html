@@ -1,0 +1,19 @@
+[
+      ~[tlist_sql;
+          SELECT description
+          , codes
+          , range_id
+          FROM S_NC_WAPT_DOM
+          WHERE area = 'RANGE'
+          AND active='Y'
+          ORDER BY max_grade_id
+          , description
+      ]
+      {
+        "description" : "~(description;t)",
+        "code" : "~(codes;t)",
+        "rangeid" : "~(rangeid;t)"
+      },
+      [/tlist_sql]
+      {}
+]

@@ -1,0 +1,11 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table tr').first().remove();
+    $j('.box-round table tr').first().remove();
+    $j('.box-round table tr').first().remove();
+    $j('.box-round table tr').first().remove();
+    $j('.box-round table tr').first().remove();
+    $j('.box-round table tr').first().remove();
+    $j('.box-round table').first().prepend('<tr bgcolor="#D7EDF3"><td colspan="100%">Please refer to the <a href="/admin/students/studentpages/studentemergency.html?frn=~(studentfrn)">Student Contacts</a> page to view emergency contacts.</td></tr>')
+});
+</script>

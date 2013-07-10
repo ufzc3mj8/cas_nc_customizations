@@ -1,0 +1,43 @@
+<div class="clearfix pagewidth">
+  <div class="apstudentname">{{lastfirst}}</div>
+  <div class="appupilinfo">
+    <div class="appupiltitle">Pupil No.</div>
+    <div class="appupilnumber">{{studentnumber}}</div>
+  </div>
+  <div class="apclassabsence">
+    ~[if.~[gpv:class_attendance]=on]
+    <div class="apclassabsencelabel">
+      Class Absences from {{startdate}} to {{enddate}} :
+    </div>
+    <div class="absencetotals">
+      <div style="float:left;">
+        <div class="abstenttitle">Absent</div>
+        <div class="abstenttitle">Late</div>
+      </div>
+      <div style="float:left;">
+        <div class="absentbox">{{absences}}</div>
+        <div class="absentbox">{{tardies}}</div>
+      </div>
+    </div>
+    [/if]
+  </div>
+</div>
+<div class="courseinfo clearfix">
+  <div style="width:216pt;float:left;">
+    <div class="apcourselabel">Class</div>
+    <div class="apcourseinfo">{{coursename}} ({{sectionnum}})</div>
+  </div>
+  <div style="width:72pt;float:left;">
+    <div class="apcourselabel">Period</div>
+    <div class="apcourseinfo">{{expression}}</div>
+  </div>
+  <div style="width:216pt;float:right;">
+    <div class="apcourselabel">Teacher</div>
+    <div class="apcourseinfo">{{teachername}}</div>
+  </div>
+  <br>
+</div>
+<div class="apsummaryterm">Reporting Term: {{#if term}}{{term}}{{else}}{{startdate}} - {{enddate}}{{/if}}</div>
+<div style="width:216pt;float:right;">
+  <div class="apsummaryterm">Homeroom: {{homeroom}}</div>
+</div>

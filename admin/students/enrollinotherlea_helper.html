@@ -1,0 +1,58 @@
+	<h2>Enroll in section:</h2>
+	Search sections: <input type="text" name="search" />
+	<div style="height:250px; overflow-x:auto; display: block;">
+	<table id="courseData" CLASS="linkDescList">
+		<thead>
+			<tr class="headerRow">
+				<th>Course Number</th>
+				<th>Course Name</th>
+                                <th>Section Number</th>
+                                <th>Teacher</th>
+                                <th>Expression</th>
+                                <th>Term</th>
+				<th>Enrollment</th>
+                                <th>Enroll</th>
+			</tr>
+		</thead>
+		<tbody>
+			~[tlist_sql;SELECT c.course_number, c.course_name, sec.SECTION_id, U.lastfirst, sec.expression, terms.abbreviation,
+			CASE WHEN to_number(sec.no_of_students) >= to_number(sec.maxenrollment)
+			THEN 'IndianRed'
+			ELSE 'White'
+			END,
+			sec.no_of_students || '/' || sec.maxenrollment,
+			CASE
+				WHEN to_number(sec.no_of_students) >= to_number(sec.maxenrollment)
+				THEN 'SECTION FULL'
+				WHEN csec.CROSSLEA_DISABLED = 'Y'
+				THEN 'NO CROSS LEA'
+				ELSE 'X'
+			END,
+			(SELECT to_char(p.value) FROM PSODS.PREFS@DBL_PSODS p WHERE p.name='districtnumber' AND p.district_id = sec.district_id)
+                            FROM PSODS.sections@DBL_PSODS sec
+                            INNER JOIN PSODS.courses@DBL_PSODS c ON c.COURSE_NUMBER = sec.COURSE_ID AND c.district_id = sec.district_id
+                            INNER JOIN PSODS.SCHOOLSTAFF@DBL_PSODS t ON t.SCHOOLSTAFF_ID = sec.teacher AND t.district_id = sec.district_id
+                            INNER JOIN PSODS.USERS@DBL_PSODS U ON U.DCID = T.USERS_DCID AND u.district_id = t.district_id
+                            INNER JOIN PSODS.terms@DBL_PSODS ON terms.TERM_ID = sec.term_id AND terms.school_id = sec.school_id AND terms.district_id = sec.district_id
+			    LEFT OUTER JOIN PSODS.S_NC_CROSSLEASECTIONS@DBL_PSODS csec ON csec.sections_dcid = sec.dcid AND csec.district_id = sec.district_id
+                            WHERE sec.school_id = ~[GPV:SCHOOLID] AND (sec.term_id = ~(CURTERMID) OR sec.term_id = ~(CURYEARID)00)
+                            ORDER BY c.course_name, sec.expression]
+			<tr class="data-row">
+				<td>~(course_number;t)</td>
+				<td>~(course_name;t)</td>
+                                <td>~(section_number;t)</td>
+                                <td>~(teacher;t)</td>
+                                <td>~(expression;t)</td>
+                                <td>~(term;t)</td>
+				<td ~(bgcolor;t;if.test=IndianRed;then=bgcolor="IndianRed" class="bold";else=)>~(maxenrollment;t)</td>
+				<!--~(disabled;t)-->
+				~(disabled;t;if.test=X;then=
+				<td id="td~(count;-)"><a onClick="return addSection('~(district_code;t)','~(section_number;t)','~(count;-)')" class="button" id="button~(count;-)">Enroll</a></td>
+				;else=
+				<td id="td~(count;-)">~(disabled;t)</td>
+				)
+				
+			</tr>[/tlist_sql]
+		</tbody>
+	</table>
+	</div>

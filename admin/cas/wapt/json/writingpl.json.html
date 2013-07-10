@@ -1,0 +1,12 @@
+{
+    ~[tlist_sql;
+      SELECT max(pl_id)
+      FROM S_NC_WAPT_DOM
+      WHERE area = 'PROF_LEVEL_CONVERSION'
+      AND test_id=2
+      AND range_id = ~[gpv:rangeid]
+      GROUP BY test_id
+    ]
+    "maxpl" : "~(pl_id;t)"
+    [/tlist_sql]
+}

@@ -1,0 +1,21 @@
+<table id="moveContent" style="display: none">
+    <tbody>
+    <tr>
+	<td class="bold">Disable Cross LEA (School Override)?</td>
+	<td>
+	    <select name="[sections.S_NC_CROSSLEASCHOOLS]CROSSLEA_DISABLED">
+                <option value="">No
+                <option value="Y">Yes
+            </select>
+	</td>
+    </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+    $j(document).ready( function() {
+	$j('div.box-round:first table tr').removeAttr('class');
+	$j('div.box-round:first table').addClass('linkDescList');
+        $j('.box-round table tr:eq(2)').after($j('#moveContent tbody').html());
+	$j('#moveContent').remove();
+    });
+</script>

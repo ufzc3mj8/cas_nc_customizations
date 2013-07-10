@@ -1,0 +1,11 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    var classname = $j('.box-round table tr').last().attr('class');
+    if (classname === 'evenRow') {classname = 'oddRow'}
+    else {classname = 'evenRow'}
+    
+    $j('.box-round table').append(
+    '<tr class="'+classname+'"><td><a href="/admin/cas/ec_codes/home.html">Codes Management</a></td><td>Tool to create lookup codes for drop down lists</td></tr>'
+    );
+})
+</script>

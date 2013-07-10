@@ -1,0 +1,40 @@
+<table class="assignmenttable">
+  <thead class="assignmentheader">
+    <tr>
+      <td class="assignmentname">Assignment Name</td>
+      <td class="assignmenthalf">Score</td>
+      <td class="assignmenthalf">Max</td>
+      <td class="assignmenthalf">%</td>
+      ~[if.~[gpv:class_average]=on]
+      <td class="assignmentdate">Class Avg (%)</td>
+      [/if]
+      <td class="assignmentdate">Assign Date</td>
+      <td class="assignmentdate">Due Date</td>
+      <td class="assignmenthalf">Late</td>
+      <td class="assignmenthalf">Exempt</td>
+      <td class="assignmenthalf">Extra Credit</td>
+      <td>Comment</td>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each assignments}}
+    {{#if name}}
+    <tr class="assignmentrow">
+      <td class="assignmentname">{{name}}</td>
+      <td class="assignmenthalf">{{score}}</td>
+      <td class="assignmenthalf">{{max}}</td>
+      <td class="assignmenthalf">{{percent}}</td>
+      ~[if.~[gpv:class_average]=on]
+      <td class="assignmentdate">{{classAverage}}</td>
+      [/if]
+      <td class="assignmentdate">{{assignDate}}</td>
+      <td class="assignmentdate">{{dueDate}}</td>
+      <td class="assignmenthalf">{{late}}</td>
+      <td class="assignmenthalf">{{exempt}}</td>
+      <td class="assignmenthalf">{{extraCredit}}</td>
+      <td>{{comment}}</td>
+    </tr>
+    {{/if}}
+    {{/each}}
+  </tbody>
+</table>

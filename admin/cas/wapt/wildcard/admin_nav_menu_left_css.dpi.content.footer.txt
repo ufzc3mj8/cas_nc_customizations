@@ -1,0 +1,71 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+   $j("div h3:eq(3)").before('<h3 id="navFederal">Federal</h3>');
+
+   $j("#navFederal").append('<h4 id="navCTE">CTE</h4>');
+   $j("#navCTE").append('<ul>');
+   $j("#navCTE").append('<li><a href="/admin/DPI_SANDBOX/Kit/ConcentratorSurveyHome.html" id="navCTEHome" title="CTE Home">Concentrator Survey</a></li>');
+   $j("#navCTE").append('<ul>');
+
+   $j("#navFederal").append('<h4 id="navTitleI">Title I</h4>');
+   $j("#navTitleI").append('<ul>');
+~[if.district.office]
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/Karen/ESSR.html" id="navESSRHome" title="ESSR Home">ESSR</a></li>');
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/Karen/TAS.html" id="navTASHome" title="TAS Home">TAS</a></li>');
+   
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/JC/NDStudent.html" id="navNADHome" title="TAS Home">Part D N&amp;D Student</a></li>');
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/Paul/NDAggregate.html" id="navNADAggHome" title="TAS Home">Part D N&amp;D Aggregate</a></li>');
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/Kit/SIGHome.html?frn=0091" id="navSIGHome" title="SIG Home">SIG</a></li>');   
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/Karen/student_participation.html?frn=0093" id="navStudPartHome" title="TAS Home">Student Participation</a></li>');
+[/if.district.office]
+
+~[if.is.a.school]
+   $j("#navTitleI").append('<li><a href="/admin/DPI_Sandbox/Karen/essr.html" id="navESSRForm" title="ESSR Form">ESSR</a></li>');
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/Mark/TAS.html?frn=0091&TASFilter=A" id="navTASHome" title="TAS Home">TAS</a></li>');
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/JC/NDStudent.html" id="navNADHome" title="TAS Home">Part D N&amp;D Student</a></li>');
+   $j("#navTitleI").append('<li><a href="/admin/DPI_SANDBOX/Kit/SIGSchool.html" id="navSIGHome" title="SIG School">SIG</a></li>');   
+[/if.is.a.school]
+   $j("#navTitleI").append('</ul>');
+
+   $j("#navFederal").append('<a href="/admin/DPI_SANDBOX/Mark/TitleIIIHome.html"  id="navTitleIIIHome" title="Title III Home"><h4 id="navTitleIII">Title III</h4></a>');
+   $j("#navTitleIII").append('<ul>');
+~[if.district.office]
+   $j("#navTitleIII").append('<li><a href="/admin/DPI_SANDBOX/Mark/LEPHome.html" id="navLEPHome" title="LEP Home">LEP</a></li>');
+   $j("#navTitleIII").append('<li><a href="/admin/DPI_SANDBOX/Mark/WAPTHome.html" id="navWAPTHome" title="W-APT Home">W-APT</a></li>');
+   $j("#navTitleIII").append('<li><a href="/admin/DPI_SANDBOX/Mark/ImmigrantHome.html" id="navImmigrantHome" title="Immigrant Home">Immigrant</a></li>');
+   $j("#navTitleIII").append('<li><a href="/admin/DPI/Federal/TitleIII/LEPPD/LEPPD.html?frn=0091" id="navLEPPDHome" title="LEP PD Home">LEP PD</a></li>');
+[/if.district.office]
+~[if.is.a.school]
+   $j("#navTitleIII").append('<li><a href="/admin/DPI_SANDBOX/Mark/WAPTRoster.html" id="navLEPRoster" title="LEPRoster">LEP</a></li>');
+   $j("#navTitleIII").append('<li><a href="/admin/DPI_SANDBOX/Mark/WAPTRoster.html" id="navWAPTRoster" title="W-APTRoster">W-APT</a></li>');
+   $j("#navTitleIII").append('<li><a href="/admin/DPI_SANDBOX/Mark/ImmigrantRoster.html" id="navImmigrantRoster" title="Immigrant Roster">Immigrant</a></li>');
+[/if.is.a.school]
+   $j("#navTitleIII").append('</ul>');
+
+
+   $j("#navFederal").append('<h4 id="navRLIS">Title VI</h4>');
+   $j("#navRLIS").append('<ul>');
+~[if.district.office]
+   $j("#navRLIS").append('<li><a href="/admin/DPI/Federal/TitleVI/RLIS.html?frn=0091" id="navRLISHome" title="RLIS Home">RLIS</a></li>');
+[/if.district.office]
+   $j("#navRLIS").append('</ul>');
+
+   $j("#navFederal").append('<h4 id="navHomeless">Title X</h4>');
+   $j("#navHomeless").append('<ul>');
+~[if.district.office]
+   $j("#navHomeless").append('<li><a href="/admin/DPI_SANDBOX/Ron/HomelessHome.html" id="navHomelessHome" title="Homeless Home">Homeless</a></li>');
+[/if.district.office]
+
+~[if.is.a.school]
+   $j("#navHomeless").append('<li><a href="/admin/DPI_SANDBOX/Ron/HomelessHome.html" id="navHomelessRoster" title="HomelessRoster">Homeless</a></li>');
+[/if.is.a.school]
+   $j("#navHomeless").append('</ul>');
+
+
+
+$j('[name="page"]').append('<option value="/admin/DPI_Sandbox/Mark/TASMass.html">Tag as TAS</option>');
+
+
+   
+});
+</script>

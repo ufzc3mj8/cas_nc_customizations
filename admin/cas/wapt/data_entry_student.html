@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>W-APT Data Entry</title>
+  ~[wc:commonscripts]
+  <!-- Required style sheets: screen.css, and print.css -->
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+  <script type="text/javascript" src="js/wapt.js"></script>
+  <script type="text/javascript">
+    var stugradelevel = '~(grade_level)';
+//        stuDcid = '~(rn)';
+    var stuDcid = '~(rn)';
+  </script>
+  <style type="text/css">
+    .rawSelect { width : 60pt; }
+
+    .yearSelect { width : 120pt; }
+  </style>
+</head>
+<body>
+<form action="/admin/changesrecorded.white.html" method="POST">
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.generaldemographics.start_page]</a> &gt; <a
+        href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.generaldemographics.student_selection]</a> &gt;W-APT Data Entry<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]W-APT Data Entry~[wc:title_student_end_css]
+
+
+<!-- Start of shaded content table and bounding box -->
+<div class="box-round">
+<!--
+<form action="/admin/changesrecorded.white.html" method="POST">
+-->
+  <table class="linkDescList">
+    <thead>
+      <tr>
+        <th colspan="8">Test Demographics</th>
+      </tr>
+    </thead>
+    <tr>
+      <td><label for="GRADE_RANGE">Grade Span</label></td>
+      <td>
+        <select name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_WORK_ITEMS.S_NC_WAPT_SHEET_WORK_ITEMS:~[gpv:id;-1]]GRADE_RANGE" id="GRADE_RANGE" onChange='populateTestAdminIn()'>
+          <option value="">-- select one --</option>
+        </select>
+      </td>
+      <td><label for="GRADE_SEMESTER">Test Administered In</label></td>
+      <td>
+        <select name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_WORK_ITEMS.S_NC_WAPT_SHEET_WORK_ITEMS:~[gpv:id;-1]]GRADE_SEMESTER" id="GRADE_SEMESTER">
+          <option value="">-- select one --</option>
+        </select>
+      </td>
+      <td><label for="CLASS">Classification</label></td>
+      <td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_WORK_ITEMS.S_NC_WAPT_SHEET_WORK_ITEMS:~[gpv:id;-1]]CLASS" value="" readonly="true" id="CLASS"></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><label for="TEST_DTE" class="required">Test Date</label></td>
+      <td><input type="text" id="TEST_DTE" class="error required psDateWidget" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_WORK_ITEMS.S_NC_WAPT_SHEET_WORK_ITEMS:~[gpv:id;-1]]TEST_DTE" value=""
+                 size="10"></td>
+      <td><label for="schoolname">School</label></td>
+<!--      <td id="schoolname">~([39]name)</td>  -->
+      <td><input type="text" id="school" name="school" value="" readonly="true"></td>
+      <td><label for="TEST_ADMINISTRATOR" class="required">Test Administrator</label></td>
+      <td><input type="text" id="TEST_ADMINISTRATOR" class="error required" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_WORK_ITEMS.S_NC_WAPT_SHEET_WORK_ITEMS:~[gpv:id;-1]]TEST_ADMINISTRATOR"
+                 value="" size="30"></td>
+    </tr>
+    <tr>
+      <td><label for="gender">Gender</label></td>
+      <td id="gender">~(decode;~(gender);F;Female;M;Male;)</td>
+      <td><label for="race">Race</label></td>
+      <td><input type="text" id="race" name="race" value="" readonly="true"></td>
+      <td><label for="HOMELANG_ID">Home Language</label></td>
+      <td>
+        <select id="HOMELANG_ID" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_WORK_ITEMS.S_NC_WAPT_SHEET_WORK_ITEMS:~[gpv:id;-1]]HOMELANG_ID">
+          <option value=""></option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  <table class="linkDescList">
+    <thead>
+      <tr class="headerrow">
+        <th colspan="4">Composite Proficiency Level (CPL)</th>
+      </tr>
+    </thead>
+    <tbody id="tbl_cpl">
+      <tr>
+        <td><label for="SPEAKING_RAW">Speaking Raw</label></td>
+        <td><select name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]SPEAKING_RAW" id="SPEAKING_RAW" class="rawSelect" onChange="speakingProficiency();">
+          <option value=" "></option>
+        </select>
+        </td>
+        <td><label for="SPEAKING_PL_ID">PL</label></td>
+        <td>
+          <div class="proflevel" id="SPEAKING_PL_ID" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]SPEAKING_PL_ID">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="write_raw">Writing Raw</label></td>
+        <td>
+          <div id="write_raw">N/A</div>
+        </td>
+        <td><label for="wrselect">PL</label></td>
+        <td id="writingplopt"><select name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]WRITING_PL_ID" id="wrselect" class="rawSelect"
+                                      onChange="writingProficiency();">
+          <option value=""></option>
+          >
+        </select>
+
+          <div id="WRITING_PL_ID" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]WRITING_PL_ID" style="display:none;">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="LISTENING_RAW">Listening Raw</label></td>
+        <td><select id="LISTENING_RAW" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]LISTENING_RAW" class="rawSelect" onChange="listeningProficiency();">
+          <option value=""></option>
+        </select>
+        </td>
+        <td><label for="LISTENING_PL_ID">PL</label></td>
+        <td>
+          <div class="proflevel" id="LISTENING_PL_ID" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]LISTENING_PL_ID">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="READING_RAW">Reading Raw</label></td>
+        <td><select name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]READING_RAW" id="READING_RAW" class="rawSelect" onChange="readingProficiency();">
+          <option value=""></option>
+        </select>
+        </td>
+        <td><label for="READING_PL_ID">PL</label></td>
+        <td>
+          <div class="proflevel" id="READING_PL_ID" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]READING_PL_ID">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="CPL">CPL</label></td>
+        <td>
+          <div id="CPL" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]CPL">&nbsp;</div>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><label for="ADJUSTED_CPL">Adjusted CPL</label></td>
+        <td>
+          <div id="ADJUSTED_CPL" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]ADJUSTED_CPL">&nbsp;</div>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr id="lep">
+        <td><label for="LEP_STATUS_ID">LEP Status</label></td>
+        <td>
+          <div id="LEP_STATUS_ID" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]LEP_STATUS_ID">&nbsp;</div>
+        </td>
+        <td><label for="TIER_ID">Tier</label></td>
+        <td>
+          <div id="TIER_ID" name="CF-[STUDENTS:~(rn).S_NC_WAPT_SHEET_ITEMS.S_NC_WAPT_SHEET_ITEMS:~[gpv:id;-1]]TIER_ID">&nbsp;</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="linkDescList">
+    <thead>
+      <tr class="headerrow">
+        <th colspan="6">Immigrant</th>
+      </tr>
+    </thead>
+    <tr class="~[evenoddrow;reset]">
+      <td><label for="BORN_OUTSIDE_US">Student Born Outside of U.S.?</label></td>
+      <td>
+        <select name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]BORN_OUTSIDE_US" value="" id="dbBORN_OUTSIDE_US" size="1" class="selectlist">
+          <option value="">Not Selected</option>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </td>
+      <td><label for="Country_Of_Birth">Country of Birth</label></td>
+      <td colspan="3" id="Country_Of_Birth">~([STUDENTS.S_NC_STUDENTDEMO]COUNTRY_OF_BIRTH_CODE)</td>
+    </tr>
+    <tr class="~[evenoddrow]">
+      <td><label for="studentbetween">Student between 3 and 21 years old?</label></td>
+      <td>
+        <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]BTW_3_21" value="" id="dbhBTW_3_21" />
+        <select name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]BTW_3_21" value="" id="dbBTW_3_21" size="1" class="selectlist"  disabled="disabled"  onChange="$j('#dbhBTW_3_21').val(this.value);">
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+        </select>  
+      </td>
+      <td><label for="DOB">DOB</label></td>
+      <td id="DOB">~([01]dob)</td>
+      <td><label for="calcAge">Age</label></td>
+      <td id="calcAge">~(age)</td>
+    </tr>
+    <tr class="~[evenoddrow]">
+      <td><label for="FIRST_SCHOOL_YEAR">First Year in U.S. Schools</label></td>
+      <td>
+        <select name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]FIRST_SCHOOL_YEAR_ID" id="dbFIRST_SCHOOL_YEAR_ID" size="1" class="selectlist">
+            ~[wc:dpi_all_school_year_options]
+        </select>
+      </td>
+      <td><label for="OUT_SCHOOL_YEAR">First Full School Year OUT of U.S. Schools</label></td>
+      <td colspan="3">
+        <select name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]OUT_SCHOOL_YEAR_ID" id="dbOUT_SCHOOL_YEAR_ID" size="1" class="selectlist">
+            ~[wc:dpi_all_school_year_options]
+        </select>
+      </td>
+    </tr>
+    <tr class="~[evenoddrow]">
+      <td><label for="RETURNED_SCHOOL_YEAR">School Year Returned to U.S. Schools</label></td>
+      <td>
+        <select name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]RETURNED_SCHOOL_YEAR_ID" id="dbRETURNED_SCHOOL_YEAR_ID" size="1" class="selectlist">
+            ~[wc:dpi_all_school_year_options]
+        </select>
+      </td>
+      <td><label for="numyears">Number of Years in U.S. Schools</label></td>
+      <td>
+        <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]IMM_YEAR_ID" value="" id="dbhIMM_YEAR_ID" />
+        <select name="CF-[STUDENTS:~(rn).S_NC_IMM_IMMIGRANT_DATA.S_NC_IMM_IMMIGRANT_DATA:~[gpv:ern]]IMM_YEAR_ID" value="" id="dbIMM_YEAR_ID" size="1" class="selectlist"  disabled="disabled" onChange="$j('#dbhIMM_YEAR_ID').val(this.value);">
+            ~[wc:dpi_imm_year_options]
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="6">
+        <b>*</b> Do not include pre-school children who are not enrolled in pre-school programs funded by your school system.<br>
+        <b>*</b> Do not include community college or university students.<br>
+        <b>*</b> Do not include students who are not enrolled in you school system, like older siblings who are not in your school.<br>
+        <b>*</b> Do not include students from Puerto Rico. Do not include exchnage students.<br>
+        <b>NOTE:</b> Any child born outside the U.S. and Puerto Rico may be eligible for immigrant status (i.e. Children of U.S. citizens, including children with <i>U.S. Citizen Born Abroad</i>
+                 birth certificates.)
+      </td>
+    </tr>
+  </table>
+  <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</form>
+</div>
+<!-- end of content area -->
+~[wc:admin_footer_frame_css]
+</body>
+</html>

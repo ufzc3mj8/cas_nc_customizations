@@ -1,0 +1,80 @@
+~[if.~[gpv:pageaction;X]=X]
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>~[text:psx.html.admin_students.enrollinotherschool.enroll_student_in_a_class_at_another_school]</title>
+~[wc:UI_js_includes]
+~[wc:commonscripts]
+<script type="text/javascript">
+    $j(document).ready( function() {
+       $j('[name="Schoolid"]').change( function() {
+            $j('#sectionList option:gt(0)').remove();
+            var schoolid = $j(this).val();
+            $j.ajax({
+                type    : 'POST',
+                url     : 'enrollinotherschool.html?pageaction=Y&schoolid='+schoolid,
+                success : function(data, x, xhrobj) {
+                    $j('#sectionList').append(data);
+                }
+            });
+       });
+       $j('#sectionList').change( function() {
+            $j('#courseandsection').val('');
+       });
+    });
+</script>
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+<form action="/admin/students/schedulelist.html" method="POST">
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.enrollinotherschool.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.enrollinotherschool.student_selection]</a> &gt; <a href="/admin/students/functions.html?frn=~(studentfrn)">~[text:psx.html.admin_students.enrollinotherschool.functions]</a> &gt;~[text:psx.html.admin_students.enrollinotherschool.enroll_student_in_a_class_at_another_school1]<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]~[text:psx.html.admin_students.enrollinotherschool.enroll_student_in_a_class_at_another_school2]~[wc:title_student_end_css]
+
+<!-- start of content and bounding box -->
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr bgcolor="#edf3fe">
+<td class="bold">~[text:psx.html.admin_students.enrollinotherschool.student]</td>
+<td>~(studentname)</td>
+</tr>
+<tr>
+<td class="bold">~[text:psx.html.admin_students.enrollinotherschool.school_where_class_is_held]</td>
+<td>~[x:schoolpopup]</td>
+</tr>
+<tr bgcolor="#edf3fe">
+<td class="bold">~[text:psx.html.admin_students.enrollinotherschool.coursesection]<br>~[text:psx.html.admin_students.enrollinotherschool.example_]</td>
+<td><select id="sectionList"><option value="">Select a section</option></select><input type="hidden" name="courseandsection" value="" size="13" id="courseandsection"></td>
+</tr>
+<tr>
+<td class="bold">~[text:psx.html.admin_students.enrollinotherschool.enrollment_date]</td>
+<td><input type="text" class="psDateWidget" name="enrolldate" value="~[short.date]" size="10"></td>
+</tr>
+</table>
+<br>
+
+<div class="button-row"><input type="hidden" name="ac" value="enrollinaclassatanotherschool">~[submitbutton]</div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+
+</body>
+</html><!-- end right frame -->
+[else]
+~[tlist_sql;
+SELECT sec.course_number || '.' || sec.section_number, c.course_name || ' - ' || t.lastfirst || ' (' || sec.expression || ' - ' || terms.abbreviation || ')'
+FROM sections sec
+INNER JOIN courses c ON c.course_number = sec.course_number
+INNER JOIN teachers t ON t.id = sec.teacher
+INNER JOIN terms ON terms.id = sec.termid AND terms.schoolid = sec.schoolid
+WHERE sec.schoolid = ~[gpv:schoolid] AND (sec.termid = ~(curtermid) OR sec.termid = ~(curyearid)00)
+ORDER BY c.course_name, sec.expression]
+<option value="~(courseandsection;t)">~(c.course_name;t)</option>[/tlist_sql]
+[/if]

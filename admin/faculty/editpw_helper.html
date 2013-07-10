@@ -1,0 +1,10 @@
+~[tlist_sql;SELECT SUM(c)
+FROM (
+    SELECT COUNT(*) c
+    FROM Teachers
+    WHERE upper(loginid) = upper('~[gpv:id]')
+    UNION ALL
+    SELECT COUNT(*) c
+    FROM teachers
+    WHERE upper(teacherloginid) = upper('~[gpv:id]')
+)]~(1;t)[/tlist_sql]

@@ -1,0 +1,120 @@
+<tr>
+<td>&nbsp;</td>
+<td>
+	<script>
+		var chkCount = 0;
+		
+		function ethnicityTranslateFedtoRpt(fedCode) {
+			switch(fedCode) {
+				case "AM7" :
+					return "I";
+				case "AS7" :
+					return "A";
+				case "BL7" :
+					return "B";
+				case "PI7" :
+					return "P";
+				case "WH7" :
+					return "C";
+				default:
+					retCode = "";
+			}
+			
+			return retCode;
+		}
+		
+		$j(document).ready(function() {
+			$j('#primaryethnicity').hide();
+			$j('#primaryethnicity').parent().append('<span id="ethicityText"><span>');
+			
+			$j('input[id^="race_"]').each( function() {
+				if( $j(this).is(':checked')) {
+					chkCount++;
+				}
+			});
+			
+			if( $j('div[class="choicefloat"] input[type="radio"]:checked').val() != "1" ) {
+				if( chkCount == 1 ) {
+					$j('#primaryethnicity').val(ethnicityTranslateFedtoRpt($j('input[id^="race_"]:checked').val()));
+				} else
+				if( chkCount == 0 ) {
+					$j('#primaryethnicity').val("");
+				} else {
+					$j('#primaryethnicity').val("M");
+				}
+			} else {
+				$j('#primaryethnicity').val("H");
+			}
+			
+			$j('input[id^="race_"]').click( function() {
+				if( $j(this).is(':checked')) {
+					chkCount++;
+					if( $j('div[class="choicefloat"] input[type="radio"]:checked').val() != "1" ) {
+						if( chkCount > 1 ) {
+							$j('#primaryethnicity').val("M");
+						} else {
+							$j('#primaryethnicity').val(ethnicityTranslateFedtoRpt($j(this).val()));
+						}
+					} else {
+						$j('#primaryethnicity').val("H");
+					}
+				} else {
+					chkCount--;
+					if( $j('div[class="choicefloat"] input[type="radio"]:checked').val() != "1" ) {
+						if( chkCount == 1 ) {
+							$j('#primaryethnicity').val(ethnicityTranslateFedtoRpt($j('input[id^="race_"]:checked').val()));
+						} else
+						if( chkCount == 0 ) {
+							$j('#primaryethnicity').val("");
+						} else {
+							$j('#primaryethnicity').val("M");
+						}
+					} else {
+						$j('#primaryethnicity').val("H");
+					}
+				}
+				$j('#primaryethnicity').change();
+			});
+			
+			$j('div[class="choicefloat"] input[type="radio"]').click( function() {
+				if( $j('div[class="choicefloat"] input[type="radio"]:checked').val() != "1" ) {
+					if( chkCount == 1 ) {
+						$j('#primaryethnicity').val(ethnicityTranslateFedtoRpt($j('input[id^="race_"]:checked').val()));
+					} else
+					if( chkCount == 0 ) {
+						$j('#primaryethnicity').val("");
+					} else {
+						$j('#primaryethnicity').val("M");
+					}
+				} else {
+					$j('#primaryethnicity').val("H");
+				}
+				$j('#primaryethnicity').change();
+			});
+			
+			$j('#primaryethnicity').change( function() {
+				if( $j('#primaryethnicity').val() == "" ) {
+					$j('#ethicityText').text("No ethnicities chosen. (X)");						
+				} else {
+					$j('#ethicityText').text($j('#primaryethnicity option:selected').text());
+				}
+			});
+
+			$j('#primaryethnicity').change();
+			
+//			$j("form").removeAttr('onsubmit')
+// 			.submit(function(event) {
+// 					event.preventDefault();
+// 					if( $j('#primaryethnicity').val() == "X" ) {
+// 						var msg = "Student must have at least one ethnicity chosen.";
+// 						alert(msg);
+// 						closeLoading();
+// 						return false;
+// 					} else {
+// 						return validateInput();
+// 					}
+// 				});
+			
+		});
+	</script>
+</tr>

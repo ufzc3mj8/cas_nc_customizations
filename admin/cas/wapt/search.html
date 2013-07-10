@@ -1,0 +1,116 @@
+    <!DOCTYPE html> 
+    <html> 
+    <head> 
+            <title>W-APT Search</title> 
+    <!-- Required style sheets: screen.css, and print.css --> 
+            <link href="/images/css/screen.css" rel="stylesheet" media="screen"> 
+            <link href="/images/css/print.css" rel="stylesheet" media="print">
+            <script type="text/javascript" src="js/search.js"></script>
+<!--
+            <script type="text/javascript">
+                $j(function() {
+                    $j("#grade").change(function() {
+                        window.location='search.html?' + this.value
+                    });
+                });
+           </script>
+-->
+    </head> 
+    <body> 
+            ~[wc:admin_header_css] 
+        <div id="breadcrumbs"> 
+                    <!-- breadcrumb start -->Your breadcrumbs go here<!-- breadcrumb end --> 
+        </div> 
+    <!-- start of main menu and content --> 
+            ~[wc:admin_navigation_css] 
+    <!-- Start of Page --> 
+            <h1>W-APT Search</h1>
+
+            <ul class="tabs">
+                <li><a href="home.html">Home</a></li>
+                <li class="selected"><a href="search.html">Search</a></li>
+                <li><a href="data_entry.html">Data Entry</a></li>
+                <li><a href="roster.html">Roster</a></li>
+            </ul>
+    <!-- start of content area --> 
+            <div class="box-round">
+                <form>
+                <h2 class="toggle expanded">Search Students</h2>
+                <table>
+                    <tr class=~[evenoddrow]>
+                        <td>Grade Span</td>
+                        <td>Test Date</td>
+                        <td>Test Administrator</td>
+                        <td>LEP Status</td>
+                        <td>Exception</td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td>
+                            <select id="grade">
+                                <option value=""></option>
+                                ~[tlist_sql;
+                                    SELECT codes, description, id
+                                    FROM ps.s_nc_wapt_dom
+                                    WHERE lower(area) = 'range'
+                                      AND active = 'Y'
+                                    ORDER BY sort_order;]
+                                <option value="~(codes,t)">~(description,t)</option>
+                                [/tlist_sql]
+                            </select>
+                        </td>
+                        <td><input id="date" value="" class="psDateWidget"></td>
+                        <td><input id="admin" value=""></td>
+                        <td>
+                            <select id="lep">
+                                <option value=""></option>
+                                <option value="1">Never</option>
+                                <option value="2">Exited</option>
+                                <option value="3">Current</option>
+                                <option value="4">Parent Refused</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="exception">
+                                <option value=""></option>
+<!--
+                                ~[tlist_sql;
+                                    SELECT
+                                    FROM
+                                    WHERE;]
+                                <option value="~(,t)">~(,t)</option>
+                                [/tlist_sql]
+-->
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                     <h2>Students Screened with W-APT</h2> 
+                     <p> 
+                <table class="tableToGrid paginateGrid">
+                    <thead>
+                        <th>Edit/Details</th>
+                        <th>Grade Span</th>
+                        <th>Test Date</th>
+                        <th>LEA Code</th>
+                        <th>School Code</th>
+                        <th>Test Administrator</th>
+                        <th>Grade</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Student Number</th>
+                        <th>DOB</th>
+                        <th>Enroll Status</th>
+                    </thead>
+                    <tbody id="display">
+                        
+                    </tbody>
+                </table>
+                     </p> 
+            </form>
+            </div> 
+    <!-- end of content area --> 
+            ~[wc:admin_footer_css] 
+    <!-- required scripts --> 
+            ~[wc:commonscripts] 
+    </body> 
+    </html>

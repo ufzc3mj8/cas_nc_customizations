@@ -1,0 +1,19 @@
+<script type="text/javascript">
+  $j('#displayedView').append('<option id="DailyHeadcount" value="/admin/cas/daily_headcount/reports/daily_headcount_breakdown.html">Daily Headcount</option>');
+  $j('#displayedView').attr('onchange','reloadViews();displayStudentSelection();');
+  function displayStudentSelection() {
+    if (($j('#displayedView').val()) == '/admin/cas/daily_headcount/reports/daily_headcount_breakdown.html') {
+      $j('#currentSelection').attr('style','visibility:hidden');
+      $j('#forCurrentSelection').attr('style','visibility:hidden');
+      $j('#allActive').attr('style','visibility:hidden');
+      $j('#forAllActive').attr('style','visibility:hidden');
+      $j('label:contains("Students:")').attr('style','visibility:hidden');
+    } else {
+      $j('#currentSelection').attr('style','visibility:visible');
+      $j('#forCurrentSelection').attr('style','visibility:visible');
+      $j('#allActive').attr('style','visibility:visible');
+      $j('#forAllActive').attr('style','visibility:visible');
+      $j('label:contains("Students:")').attr('style','visibility:visible');
+    }
+  }
+</script>

@@ -1,0 +1,1976 @@
+<html>
+<head>
+  <title>ADA Troubleshooter</title>
+  <!--
+  Version 1.0
+  Developed by David Pond
+  -->
+  ~[wc:commonscripts]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body class="yui-skin-sam" marginwidth=10 marginheight=10 topmargin=10 leftmargin=10 background="/images/bg3.gif">
+~[wc:admin_header_frame_css]
+<content tag="breadcrumbs">
+  <a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; ADA Troubleshooter
+</content>
+~[wc:admin_navigation_frame_css]
+<!-- start of title -->
+<h1>Toubleshooting ADA for ~(lastfirst)</h1>
+
+<p>
+  <!-- end of title -->
+  <!-- start of content and bounding box -->
+  This utility will help to determine how Average Daily Attendance and Membership are calculated, should the attendance views be updated. If the data your are displaying on this page does not match
+  the ADA/ADM reports, try <a href="/admin/reports_engine/report_w_param.html?ac=reports_get_using_ID;repo_ID=ATT_RefreshPremierMembrDefaults">refreshing the Premier Attendance Views Data</a>. </p>
+
+<div id='Error'></div>
+<div class="box-round">
+<!-- Enter Content Here -->
+<form name="DataOptions" action="" method="POST">
+<table class="linkDescList">
+  <colgroup>
+    <col>
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <label for="entereddateid" class="">Date To Troubleshoot</label>
+      </td>
+      <td>
+        <input type="text" class="psDateWidget" name="dateentered" id="dateentered" value="~[IF.~[gpv:dateselectsubmit]<>""]~[gpv:dateentered][else]~[date][/if]">
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><input name="dateselectsubmit" type="submit" value="Retrieve Data"></td>
+    </tr>
+  </tbody>
+</table>
+
+<p id="top_container" style="text-align:center"></p>
+~[IF.~[gpv:dateselectsubmit]<>""]
+<div id='Data'></div>
+<div id='Output'></div>
+<div id='SectionData'></div>
+<div id='ConversionData'></div>
+<div id='BellScheduleData'></div>
+<script type="text/javascript">
+previousData = new String();
+previousConversionData = new String();
+previousError = new String();
+var CountsADATotal = 0;
+var MinutesTotal = 0;
+var NonMinutesTotal = 0;
+var PassTimeDeductTotal = 0;
+
+var dateFormat = "~[dateformat:mmddyyyy]"
+dateFormat = dateFormat.toLowerCase().replace("yyyy", "yy");
+
+previousError = document.getElementById('Error').innerHTML;
+~[tlist_sql;
+SELECT
+COUNT(*)
+FROM(SELECT
+p1.name, p1.yearid, p1.schoolid, count(*), p1.userid
+FROM
+ps.prefs
+p1
+WHERE
+lower(name)
+like
+'att_%'
+GROUP
+BY
+p1.schoolid, p1.name, p1.yearid, p1.userid
+HAVING
+COUNT(*) > 1
+ORDER
+BY
+p1.name
+)]
+var DupPrefsTotal = ~(result);
+[
+/
+tlist_sql
+]
+if (DupPrefsTotal >= 1) {
+  document.getElementById('Error').innerHTML = '<div id="feedback-message" class="feedback-alert"><div>ERROR!!!</div><p>There are ' + DupPrefsTotal + ' duplicate Attendance preferences on the server, which may prevent the nightly ADA Calculation from occurring.</p></div>';
+}
+;
+
+//Student Information
+var SchoolEnrollDate = '';
+var SchoolExitDate = '';
+var Track = '';
+var MembershipShare = '';
+~[tlist_sql;
+SELECT
+to_char(entrydate, '~[datetext:mmddyyyy]'), to_char(exitdate, '~[datetext:mmddyyyy]'), track, membershipshare
+FROM(SELECT
+entrydate, exitdate, track, membershipshare
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+entrydate, exitdate, track, membershipshare
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+]
+var SchoolEnrollDate = '~(result1)';
+var SchoolExitDate = '~(result2)';
+var Track = '~(result3)';
+var MembershipShare = ~(result4);
+[
+/
+tlist_sql
+]
+
+previousData = document.getElementById('Data').innerHTML;
+previousData = previousData.concat('<h3><center>Attendance Parameters and Totals</center></h3>');
+previousData = previousData.concat('<table class="grid">\
+<tr><th colspan="2"><center>Student Information</center></th></tr>');
+
+if (SchoolEnrollDate != '') {
+  var SchoolEnrollDateValidation = $j.datepicker.parseDate(dateFormat, SchoolEnrollDate);
+  var SchoolExitDateValidation = $j.datepicker.parseDate(dateFormat, SchoolExitDate);
+  previousData = previousData.concat('<tr><td><b>School Enrollment Date</b></td><td>' + SchoolEnrollDate + '</td></tr>\
+<tr><td><b>School Exit Date</b></td><td>' + SchoolExitDate + '</td></tr>\
+<tr><td><b>Track</b></td>');
+  if (Track != '' && Track != 'A' && Track != 'B' && Track != 'C' && Track != 'D' && Track != 'E' && Track != 'F') {
+    previousData = previousData.concat('<td><font color="red" title="Valid tracks can only be A,B,C,D,E,F or blank">' + Track + '</font></td></tr>');
+  }
+  else {
+    previousData = previousData.concat('<td>' + Track + '</td></tr>');
+  }
+  ;
+  previousData = previousData.concat('<tr><td><b>Membership Share</b></td><td>' + MembershipShare + '</td></tr>');
+}
+else {
+  previousData = previousData.concat('<tr><td><b>School Enrollment Date</b></td><td><font color="red" title="Student not enrolled in school">Not Enrolled<font></td></tr>\
+<tr><td><b>School Exit Date</b></td><td><font color="red" title="Student not enrolled in school">Not Enrolled<font></td></tr>\
+<tr><td><b>Track</b></td><td><font color="red" title="Student not enrolled in school">Not Enrolled<font></td></td></tr>\
+<tr><td><b>Membership Share</b></td><td><font color="red" title="Student not enrolled in school">Not Enrolled<font></td></tr>');
+}
+;
+
+//FTE Information
+~[tlist_sql;
+SELECT
+f1.name, f1.yearid, f1.Dflt_att_mode_code, f1.Dflt_conversion_mode_code
+FROM
+ps.fte
+f1
+LEFT
+JOIN
+ps.schools
+s1
+ON
+f1.schoolid = s1.school_number
+WHERE
+f1.id = (SELECT
+fteid
+FROM(SELECT
+fteid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+fteid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+AND
+f1.schoolid = (SELECT
+schoolid
+FROM(SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)]
+var FTEName = '~(result1)';
+var FTEYearID = '~(result3)';
+var DefaultAttendanceMode = '~(result4)';
+var DefaultAttendanceConversion = '~(result5)';
+[
+/
+tlist_sql
+]
+
+previousData = previousData.concat('<tr><th colspan="2"><center>FTE Information</center></th></tr>');
+if (!FTEName) {
+  var FTEName = 'Undefined';
+  var FTEYearID = 'Undefined';
+  var DefaultAttendanceMode = 'Undefined';
+  var DefaultAttendanceConversion = 'Undefined';
+  var CalcPresentAbsent = 'Undefined';
+  var DailyDeduct = 'Undefined';
+  var EnableDailyDeduct = 'Undefined';
+  previousData = previousData.concat('<tr><td><b>FTE Name</b></td><td><font color="red" title="Students FTE is not valid for this enrollment">' + FTEName + '</font></td></tr>\
+<tr><td><b>FTE Year ID</b></td><td><font color="red" title="Students FTE is not valid for this enrollment">' + FTEYearID + '</font></td></tr>\
+<tr><td><b>Default Attendance Mode</b></td><td><font color="red" title="Students FTE is not valid for this enrollment">' + DefaultAttendanceMode + '</font></td></tr>\
+<tr><td><b>Default Attendance Conversion</b></td><td><font color="red" title="Students FTE is not valid for this enrollment">' + DefaultAttendanceConversion + '</font></td></tr>');
+
+}
+else {
+  previousData = previousData.concat('<tr><td><b>FTE Name</b></td><td>' + FTEName + '</td></tr>\
+<tr><td><b>FTE Year ID</b></td><td>' + FTEYearID + '</td></tr>\
+<tr><td><b>Default Attendance Mode</b></td><td>' + DefaultAttendanceMode + '</td></tr>\
+<tr><td><b>Default Attendance Conversion</b></td><td>');
+  if (DefaultAttendanceConversion == 'PeriodDay') {
+    previousData = previousData.concat('Period to Day')
+  }
+  else if (DefaultAttendanceConversion == 'TimeDay') {
+    previousData = previousData.concat('Time to Day')
+  }
+  else if (DefaultAttendanceConversion == 'CodeDay') {
+    previousData = previousData.concat('Code to Day')
+  } else {
+    previousData = previousData.concat(DefaultAttendanceConversion)
+  }
+  ;
+  previousData = previousData.concat('</td></tr>');
+}
+;
+
+//Calendar Information Query
+~[tlist_sql;
+SELECT
+to_char(c1.date_value, '~[datetext:mmddyyyy]'), c2.abbreviation, b1.name, a1.name, a1.id, CASE
+WHEN
+c1.insession = '1'
+THEN
+'Yes'
+ELSE
+'No'
+END, c1.membershipvalue, CASE
+WHEN(SELECT
+track
+FROM
+ps.students
+WHERE
+id = ~(id)
+)
+IS
+NULL
+THEN
+'1'
+WHEN(SELECT
+upper(track)
+FROM
+ps.students
+WHERE
+id = ~(id)
+)
+= 'A'
+THEN(SELECT
+to_char(c2.A)
+FROM
+PS.calendar_day
+c2
+WHERE
+c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+c2.schoolid = c1.schoolid
+)
+WHEN(SELECT
+upper(track)
+FROM
+ps.students
+WHERE
+id = ~(id)
+)
+= 'B'
+THEN(SELECT
+to_char(c2.B)
+FROM
+PS.calendar_day
+c2
+WHERE
+c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+c2.schoolid = c1.schoolid
+)
+WHEN(SELECT
+upper(track)
+FROM
+ps.students
+WHERE
+id = ~(id)
+)
+= 'C'
+THEN(SELECT
+to_char(c2.C)
+FROM
+PS.calendar_day
+c2
+WHERE
+c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+c2.schoolid = c1.schoolid
+)
+WHEN(SELECT
+upper(track)
+FROM
+ps.students
+WHERE
+id = ~(id)
+)
+= 'D'
+THEN(SELECT
+to_char(c2.D)
+FROM
+PS.calendar_day
+c2
+WHERE
+c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+c2.schoolid = c1.schoolid
+)
+WHEN(SELECT
+upper(track)
+FROM
+ps.students
+WHERE
+id = ~(id)
+)
+= 'E'
+THEN(SELECT
+to_char(c2.E)
+FROM
+PS.calendar_day
+c2
+WHERE
+c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+c2.schoolid = c1.schoolid
+)
+WHEN(SELECT
+upper(track)
+FROM
+ps.students
+WHERE
+id = ~(id)
+)
+= 'F'
+THEN(SELECT
+to_char(c2.F)
+FROM
+PS.calendar_day
+c2
+WHERE
+c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+c2.schoolid = c1.schoolid
+)
+ELSE
+'0'
+END
+Track_In_Session, (SELECT((max(b2.end_time) - min(b2.start_time)) / 60)
+FROM
+ps.bell_schedule_items
+b2
+WHERE
+b2.bell_schedule_id = b1.id
+)
+Minutes
+FROM
+ps.calendar_day
+c1
+LEFT
+JOIN
+PS.cycle_day
+c2
+ON
+c1.cycle_day_id = c2.id
+LEFT
+JOIN
+PS.bell_schedule
+b1
+ON
+c1.bell_schedule_id = b1.id
+LEFT
+JOIN
+ps.attendance_conversion
+a1
+ON
+b1.attendance_conversion_id = a1.id
+WHERE
+c1.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+c1.schoolid = (SELECT
+schoolid
+FROM(SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)]
+
+var CalendarDate = '~(result1)';
+var CalendarDay = '~(result2)';
+var BellSchedule = '~(result3)';
+var AttendanceConversion = '~(result4)';
+var AttendanceConversionID = '~(result5)';
+var InSession = '~(result6)';
+var MembershipValue = ~(result7);
+var TrackInSession = '~(result8)';
+var BellScheduleMinutes = '~(result9)';
+[
+/
+tlist_sql
+]
+
+previousData = previousData.concat('<tr><th colspan="2"><center>Calendar Information</center></th></tr>\
+<tr><td><b>Date</b></td><td>' + CalendarDate + '</td></tr>');
+if (!CalendarDay) {
+  previousData = previousData.concat('<tr><td><b>Day</b></td><td><font color="red" title="Calendar Day is not set">(Blank)</td></tr>');
+}
+else {
+  previousData = previousData.concat('<tr><td><b>Day</b></td><td>' + CalendarDay + '</td></tr>');
+}
+;
+if (!BellSchedule) {
+  previousData = previousData.concat('<tr><td><b>Bell Schedule</b></td><td><font color="red" title="Bell Schedule is not set">(Blank)</font></td></tr>');
+}
+else {
+  previousData = previousData.concat('<tr><td><b>Bell Schedule</b></td><td>' + BellSchedule + '</td></tr>');
+}
+;
+previousData = previousData.concat('<tr><td><b>Attendance Conversion</b></td><td>' + AttendanceConversion + '</td></tr>');
+if (InSession == 'No') {
+  previousData = previousData.concat('<tr><td><b>Day In Session</b></td><td><font color="red" title="Day is not in session">' + InSession + '</font></td></tr>');
+}
+else {
+  previousData = previousData.concat('<tr><td><b>Day In Session</b></td><td>' + InSession + '</td></tr>');
+}
+;
+if (MembershipValue == '0') {
+  previousData = previousData.concat('<tr><td><b>Membership Value</b></td><td><font color="red" title="Membership is set to 0 for the day">' + MembershipValue + '</font></td></tr>');
+}
+else {
+  previousData = previousData.concat('<tr><td><b>Membership Value</b></td><td>' + MembershipValue + '</td></tr>');
+}
+;
+previousData = previousData.concat('<tr><td><b>Track in session</b></td><td>');
+if (TrackInSession == 1) {
+  previousData = previousData.concat('Yes')
+}
+else {
+  previousData = previousData.concat('<font color="red" title="Track is not in session this day">No</font>')
+}
+;
+previousData = previousData.concat('</td></tr>');
+
+//Attendance Preferences
+~[tlist_sql;
+SELECT
+p1.value
+FROM
+ps.prefs
+p1
+WHERE
+lower(p1.name) = 'att_calccntpresentsabsences'
+AND
+p1.yearid = (SELECT
+yearid
+FROM
+ps.fte
+WHERE
+id = (SELECT
+fteid
+FROM(SELECT
+fteid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+fteid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+))
+AND
+p1.schoolid = (SELECT
+schoolid
+FROM(SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)]
+
+var CalcPresentAbsent = '~(result1)';
+[
+/
+tlist_sql
+]
+previousData = previousData.concat('<tr><th colspan="2"><center>Attendance Preferences</center></th></tr>\
+<tr><td><b>Calculate Presents / Absences</b></td><td>');
+if (CalcPresentAbsent == 'P') {
+  previousData = previousData.concat('Presents')
+} else {
+  previousData = previousData.concat('Absences')
+}
+;
+previousData = previousData.concat('</td></tr>');
+~[tlist_sql;
+SELECT
+p1.value
+FROM
+ps.prefs
+p1
+WHERE
+lower(p1.name) = 'att_dailyenableadaandpasstimededucts'
+AND
+p1.yearid = (SELECT
+yearid
+FROM
+ps.fte
+WHERE
+id = (SELECT
+fteid
+FROM(SELECT
+fteid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+fteid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+))
+AND
+p1.schoolid = (SELECT
+schoolid
+FROM(SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)]
+
+var DailyDeduct = '~(result1)';
+[
+/
+tlist_sql
+]
+previousData = previousData.concat('</td></tr>\
+<tr><td><b>Enable ADA Periods and Passing Time Deductions</b></td><td>');
+if (DailyDeduct == '1') {
+  previousData = previousData.concat('Yes')
+} else {
+  previousData = previousData.concat('No')
+}
+;
+~[tlist_sql;
+SELECT
+p1.value
+FROM
+ps.prefs
+p1
+WHERE
+lower(p1.name) = 'att_dailydeductpassingtime'
+AND
+p1.yearid = (SELECT
+yearid
+FROM
+ps.fte
+WHERE
+id = (SELECT
+fteid
+FROM(SELECT
+fteid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+fteid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+))
+AND
+p1.schoolid = (SELECT
+schoolid
+FROM(SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.students
+WHERE
+id = ~(id)
+UNION
+ALL
+SELECT
+schoolid, entrydate, exitdate
+FROM
+ps.reenrollments
+WHERE
+studentid = ~(id)
+)
+WHERE
+entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+AND
+exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)]
+
+var EnableDailyDeduct = '~(result1)';
+[
+/
+tlist_sql
+]
+previousData = previousData.concat('</td></tr>\
+<tr><td><b>Deduct Passing Time</b></td><td>');
+if (EnableDailyDeduct == 'No') {
+  previousData = previousData.concat('No')
+}
+else if (EnableDailyDeduct == 'Yes_AllPassingTime') {
+  previousData = previousData.concat('Yes - All Passing Time')
+}
+else if (EnableDailyDeduct == 'Yes_AfterADAExcludedMeetingsOnly') {
+  previousData = previousData.concat('Yes - After ADA Excluded Meetings Only')
+}
+else {
+  previousData = previousData.concat('(Not set)')
+}
+;
+previousData = previousData.concat('</td></tr>');
+
+// Write the Information to the Data div tag
+document.getElementById('Data').innerHTML = previousData;
+
+if (DefaultAttendanceConversion != 'CodeDay') {
+// Section Attendance information breakdown
+  SectionDataOutput = new String();
+  var previousOverallError = new Array()
+  var CourseNumber = new Array()
+  var DateEnrolled = new Array()
+  var DateEnrolledValidation = new Array()
+  var DateLeft = new Array()
+  var DateLeftValidation = new Array()
+  var Period_Number = new Array()
+  var Att_Code = new Array()
+  var DayInSession = new Array()
+  var Presence_Status = new Array()
+  var Minutes = new Array()
+  var Include_ADA_Section = new Array()
+  var Include_ADA_Period = new Array()
+  var Att_Code_Calc_ADA = new Array()
+  var CountsADA = new Array()
+  var CountedMinutes = new Array()
+  var NonCountedMinutes = new Array()
+  var Track_In_Session = new Array()
+  var BellSchedStartTime = new Array()
+  var BellSchedEndTime = new Array()
+  var NextStartTime = new Array()
+  var PassTime = new Array()
+  var PassMinutesDeduct = new Array()
+  ~[tlist_sql;
+  SELECT
+  rownum, c1.course_number || '.' || c1.section_number, to_char(c1.dateenrolled, '~[datetext:mmddyyyy]'), to_char(c1.dateleft, '~[datetext:mmddyyyy]'), s2.period_number, (SELECT
+  a2.att_code
+  FROM
+  ps.attendance_code
+  a2
+  LEFT
+  JOIN
+  ps.attendance
+  a1
+  ON
+  a1.attendance_codeid = a2.id
+  WHERE
+  a1.ccid = c1.id
+  AND
+  a1.att_date = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  Att_Code, (SELECT
+  c2.insession
+  FROM
+  PS.calendar_day
+  c2
+  WHERE
+  c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  c2.schoolid = c1.schoolid
+)
+  DayInSession, CASE
+  WHEN(SELECT
+  a2.att_code
+  FROM
+  ps.attendance_code
+  a2
+  LEFT
+  JOIN
+  ps.attendance
+  a1
+  ON
+  a1.attendance_codeid = a2.id
+  WHERE
+  a1.ccid = c1.id
+  AND
+  a1.att_date = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  IS
+  NULL
+  THEN(SELECT
+  a2.presence_status_cd
+  FROM
+  PS.attendance_code
+  a2
+  WHERE
+  a2.schoolid = c1.schoolid
+  AND
+  a2.yearid = p1.year_id
+  AND
+  a2.att_code
+  IS
+  NULL
+)
+  ELSE(SELECT
+  a2.presence_status_cd
+  FROM
+  ps.attendance_code
+  a2
+  LEFT
+  JOIN
+  ps.attendance
+  a1
+  ON
+  a1.attendance_codeid = a2.id
+  WHERE
+  a1.ccid = c1.id
+  AND
+  a1.att_date = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  END
+  Presence_Status, (SELECT
+  b2.minutes_attended
+  FROM
+  ps.bell_schedule_items
+  b2
+  WHERE
+  b2.bell_schedule_id = b1.id
+  AND
+  b2.period_id = p1.id
+)
+  Minutes, CASE
+  WHEN
+  s1.exclude_ada = 0
+  THEN
+  1
+  ELSE
+  0
+  END
+  Include_ADA_Section, (SELECT
+  b2.ada_code
+  FROM
+  ps.bell_schedule_items
+  b2
+  WHERE
+  b2.bell_schedule_id = b1.id
+  AND
+  b2.period_id = p1.id
+)
+  Include_ADA_Period, CASE
+  WHEN(SELECT
+  a2.att_code
+  FROM
+  ps.attendance_code
+  a2
+  LEFT
+  JOIN
+  ps.attendance
+  a1
+  ON
+  a1.attendance_codeid = a2.id
+  WHERE
+  a1.ccid = c1.id
+  AND
+  a1.att_date = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  IS
+  NULL
+  THEN(SELECT
+  a2.calculate_ada_yn
+  FROM
+  PS.attendance_code
+  a2
+  WHERE
+  a2.schoolid = c1.schoolid
+  AND
+  a2.yearid = p1.year_id
+  AND
+  a2.att_code
+  IS
+  NULL
+)
+  ELSE(SELECT
+  a2.calculate_ada_yn
+  FROM
+  ps.attendance_code
+  a2
+  LEFT
+  JOIN
+  ps.attendance
+  a1
+  ON
+  a1.attendance_codeid = a2.id
+  WHERE
+  a1.ccid = c1.id
+  AND
+  a1.att_date = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  END
+  Att_Code_Calc_ADA, b2.end_time, CASE
+  WHEN(((SELECT
+  min(b3.start_time)
+  FROM
+  ps.bell_schedule_items
+  b3
+  WHERE
+  b3.bell_schedule_id = b2.bell_schedule_id
+  AND
+  b3.start_time > b2.end_time
+)
+  -b2.end_time
+)/
+  60
+)
+  IS
+  NULL
+  AND(SELECT
+  b3.DAILY_TIME_OUT_DEFAULT
+  FROM
+  ps.bell_schedule_items
+  b3
+  WHERE
+  b3.bell_schedule_id = b2.bell_schedule_id
+  AND
+  b3.DAILY_TIME_OUT_DEFAULT > 0
+)
+  IS
+  NULL
+  THEN(SELECT
+  TRIM(max(b3.end_time))
+  FROM
+  ps.bell_schedule_items
+  b3
+  WHERE
+  b3.bell_schedule_id = b2.bell_schedule_id
+)
+  WHEN(((SELECT
+  min(b5.start_time)
+  FROM
+  ps.bell_schedule_items
+  b5
+  WHERE
+  b5.bell_schedule_id = b2.bell_schedule_id
+  AND
+  b5.start_time > b2.end_time
+)
+  -b2.end_time
+)/
+  60
+)
+  IS
+  NULL
+  THEN(SELECT
+  TRIM(b3.DAILY_TIME_OUT_DEFAULT)
+  FROM
+  ps.bell_schedule_items
+  b3
+  WHERE
+  b3.bell_schedule_id = b2.bell_schedule_id
+  AND
+  b3.DAILY_TIME_OUT_DEFAULT > 0
+)
+  ELSE(SELECT
+  TRIM(min(b3.start_time))
+  FROM
+  ps.bell_schedule_items
+  b3
+  WHERE
+  b3.bell_schedule_id = b2.bell_schedule_id
+  AND
+  b3.start_time > b2.end_time
+)
+  END
+  NextStart
+  FROM
+  ps.cc
+  c1
+  JOIN
+  ps.sections
+  s1
+  ON
+  c1.sectionid = s1.id
+  JOIN
+  PS.section_meeting
+  s2
+  ON
+  s1.id = s2.sectionid
+  JOIN
+  ps.students
+  s3
+  ON
+  c1.studentid = s3.id
+  JOIN
+  PS.bell_schedule
+  b1
+  ON
+  c1.schoolid = b1.schoolid
+  JOIN
+  ps.period
+  p1
+  ON
+  s2.period_number = p1.period_number
+  AND
+  c1.schoolid = p1.schoolid
+  AND
+  b1.year_id = p1.year_id
+  JOIN
+  ps.bell_schedule_items
+  b2
+  ON
+  b2.bell_schedule_id = b1.id
+  AND
+  p1.id = b2.period_id
+  WHERE
+  studentid = ~(id)
+  AND
+  c1.dateenrolled <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  c1.dateleft > (to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]'))
+  AND
+  s2.cycle_day_letter = (SELECT
+  c3.letter
+  FROM
+  PS.calendar_day
+  c2
+  LEFT
+  JOIN
+  ps.cycle_day
+  c3
+  ON
+  c2.cycle_day_id = c3.id
+  WHERE
+  c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  c2.schoolid = c1.schoolid
+)
+  AND
+  b1.id = (SELECT
+  c2.bell_schedule_id
+  FROM
+  PS.calendar_day
+  c2
+  WHERE
+  c2.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  c2.schoolid = c1.schoolid
+)
+  AND(SELECT
+  b2.minutes_attended
+  FROM
+  ps.bell_schedule_items
+  b2
+  WHERE
+  b2.bell_schedule_id = b1.id
+  AND
+  b2.period_id = p1.id
+)
+  IS
+  NOT
+  NULL
+  ORDER
+  BY
+  b2.start_time
+]
+
+  CourseNumber[~(rownum)] = '~(coursenumber)';
+  DateEnrolled[~(rownum)] = '~(dateenrolled)';
+  DateLeft[~(rownum)] = '~(dateleft)';
+  Period_Number[~(rownum)] = '~(period_number)';
+  Att_Code[~(rownum)] = '~(att_code)';
+  DayInSession[~(rownum)] = '~(dayinsession)';
+  Presence_Status[~(rownum)] = '~(presence_status)';
+  Minutes[~(rownum)] = ~(minutes);
+  Include_ADA_Section[~(rownum)] = '~(include_ada_section)';
+  Include_ADA_Period[~(rownum)] = '~(include_ada_period)';
+  Att_Code_Calc_ADA[~(rownum)] = '~(att_code_calc_ada)';
+  BellSchedEndTime[~(rownum)] = ~(end_time);
+  NextStartTime[~(rownum)] = ~(nextstart);
+  previousOverallError[~(rownum)] = '';
+  [/tlist_sql
+]
+
+  var i = (1);
+  var l = (CourseNumber.length - 1);
+  if (l == -1) {
+    document.getElementById('SectionData').innerHTML = '<h3><center>Section Attendance Information</h3></center><p><font color="red" title="The student is not enrolled in any classes this day"><center>The student is not enrolled in any classes this day.</font><p></center>';
+  }
+  else {
+    previousSectionData = document.getElementById('SectionData').innerHTML;
+    previousSectionData = previousSectionData.concat('<h3><center>Section Attendance Information</center></h3>\
+<table class="linkDescList"><tr>\
+<th>Course.Section</th>\
+<th>Date Enrolled</th>\
+<th>Date Left</th>\
+<th>Period</th>\
+<th>Att. Code</th>\
+<th>Att. Code Status</th>');
+    if (DefaultAttendanceConversion == 'TimeDay') {
+      previousSectionData = previousSectionData.concat('<th>Minutes</th>\
+<th>Passing Time After</th>');
+    }
+    ;
+    previousSectionData = previousSectionData.concat('<th>Section Include ADA</th>\
+<th>Period Include ADA</th>\
+<th>Att. Code Calc ADA</th>');
+    if (CalcPresentAbsent == 'N' && DefaultAttendanceConversion == 'PeriodDay') {
+      previousSectionData = previousSectionData.concat('<th>Counts Against ADA</th>')
+    } else {
+      previousSectionData = previousSectionData.concat('<th>Counts Towards ADA</th>')
+    }
+    ;
+    previousSectionData = previousSectionData.concat('</tr>');
+    for (i = 1; i <= l; i++) {
+      PassTime[i] = ((NextStartTime[i] - BellSchedEndTime[i]) / 60);
+      if ((CalcPresentAbsent == 'P' && (Presence_Status[i] == 'Present' || (Presence_Status[i] == 'Absent' && Att_Code_Calc_ADA[i] == '0'))) || (CalcPresentAbsent != 'N' && DefaultAttendanceConversion == 'PeriodDay' && Presence_Status[i] == 'Present') || (Presence_Status[i] == 'Present' && DefaultAttendanceConversion != 'PeriodDay')) {
+        CountsADA[i] = (DayInSession[i] * TrackInSession * Include_ADA_Section[i] * Include_ADA_Period[i]);
+      } else {
+        CountsADA[i] = 0
+      }
+      ;
+      CountedMinutes[i] = (CountsADA[i] * Minutes[i]);
+
+      DateEnrolledValidation[i] = $j.datepicker.parseDate(dateFormat, DateEnrolled[i]);
+      DateLeftValidation[i] = $j.datepicker.parseDate(dateFormat, DateLeft[i]);
+      if (CountsADA[i] == 0) {
+        NonCountedMinutes[i] = Minutes[i];
+      }
+      else {
+        NonCountedMinutes[i] = 0;
+      }
+      ;
+      if (Include_ADA_Period[i] == 0) {
+        PassMinutesDeduct[i] = PassTime[i];
+      } else {
+        PassMinutesDeduct[i] = 0;
+      }
+      ;
+      previousSectionData = previousSectionData.concat('<tr><td>' + CourseNumber[i] + '</td>');
+      if ((DateEnrolledValidation[i] < SchoolEnrollDateValidation) || SchoolEnrollDate == '') {
+        previousSectionData = previousSectionData.concat('<td><font color="red" title="This enrollment date does not fall within the students school enrollment">' + DateEnrolled[i] + '</font></td>');
+      }
+      else {
+        previousSectionData = previousSectionData.concat('<td>' + DateEnrolled[i] + '</td>');
+      }
+      ;
+      if ((DateLeftValidation[i] < SchoolExitDateValidation) || SchoolEnrollDate == '') {
+        previousSectionData = previousSectionData.concat('<td><font color="red" title="This enrollment date does not fall within the students school enrollment">' + DateLeft[i] + '</font></td>');
+      }
+      else {
+        previousSectionData = previousSectionData.concat('<td>' + DateLeft[i] + '</td>');
+      }
+      ;
+      previousSectionData = previousSectionData.concat('<td>' + Period_Number[i] + '</td>\
+<td>' + Att_Code[i] + '</td>\
+<td>' + Presence_Status[i] + '</td>');
+      if (DefaultAttendanceConversion == 'TimeDay') {
+        previousSectionData = previousSectionData.concat('<td>' + Minutes[i] + '</td>\
+<td>' + PassTime[i] + '</td>');
+      }
+      ;
+      if (Include_ADA_Section[i] == '1') {
+        previousSectionData = previousSectionData.concat('<td>Yes</td>')
+      } else {
+        previousSectionData = previousSectionData.concat('<td><font color="red" title="Section is not included in ADA">No<font></td>')
+        previousOverallError[i] = previousOverallError[i].concat('Section is not included in ADA. ')
+      }
+      ;
+      if (Include_ADA_Period[i] == '1') {
+        previousSectionData = previousSectionData.concat('<td>Yes</td>')
+      } else {
+        previousSectionData = previousSectionData.concat('<td><font color="red" title="Period is not included in ADA in the bell schedule">No<font></td>')
+        previousOverallError[i] = previousOverallError[i].concat('Period is not included in ADA in the bell schedule. ')
+      }
+      ;
+      if (Att_Code_Calc_ADA[i] == '1') {
+        previousSectionData = previousSectionData.concat('<td>Yes</td>')
+      } else {
+        previousSectionData = previousSectionData.concat('<td><font color="red" title="Attendance Code is not included in ADA">No<font></td>')
+        previousOverallError[i] = previousOverallError[i].concat('Attendance Code is not included in ADA. ')
+      }
+      ;
+      if (CountsADA[i] == '1') {
+        previousSectionData = previousSectionData.concat('<td>Yes</td>')
+      } else {
+        previousSectionData = previousSectionData.concat('<td><font color="red" title="' + previousOverallError[i] + '">No<font></td>')
+      }
+      ;
+      CountsADATotal += CountsADA[i];
+      MinutesTotal += CountedMinutes[i];
+      NonMinutesTotal += NonCountedMinutes[i];
+      PassTimeDeductTotal += PassMinutesDeduct[i];
+    }
+    ;
+    previousSectionData = previousSectionData.concat('</tr>\
+</table><p>');
+    document.getElementById('SectionData').innerHTML = previousSectionData;
+  }
+  ;
+}
+;
+
+// Display totals on bottom
+if (DefaultAttendanceMode == 'Daily') {
+  var DailyAttCode = new String()
+  var DailyAttCodeID = new String()
+  var DailyAttValue = new String()
+  var DailyMinutesTotal = new String()
+  var DailyAttCodeCalcADM = new String()
+
+  ~[tlist_sql;
+  SELECT
+  a2.att_code, a2.id, a3.attendance_value, a1.Total_Minutes, a2.presence_status_cd, a2.calculate_ADM_YN
+  FROM
+  ps.attendance
+  a1
+  LEFT
+  JOIN
+  PS.attendance_code
+  a2
+  ON
+  a1.attendance_codeid = a2.id
+  LEFT
+  JOIN
+  ps.students
+  s1
+  ON
+  a1.studentid = s1.id
+  LEFT
+  JOIN
+  ps.attendance_conversion_items
+  a3
+  ON
+  a2.id = a3.input_value
+  AND
+  a3.fteid = s1.fteid
+  WHERE
+  studentid = ~(id)
+  AND
+  a1.att_date = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  lower(a1.att_mode_code)
+  like
+  '%daily%'
+]
+  DailyAttCode = '~(result1)';
+  DailyAttCodeID = '~(result2)';
+  DailyAttValue = '~(result3)';
+  DailyMinutesTotal = ~(result4);
+  DailyPresenceStatus = '~(result5)';
+  DailyAttCodeCalcADM = '~(result6)';
+  [/tlist_sql
+]
+}
+;
+
+var PassingTime = (BellScheduleMinutes - MinutesTotal);
+previousData = previousData.concat('<tr><th colspan="2"><center>Totals</center></th></tr>');
+if (SchoolEnrollDate != '') {
+  previousData = previousData.concat('<tr><td><b>');
+  if (DefaultAttendanceMode == 'Meeting') {
+    if (CalcPresentAbsent == 'N' && DefaultAttendanceConversion == 'PeriodDay') {
+      previousData = previousData.concat('Total Periods Counting Against ADA')
+    } else {
+      previousData = previousData.concat('Total Periods Counting Towards ADA')
+    }
+    ;
+    previousData = previousData.concat('</b></td><td>' + CountsADATotal + '</td></tr>');
+    if (DefaultAttendanceConversion == 'TimeDay') {
+      previousData = previousData.concat('<tr><td><b>Total ADA Minutes</b></td>\
+<td>' + MinutesTotal + '</td></tr>');
+    }
+    ;
+  }
+  else if (DefaultAttendanceMode == 'Daily') {
+    if (DailyAttCode == '') {
+      previousData = previousData.concat('Daily Attendance Code Received</td><td>(Present)</td></tr>');
+    }
+    else {
+      previousData = previousData.concat('Daily Attendance Code Received</td><td>' + DailyAttCode + '</td></tr>');
+    }
+    ;
+    if (DefaultAttendanceConversion == 'TimeDay') {
+      previousData = previousData.concat('<tr><td><b>Total Daily Attendance Minutes Received</td><td>');
+      if (DailyAttCode == '' && ((DailyDeduct == 0) || EnableDailyDeduct == 'No')) {
+        var NewMinutesTotal = (BellScheduleMinutes - NonMinutesTotal);
+      }
+      else if (DailyAttCode == '' && DailyDeduct == 1 && EnableDailyDeduct == 'Yes_AllPassingTime') {
+        var NewMinutesTotal = (BellScheduleMinutes - PassingTime);
+      }
+      else if (DailyAttCode == '' && DailyDeduct == 1 && EnableDailyDeduct == 'Yes_AfterADAExcludedMeetingsOnly') {
+        var NewMinutesTotal = (BellScheduleMinutes - NonMinutesTotal - PassTimeDeductTotal);
+      }
+      else if (DailyAttCode != '') {
+        var NewMinutesTotal = DailyMinutesTotal;
+      }
+      ;
+      previousData = previousData.concat(NewMinutesTotal);
+      previousData = previousData.concat('</td></tr>');
+    }
+    ;
+
+  }
+  ;
+}
+;
+previousData = previousData.concat('<tr><td><b>Daily Attendance Value Based on Conversion</td><td>');
+
+//Attendance conversion array
+var AttConvID = new Array()
+var AttConvAttValue = new Array()
+var AttConvInputValue = new Array()
+var AttConvAttCode = new Array()
+var AttConvModeCode = new Array()
+var AttConvPresenceStatus = new Array()
+
+if (DefaultAttendanceConversion == 'TimeDay' || (DefaultAttendanceConversion == 'PeriodDay' && CalcPresentAbsent == 'P')) {
+  ~[tlist_sql;
+  SELECT
+  rownum, id, attendance_value, input_value, conversion_mode_code
+  FROM(SELECT
+  a1.id, a2.attendance_value, a2.input_value, a2.conversion_mode_code
+  FROM
+  ps.attendance_conversion
+  a1
+  LEFT
+  JOIN
+  ps.attendance_conversion_items
+  a2
+  ON
+  a1.id = a2.attendance_conversion_id
+  WHERE
+  a1.schoolid = (SELECT
+  schoolid
+  FROM(SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  AND
+  a2.fteid = (SELECT
+  fteid
+  FROM(SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  AND
+  a2.conversion_mode_code = (SELECT
+  lower(f1.dflt_conversion_mode_code)
+  FROM
+  ps.fte
+  f1
+  WHERE
+  f1.id = (SELECT
+  fteid
+  FROM(SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+))
+  ORDER
+  BY
+  a2.input_value
+)]
+
+  AttConvID[~(rownum)] = '~(a1.id)';
+  AttConvAttValue[~(rownum)] = '~(a2.attendance_value)';
+  AttConvInputValue[~(rownum)] = ~(a2.input_value);
+  AttConvAttCode[~(rownum)] = '';
+  AttConvModeCode[~(rownum)] = '~(a2.converion_mode_code)';
+  [/tlist_sql
+]
+}
+else if (DefaultAttendanceConversion == 'PeriodDay' && CalcPresentAbsent == 'N') {
+  ~[tlist_sql;
+  SELECT
+  rownum, id, attendance_value, input_value, conversion_mode_code
+  FROM(SELECT
+  a1.id, a2.attendance_value, a2.input_value, a2.conversion_mode_code
+  FROM
+  ps.attendance_conversion
+  a1
+  LEFT
+  JOIN
+  ps.attendance_conversion_items
+  a2
+  ON
+  a1.id = a2.attendance_conversion_id
+  WHERE
+  a1.schoolid = (SELECT
+  schoolid
+  FROM(SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  AND
+  a2.fteid = (SELECT
+  fteid
+  FROM(SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  AND
+  a2.conversion_mode_code = (SELECT
+  lower(f1.dflt_conversion_mode_code)
+  FROM
+  ps.fte
+  f1
+  WHERE
+  f1.id = (SELECT
+  fteid
+  FROM(SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  fteid, entrydate, exitdateFROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+))
+  ORDER
+  BY
+  a2.input_value
+  desc
+)]
+
+  AttConvID[~(rownum)] = '~(a1.id)';
+  AttConvAttValue[~(rownum)] = '~(a2.attendance_value)';
+  AttConvInputValue[~(rownum)] = ~(a2.input_value);
+  AttConvAttCode[~(rownum)] = '';
+  AttConvModeCode[~(rownum)] = '~(a2.converion_mode_code)';
+  [/tlist_sql
+]
+}
+else if (DefaultAttendanceConversion == 'CodeDay') {
+  ~[tlist_sql;
+  SELECT
+  rownum, id, attendance_value, sortorder, att_code, conversion_mode_code, presence_status_cd
+  FROM(SELECT
+  a1.id, a2.attendance_value, a3.sortorder, a3.att_code, a2.conversion_mode_code, a3.presence_status_cd
+  FROM
+  ps.attendance_conversion
+  a1
+  LEFT
+  JOIN
+  ps.attendance_conversion_items
+  a2
+  ON
+  a1.id = a2.attendance_conversion_id
+  LEFT
+  JOIN
+  PS.attendance_code
+  a3
+  ON
+  a2.input_value = a3.id
+  WHERE
+  a1.schoolid = (SELECT
+  schoolid
+  FROM(SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  AND
+  a2.fteid = (SELECT
+  fteid
+  FROM(SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  AND
+  a2.conversion_mode_code = (SELECT
+  lower(f1.dflt_conversion_mode_code)
+  FROM
+  ps.fte
+  f1
+  WHERE
+  f1.id = (SELECT
+  fteid
+  FROM(SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  fteid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+))
+  ORDER
+  BY
+  a3.sortorder
+)]
+
+  AttConvID[~(rownum)] = '~(a1.id)';
+  AttConvAttValue[~(rownum)] = '~(a2.attendance_value)';
+  AttConvInputValue[~(rownum)] = '~(a2.input_value)';
+  AttConvAttCode[~(rownum)] = '~(att_code)';
+  AttConvModeCode[~(rownum)] = '~(a2.converion_mode_code)';
+  AttConvPresenceStatus[~(rownum)] = '~(a3.presence_status_cd)';
+  [/tlist_sql
+]
+}
+;
+
+var x = (1);
+var y = (AttConvID.length - 1);
+previousConversionData = ('<center><h3>Attendance Conversion - ' + AttendanceConversion + '</h3></center>');
+previousConversionData = previousConversionData.concat('<table class="grid">');
+if (DefaultAttendanceConversion == 'PeriodDay') {
+  if (CalcPresentAbsent == 'P') {
+    previousConversionData = previousConversionData.concat('<tr><th>Periods Present</th><th>Daily Attendance Value</th></tr>');
+  }
+  else {
+    previousConversionData = previousConversionData.concat('<tr><th>Periods Absent</th><th>Daily Attendance Value</th></tr>');
+  }
+  ;
+  var ConvValue = 0;
+  for (x = 1; x <= y; x++) {
+    previousConversionData = previousConversionData.concat('<tr><td>' + AttConvInputValue[x] + '</td><td>' + AttConvAttValue[x] + '</td></tr>');
+    if (AttConvID[x] = AttendanceConversionID && AttConvInputValue[x] == CountsADATotal && AttConvModeCode[x] == DefaultAttendanceConversion.toLowerCase()) {
+      ConvValue = AttConvAttValue[x];
+    }
+    ;
+  }
+  ;
+  previousData = previousData.concat(ConvValue);
+}
+else if (DefaultAttendanceConversion == 'TimeDay' && DefaultAttendanceMode == 'Daily') {
+  previousConversionData = previousConversionData.concat('<tr><th>Minutes Present</th><th>Daily Attendance Value</th></tr>');
+  var MaxMinutes = new String();
+  var NewAttConv = new String();
+  MaxMinutes = 0;
+
+  while (x <= y) {
+    previousConversionData = previousConversionData.concat('<tr><td>' + AttConvInputValue[x] + '</td><td>' + AttConvAttValue[x] + '</td></tr>');
+    if (MaxMinutes < NewMinutesTotal && AttConvID[x] == AttendanceConversionID && AttConvInputValue[x] <= NewMinutesTotal && AttConvModeCode[x] == DefaultAttendanceConversion.toLowerCase()) {
+      MaxMinutes = AttConvInputValue[x];
+      NewAttConv = AttConvAttValue[x];
+    }
+    ;
+    x++;
+  }
+  ;
+  previousData = previousData.concat(NewAttConv);
+}
+
+else if (DefaultAttendanceConversion == 'TimeDay' && DefaultAttendanceMode == 'Meeting') {
+  previousConversionData = previousConversionData.concat('<tr><th>Minutes Present</th><th>Daily Attendance Value</th></tr>');
+  var MaxMinutes = new String();
+  var NewAttConv = new String();
+  NewMinutesTotal = DailyMinutesTotal;
+
+  while (x <= y) {
+    previousConversionData = previousConversionData.concat('<tr><td>' + AttConvInputValue[x] + '</td><td>' + AttConvAttValue[x] + '</td></tr>');
+    if (MaxMinutes < MinutesTotal && AttConvID[x] == AttendanceConversionID && AttConvInputValue[x] <= MinutesTotal && AttConvModeCode[x] == DefaultAttendanceConversion.toLowerCase()) {
+      MaxMinutes = AttConvInputValue[x];
+      NewAttConv = AttConvAttValue[x];
+    }
+    ;
+    x++;
+  }
+  ;
+  previousData = previousData.concat(NewAttConv);
+}
+
+else if (DefaultAttendanceConversion == 'CodeDay') {
+  previousConversionData = previousConversionData.concat('<tr><th>Attendance Code</th><th>Attendance Code Presence Status</th><th>Daily Attendance Value</th></tr>');
+  while (x <= y) {
+    previousConversionData = previousConversionData.concat('<tr><td>');
+    if (AttConvAttCode[x] == '') {
+      previousConversionData = previousConversionData.concat('(Present)');
+    }
+    else {
+      previousConversionData = previousConversionData.concat(AttConvAttCode[x]);
+    }
+    ;
+
+    previousConversionData = previousConversionData.concat('</td><td>' + AttConvPresenceStatus[x] + '</td><td>' + AttConvAttValue[x] + '</td></tr>');
+    if (((DailyAttCodeID == AttConvInputValue[x] || (DailyAttCodeID == '' && AttConvInputValue[x] == '')) && AttConvID[x] == AttendanceConversionID && AttConvModeCode[x] == DefaultAttendanceConversion.toLowerCase()) || (DailyAttCode == '' && AttConvAttCode[x] == '' && SchoolEnrollDate != '')) {
+      DailyAttValue = AttConvAttValue[x];
+    }
+    ;
+    x++;
+  }
+  ;
+  previousData = previousData.concat(DailyAttValue);
+}
+else {
+  previousData = previousData.concat('0');
+}
+;
+previousData = previousData.concat('</td></tr>\
+<tr><td><b>Daily Membership Value based on settings</b></td><td>');
+
+if ((InSession == 'Yes' && TrackInSession == '1') || ((DailyAttCode == '') || (DailyPresenceStatus == 'Present' && DailyAttCodeCalcADM == '1') || (DailyPresenceStatus == 'Absent' && DailyAttCodeCalcADM == '0'))) {
+  var MembershipCalcValue = (MembershipShare * MembershipValue)
+  previousData = previousData.concat(MembershipCalcValue);
+}
+else {
+  previousData = previousData.concat('0');
+}
+;
+previousData = previousData.concat('</td></tr>');
+previousConversionData = previousConversionData.concat('</table>');
+
+// Bell Schedule Data
+if (DefaultAttendanceConversion != 'CodeDay') {
+  var previousBellScheduleData = new String();
+  var period_number_bs = new Array()
+  var starttime = new Array()
+  var endtime = new Array()
+  var minutes_attended = new Array()
+  var ada_code = new Array()
+  var starthours = new Array()
+  var startminutes = new Array()
+  var endhours = new Array()
+  var endminutes = new Array()
+  var dispstartminutes = new Array()
+  var dispendminutes = new Array()
+  var startAMPM = new Array()
+  var endAMPM = new Array()
+  ~[tlist_sql;
+  SELECT
+  rownum, period_number, start_time, end_time, minutes_attended, ADA_Code
+  FROM(SELECT
+  p1.period_number, b1.start_time, b1.end_time, b1.minutes_attended, b1.ADA_Code
+  FROM
+  ps.bell_schedule_items
+  b1
+  LEFT
+  JOIN
+  ps.bell_schedule
+  b2
+  ON
+  b1.bell_schedule_id = b2.id
+  LEFT
+  JOIN
+  ps.period
+  p1
+  ON
+  b1.period_id = p1.id
+  WHERE
+  b2.schoolid = (SELECT
+  schoolid
+  FROM(SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+)
+  AND
+  b2.id = (SELECT
+  c1.bell_schedule_id
+  FROM
+  PS.calendar_day
+  c1
+  WHERE
+  c1.date_value = to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  c1.schoolid = (SELECT
+  schoolid
+  FROM(SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.students
+  WHERE
+  id = ~(id)
+  UNION
+  ALL
+  SELECT
+  schoolid, entrydate, exitdate
+  FROM
+  ps.reenrollments
+  WHERE
+  studentid = ~(id)
+)
+  WHERE
+  entrydate <= to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+  AND
+  exitdate > to_date('~[gpv:dateentered]', '~[datetext:mmddyyyy]')
+))
+  ORDER
+  BY
+  b1.start_time, b1.end_time, p1.period_number
+)]
+
+  period_number_bs[~(rownum)] = '~(result1)';
+  starttime[~(rownum)] = '~(result2)';
+  endtime[~(rownum)] = '~(result3)';
+  minutes_attended[~(rownum)] = ~(result4);
+  ada_code[~(rownum)] = '~(result5)';
+  [/tlist_sql
+]
+  var v = (1);
+  var u = (minutes_attended.length - 1);
+
+  previousBellScheduleData = previousBellScheduleData.concat('<center><h3>Bell Schedule - ' + BellSchedule + '</h3></center>');
+  previousBellScheduleData = previousBellScheduleData.concat('<table class="grid">\
+<tr><th>Period Number</th><th>Start Time</th><th>End Time</th><th>Minutes</th><th>Counts in ADA</th></tr>');
+  for (v = 1; v <= u; v++) {
+    previousBellScheduleData = previousBellScheduleData.concat('<tr><td>' + period_number_bs[v] + '</td>');
+    starthours[v] = 0;
+    startminutes[v] = 0;
+    while (starttime[v] >= 3600) {
+      starthours[v]++;
+      starttime[v] -= 3600;
+    }
+    ;
+    while (starttime[v] >= 60) {
+      startminutes[v]++;
+      starttime[v] -= 60;
+    }
+    ;
+    if (starthours[v] <= 11) {
+      startAMPM[v] = 'AM';
+    }
+    else if (starthours[v] >= 13) {
+      startAMPM[v] = 'PM';
+      starthours[v] -= 12;
+    }
+    else {
+      startAMPM[v] = 'PM';
+    }
+    ;
+    if (startminutes[v] < 10) {
+      dispstartminutes[v] = '0' + startminutes[v];
+    }
+    else {
+      dispstartminutes[v] = startminutes[v];
+    }
+    ;
+    previousBellScheduleData = previousBellScheduleData.concat('<td>' + starthours[v] + ':' + dispstartminutes[v] + ' ' + startAMPM[v] + '</td>');
+    endhours[v] = 0;
+    endminutes[v] = 0;
+    while (endtime[v] >= 3600) {
+      endhours[v]++;
+      endtime[v] -= 3600;
+    }
+    ;
+    while (endtime[v] >= 60) {
+      endminutes[v]++;
+      endtime[v] -= 60;
+    }
+    ;
+    if (endhours[v] <= 11) {
+      endAMPM[v] = 'AM';
+    }
+    else if (endhours[v] >= 13) {
+      endAMPM[v] = 'PM';
+      endhours[v] -= 12;
+    }
+    else {
+      endAMPM[v] = 'PM';
+    }
+    ;
+    if (endminutes[v] < 10) {
+      dispendminutes[v] = '0' + endminutes[v];
+    }
+    else {
+      dispendminutes[v] = endminutes[v];
+    }
+    ;
+    previousBellScheduleData = previousBellScheduleData.concat('<td>' + endhours[v] + ':' + dispendminutes[v] + ' ' + endAMPM[v] + '</td>\
+<td>' + minutes_attended[v] + '</td>');
+    if (ada_code[v] == '1') {
+      previousBellScheduleData = previousBellScheduleData.concat('<td>Yes</td></tr>');
+    }
+    else {
+      previousBellScheduleData = previousBellScheduleData.concat('<td><font color="Red" title="Bell Schedule period does not count towards ADA">No</font></td></tr>');
+    }
+    ;
+  }
+  ;
+  previousBellScheduleData = previousBellScheduleData.concat('</table>');
+  document.getElementById('BellScheduleData').innerHTML = previousBellScheduleData;
+}
+;
+
+document.getElementById('Data').innerHTML = previousData;
+document.getElementById('ConversionData').innerHTML = previousConversionData;
+</script>
+[/if]
+<center>
+  <font color="red"><p>* Hover the mouse cursor over items in red for more details on the error.</pt></font>
+
+  <p>The ADA Troubleshooter is privately developed and is not supported by Pearson or PowerSchool technical support.<br />To submit enhancements, or to report any discrepancies, please email <a
+      href="mailto:PowerToolsforPowerSchool@gmail.com">PowerToolsforPowerSchool@gmail.com</a></p></center>
+<div id="iframe" style="display:none"></div>
+<br \>
+<p id="bottom_container" style="text-align:center"></p>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</body>
+</html><!-- non framed -->

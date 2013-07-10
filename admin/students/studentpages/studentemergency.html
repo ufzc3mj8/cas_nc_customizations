@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Student Contacts</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+	<style type="text/css">
+		.alternateTable:nth-of-type(odd) {background: #EDF3FE;}
+		.alternateTable:nth-of-type(even) {background: #D7EDF4;}
+		/*.alternateTable:nth-of-type(odd) {background: #D7EDF4;}*/
+	</style>
+</head>
+
+<body>
+
+<form action="/admin/changesrecorded.white.html" method="POST" id="mainForm">
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.modifydata.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.modifydata.student_selection]</a> &gt; Student Contacts<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]Student Contacts~[wc:title_student_end_css]
+
+<div id="id_form_save_alert_message" class="feedback-alert" style="display: none"> Your changes have not yet been saved.  Click the Submit button.</div>
+
+<!-- start of content and bounding box -->
+<div class="box-round" id="divData">
+	<a id="addContact" class="button">New Contact</a>
+~[tlist_sql;SELECT
+studentsdcid,
+id,
+EMERG_CALLSEQ,
+PREFIX,
+PARENT_FIRSTNAME,
+PARENT_LASTNAME,
+PARENT_EMAIL,
+
+PARENT_TYPE_CODE,
+
+PARENT_LIVINGWITH,
+
+EMERG_RELATION_CODE,
+EMERG_CANPICKUP,
+
+PARENT_UNLISTED,
+PARENT_SPEAKENGLISH,
+PARENT_ADDRESS,
+PARENT_HOMEPHONE,
+PARENT_DAYPHONE,
+PARENT_CELLPHONE
+--LANGUAGE_CODE,
+--LANGUAGE_SPOKEN,
+--LANGUAGE_WRITTEN
+--GOVT_WORK_LOC_CODE,
+--PARENT_AVAILABLEATWORK,
+--PARENT_COPYOFCORR,
+--PARENT_CORR_CODE,
+--PARENT_EDULEVEL_CODE,
+--PARENT_EMERGCONTACT,
+--PARENT_EMPLOYER,
+--PARENT_MILITARYEMP,
+--PARENT_NOTE,
+--PARENT_OCCUPATION,
+--PARENT_VOLUNTEER,
+--SELECT_EMERGENCY_CONTACT,
+--WORK_EXTENSION
+FROM S_NC_GUARDIAN
+WHERE STUDENTSDCID = ~(RN)
+ORDER BY EMERG_CALLSEQ, PARENT_LASTNAME, PARENT_FIRSTNAME
+]
+<table id="tableData" class="alternateTable">
+	<tbody id="tbodyData">
+		<tr>
+			<td><span id="CALL_SEQUENCE~(COUNT;-)">Call Sequence:
+				<select name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]EMERG_CALLSEQ" class="CALL_SEQUENCE">
+					<option value="1" ~(EMERG_CALLSEQ;t;if.test=1;THEN=SELECTED;else=)>1</option>
+					<option value="2" ~(EMERG_CALLSEQ;t;if.test=2;THEN=SELECTED;else=)>2</option>
+					<option value="3" ~(EMERG_CALLSEQ;t;if.test=3;THEN=SELECTED;else=)>3</option>
+					<option value="4" ~(EMERG_CALLSEQ;t;if.test=4;THEN=SELECTED;else=)>4</option>
+					<option value="5" ~(EMERG_CALLSEQ;t;if.test=5;THEN=SELECTED;else=)>5</option>
+					<option value="6" ~(EMERG_CALLSEQ;t;if.test=6;THEN=SELECTED;else=)>6</option>
+					<option value="7" ~(EMERG_CALLSEQ;t;if.test=7;THEN=SELECTED;else=)>7</option>
+					<option value="8" ~(EMERG_CALLSEQ;t;if.test=8;THEN=SELECTED;else=)>8</option>
+					<option value="9" ~(EMERG_CALLSEQ;t;if.test=9;THEN=SELECTED;else=)>9</option>
+					<option value="10" ~(EMERG_CALLSEQ;t;if.test=10;THEN=SELECTED;else=)>10</option>
+				</select></span>
+			Prefix <input type="hidden" name="PREFIX_VALUE" id="PREFIX_VALUE~(count;-)" value="~(PREFIX;t)">
+			<select name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PREFIX" class="PREFIX" id="PREFIX~(count;-)"><option value="">Select</option></select></td>
+			<td>First Name <input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_FIRSTNAME" value="~(PARENT_FIRSTNAME;t)" width="10"></td>
+			<td>Last Name <input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_LASTNAME" value="~(PARENT_LASTNAME;t)" width="20"></td>
+			<td>E-Mail:<input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_EMAIL" value="~(PARENT_EMAIL;t)" width="10"></td>
+		</tr>
+		<tr>
+			<td>
+				<table>
+					<tr>
+						<td>Type</td>
+						<td>
+							<input type="hidden" name="PARENT_TYPE_CODE_VALUE" id="PARENT_TYPE_CODE_VALUE~(count;-)" value="~(PARENT_TYPE_CODE;t)">
+							<select name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_TYPE_CODE" class="PARENT_TYPE_CODE" id="PARENT_TYPE_CODE~(count;-)"><option value="">Select</option></select>
+						</td>
+						<td bgcolor="~(PARENT_LIVINGWITH;t;if.test=Y;then=PaleGreen;else=IndianRed)">Living With</td>
+						<td bgcolor="~(PARENT_LIVINGWITH;t;if.test=Y;then=PaleGreen;else=IndianRed)">
+							<SELECT name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_LIVINGWITH">
+								<option value="">No</option>
+								<option value="Y" ~(PARENT_LIVINGWITH;t;if.test=Y;THEN=SELECTED;else=)>Yes</option>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>Relationship</td>
+						<td>
+							<input type="hidden" name="EMERG_RELATION_CODE_VALUE" id="EMERG_RELATION_CODE_VALUE~(count;-)" value="~(EMERG_RELATION_CODE;t)"><select name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]EMERG_RELATION_CODE" class="EMERG_RELATION_CODE" id="EMERG_RELATION_CODE~(count;-)"><option value="">Select</option></select>
+						</td>
+						<td bgcolor="~(EMERG_CANPICKUP;t;if.test=Y;then=PaleGreen;else=IndianRed)">Can Pick Up</td>
+						<td bgcolor="~(EMERG_CANPICKUP;t;if.test=Y;then=PaleGreen;else=IndianRed)">
+							<SELECT name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]EMERG_CANPICKUP">
+								<option value="">No</option>
+								<option value="Y" ~(EMERG_CANPICKUP;t;if.test=Y;THEN=SELECTED;else=)>Yes</option>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>Unlisted</td>
+						<td>
+							<SELECT name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_UNLISTED"><option value="">No</option><option value="Y" ~(PARENT_UNLISTED;t;if.test=Y;THEN=SELECTED;else=)>Yes</option></SELECT>
+						</td>
+						<td>Speaks English</td>
+						<td>
+							<SELECT name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_SPEAKENGLISH">
+								<option value="">No</option>
+								<option value="Y" ~(PARENT_SPEAKENGLISH;t;if.test=Y;THEN=SELECTED;else=)>Yes</option>
+							</SELECT>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>Address:<BR><textarea name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_ADDRESS" rows="3" cols="25">~(PARENT_ADDRESS;t)</textarea></td>
+			<td>
+				<table>
+					<tr>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)">Home Phone</td>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)"><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_HOMEPHONE" value="~(PARENT_HOMEPHONE;t)" width="10" maxlength="10"></td>
+					</tr>
+					<tr>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)">Day Phone</td>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)"><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_DAYPHONE" value="~(PARENT_DAYPHONE;t)" width="10" maxlength="10"></td>
+					</tr>
+					<tr>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)">Cell Phone</td>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)"><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_GUARDIAN.S_NC_GUARDIAN:~(id)]PARENT_CELLPHONE" value="~(PARENT_CELLPHONE;t)" width="10" maxlength="10"></td>
+					</tr>
+				</table>
+			</td>
+			<td id="~(id)">
+				<a name="deleteContact" class="button">Delete Contact</a>
+				<a name="deleteContactCancel" class="button" style="display: none">Cancel Delete</a>
+				<a name="deleteContactConfirm" class="button" style="display: none;background-color: Orange">Confirm Delete</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+	[/tlist_sql]
+<div class="button-row"><input type="hidden" name="ac" value="prim"><span id="sequence_error" style="display: none">Call Sequence 1-9 may not be duplicated.</span><span id="submit_message" style="display: none">You must click Submit to save changes.</span>~[submitbutton]</div>
+</div>
+
+
+<br>
+
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+<table id="clonedata" style="display: none" class="alternateTable">
+	<tbody id="tbodyCloneData">
+		<tr>
+			<td><span id="CALL_SEQUENCE~(COUNT;-)">Call Sequence:
+				<select name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]EMERG_CALLSEQ" class="CALL_SEQUENCE">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+				</select></span>
+			Prefix <select name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PREFIX" class="PREFIX"><option value="">Select</option></select></td>
+			<td>First Name <input type="text" name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_FIRSTNAME" value="" width="10"></td>
+			<td>Last Name <input type="text" name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_LASTNAME" value="" width="20"></td>
+			<td>E-Mail:<input type="text" name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_EMAIL" value="" width="10"></td>
+		</tr>
+		<tr>
+			<td>
+				<table>
+					<tr>
+						<td>Type</td>
+						<td>
+							<select name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_TYPE_CODE" class="PARENT_TYPE_CODE" id="PARENT_TYPE_CODE~(count;-)"><option value="">Select</option></select>
+						</td>
+						<td>Living With</td>
+						<td>
+							<SELECT name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_LIVINGWITH">
+								<option value="">No</option>
+								<option value="Y">Yes</option>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>Relationship</td>
+						<td>
+							<select name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]EMERG_RELATION_CODE" class="EMERG_RELATION_CODE" id="EMERG_RELATION_CODE~(count;-)"><option value="">Select</option></select>
+						</td>
+						<td>Can Pick Up</td>
+						<td>
+							<SELECT name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]EMERG_CANPICKUP">
+								<option value="">No</option>
+								<option value="Y">Yes</option>
+							</SELECT>
+						</td>
+					</tr>
+					<tr>
+						<td>Unlisted</td>
+						<td>
+							<SELECT name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_UNLISTED"><option value="">No</option><option value="Y">Yes</option></SELECT>
+						</td>
+						<td>Speaks English</td>
+						<td>
+							<SELECT name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_SPEAKENGLISH">
+								<option value="">No</option>
+								<option value="Y">Yes</option>
+							</SELECT>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>Address:<BR><textarea name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_ADDRESS" rows="3" cols="25"></textarea></td>
+			<td>
+				<table>
+					<tr>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)">Home Phone</td>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)"><input type="text" name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_HOMEPHONE" value="" width="10" maxlength="10"></td>
+					</tr>
+					<tr>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)">Day Phone</td>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)"><input type="text" name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_DAYPHONE" value="" width="10" maxlength="10"></td>
+					</tr>
+					<tr>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)">Cell Phone</td>
+						<td title="Phone Numbers are entered without spaces or special characters (1112223333)"><input type="text" name="CF-[STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:!!!]PARENT_CELLPHONE" value="" width="10" maxlength="10"></td>
+					</tr>
+				</table>
+			</td>
+			<td id="~(id)">
+				<a name="undoNewContact" class="button">Undo</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script type="text/javascript">
+	var cnt = 0;
+	function checkSequences() {
+		var list_of_values = [];
+		var unique_values = {};
+		$j('#divData .CALL_SEQUENCE').each( function(item) {
+			if ($j(this).val() != '10') {
+				//console.log($j(this).val());
+				if ( ! unique_values[$j(this).val()] ) {
+					unique_values[$j(this).val()] = true;
+					list_of_values.push($j(this).val());
+					//console.log($j(this).parent());
+					$j(this).parent().removeAttr('style');
+				} else {
+					$j(this).parent().css('background-color','#CD5C5C');
+					$j('#btnSubmit').attr("disabled","disabled");
+					$j('#sequence_error').show();
+				};
+			};
+		});
+		var list_of_values_cnt = list_of_values.length;
+		var unique_values_cnt = 0;
+		$j('#divData .CALL_SEQUENCE').each( function() {
+			if ($j(this).val() != '10') {
+				unique_values_cnt++;
+			};
+		});
+		if (list_of_values_cnt === unique_values_cnt) {
+			$j('#btnSubmit').removeAttr("disabled");
+			$j('#sequence_error').hide();
+		}
+	};
+	$j(document).ready( function() {
+		$j('form').change( function() {
+			$j('#submit_message').show();
+			$j('#id_form_save_alert_message').show();
+		});
+		checkSequences();
+		$j('#addContact').click( function() {
+			cnt = cnt-1;
+			//console.log(cnt);
+			//var tdata = $j('#clonedata tbody').children().clone(true);
+			var tdata = $j('#clonedata').clone(true);
+			tdata.attr("id","clonedata" + cnt);
+			tdata.find('input,select,textarea').each( function() {
+				var name = $j(this).attr("name");
+				//console.log($j(this));
+				//console.log(name);
+				name = name.replace('!!!',cnt);
+				//console.log(name);
+				$j(this).attr("name",name);
+			});
+			//console.log(tdata);
+			tdata.show();
+			//$j('#tableData tbody').append(tdata);
+			$j('.button-row').before(tdata);
+			//$j('#tbodyData').append(tdata);
+			checkSequences();
+		});
+		$j('[name="deleteContact"]').click( function() {
+			$j(this).hide().next().show().next().show();
+			//$j('#deleteContact').hide();
+			//$j('#deleteContactCancel').show();
+			//$j('#deleteContactConfirm').show();
+		});
+		$j('[name="undoNewContact"]').click( function() {
+			$j(this).parent().parent().parent().parent().remove();
+			checkSequences();
+		});
+		$j('[name="deleteContactConfirm"]').click( function() {
+			var idToDelete = $j(this).parent().attr('id');
+			var formAction = $j('form').attr('action');
+			//DC-STUDENTS:19564.S_NC_MEDICINE.S_NC_MEDICINE:32=on
+			$j('.button-row').append('<input type="hidden" name="DC-STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:'+idToDelete+'" value="on">');
+			$j(this).parent().parent().parent().parent().remove();
+			checkSequences();
+			//window.location=formAction + '&DC-STUDENTS:~(rn).S_NC_GUARDIAN.S_NC_GUARDIAN:'+idToDelete+'=on&ac=prim';
+		});
+		$j('[name="deleteContactCancel"]').click( function() {
+			$j(this).prev().show();
+			$j(this).hide().next().hide();
+			//$j('#deleteContact').show();
+			//$j('#deleteContactCancel').hide();
+			//$j('#deleteContactConfirm').hide();
+		});
+		$j('.CALL_SEQUENCE').change( function() {
+			checkSequences();
+		});
+		//START CODE BLOCK FOR RELATIONSHIPS
+		var relationships = {};
+		~[tlist_sql;SELECT g.name, g.value FROM gen g WHERE g.cat = 'relation_code' ORDER BY g.sortorder]
+		relationships['~(1;t)'] = '~(2;t)';[/tlist_sql]
+		for(var ddRow in relationships){
+			var option1 = document.createElement("option");
+			option1.value=ddRow;
+			option1.text=relationships[ddRow];
+			$j('.EMERG_RELATION_CODE').append(option1);
+		}
+		$j('.EMERG_RELATION_CODE').each( function(i,v) {
+			var inputValue = $j('#EMERG_RELATION_CODE_VALUE'+i).val();
+			$j('#EMERG_RELATION_CODE'+i).val(inputValue);
+		});
+		//END CODE BLOCK FOR RELATIONSHIPS
+		//START CODE BLOCK FOR PREFIX
+		var prefixes = {};
+		~[tlist_sql;SELECT g.name, g.value FROM gen g WHERE g.cat = 'contact_prefix' ORDER BY g.sortorder]
+		prefixes['~(1;t)'] = '~(2;t)';[/tlist_sql]
+		for(var ddRow in prefixes){
+			var option1 = document.createElement("option");
+			option1.value=ddRow;
+			option1.text=prefixes[ddRow];
+			$j('.PREFIX').append(option1);
+		}
+		$j('.PREFIX').each( function(i,v) {
+			var inputValue = $j('#PREFIX_VALUE'+i).val();
+			$j('#PREFIX'+i).val(inputValue);
+		});
+		//END CODE BLOCK FOR PREFIX
+		//START CODE BLOCK FOR CONTACT TYPES
+		var contact_types = {};
+		~[tlist_sql;SELECT g.name, g.value FROM gen g WHERE g.cat = 'contact_types' ORDER BY g.sortorder]
+		contact_types['~(1;t)'] = '~(2;t)';[/tlist_sql]
+		for(var ddRow in contact_types){
+			var option1 = document.createElement("option");
+			option1.value=ddRow;
+			option1.text=contact_types[ddRow];
+			$j('.PARENT_TYPE_CODE').append(option1);
+		}
+		$j('.PARENT_TYPE_CODE').each( function(i,v) {
+			var inputValue = $j('#PARENT_TYPE_CODE_VALUE'+i).val();
+			$j('#PARENT_TYPE_CODE'+i).val(inputValue);
+		});
+		//END CODE BLOCK FOR CONTACT TYPES
+		
+	});
+</script>
+</body>
+</html><!-- end right frame -->

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Student Awards</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+	<style type="text/css">
+		.alternateTable:nth-of-type(odd) {background: #EDF3FE;}
+		.alternateTable:nth-of-type(even) {background: #D7EDF4;}
+	</style>
+</head>
+
+<body>
+
+<form action="/admin/students/studentpages/studentawards.html?frn=~(studentfrn)" method="POST" id="mainForm">
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.modifydata.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.modifydata.student_selection]</a> &gt; Student Awards<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]Student Awards~[wc:title_student_end_css]
+
+<div id="id_form_save_alert_message" class="feedback-alert" style="display: none"> Your changes have not yet been saved.  Click the Submit button.</div>
+
+<!-- start of content and bounding box -->
+<div class="box-round" id="divData">
+	<a id="addAward" class="button">New Record</a>
+	<table id="tableData" class="linkDescList">
+		<thead>
+		<tr class="headerRow">
+			<th>Category</th>
+			<th>Name</th>
+			<th>Date</th>
+			<th>Scholarship / Value</th>
+			<th>On Transcript</th>
+			<th>Delete</th>
+		</tr>
+		</thead>
+		<tbody>
+~[tlist_sql;SELECT
+AWARD_CATEGORY_CODE,
+studentsdcid,
+id,
+AWARD_NAME,
+RECEIVED_DATE,
+SCHOLARSHIP,
+SCHOLARSHIP_AMOUNT,
+ON_TRANSCRIPT
+FROM S_NC_STUDENTAWARDS
+WHERE STUDENTSDCID = ~(RN)
+ORDER BY RECEIVED_DATE, AWARD_NAME]
+		<tr>
+			<td><input type="hidden" name="AWARD_CATEGORY_CODE_VALUE" id="AWARD_CATEGORY_CODE_VALUE~(count;-)" value="~(AWARD_CATEGORY_CODE;t)">
+			<select name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:~(id)]AWARD_CATEGORY_CODE" class="AWARD_CATEGORY_CODE" id="AWARD_CATEGORY_CODE~(count;-)">
+				<option value="">Select</option></select></td>
+			<td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:~(id)]AWARD_NAME" value="~(AWARD_NAME;t)" width="10" maxlength="60"></td>
+			<td><input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:~(id)]RECEIVED_DATE" value="~(RECEIVED_DATE;d)" width="20" class="psDateWidget"></td>
+			<td>
+				<select name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:~(id)]SCHOLARSHIP" class="SCHOLARSHIP" id="SCHOLARSHIP~(count;-)">
+					<option value="N" ~(SCHOLARSHIP;t;if.test=N;THEN=SELECTED;else=)>No</option>
+					<option value="Y" ~(SCHOLARSHIP;t;if.test=Y;THEN=SELECTED;else=)>Yes</option>
+				</select>
+				$<input type="text" name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:~(id)]SCHOLARSHIP_AMOUNT" value="~(SCHOLARSHIP_AMOUNT;t)" width="10" maxlength="25">
+			</td>
+			<td>
+				<select name="CF-[STUDENTS:~(studentdcid;t).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:~(id)]ON_TRANSCRIPT" class="ON_TRANSCRIPT" id="ON_TRANSCRIPT~(count;-)">
+					<option value="N" ~(ON_TRANSCRIPT;t;if.test=N;THEN=SELECTED;else=)>No</option>
+					<option value="Y" ~(ON_TRANSCRIPT;t;if.test=Y;THEN=SELECTED;else=)>Yes</option>
+				</select>
+			</td>
+			<td id="~(id)">
+				<a name="deleteContact" class="button">Delete Record</a>
+				<a name="deleteContactCancel" class="button" style="display: none">Cancel Delete</a>
+				<a name="deleteContactConfirm" class="button" style="display: none;background-color: Orange">Confirm Delete</a>
+			</td>
+		</tr>
+	[/tlist_sql]
+		</tbody>
+	</table>
+<div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</div>
+
+
+<br>
+
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+<table id="clonedata" style="display: none" class="alternateTable">
+	<tbody id="tbodyCloneData">
+		<tr>
+			<td><select name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]AWARD_CATEGORY_CODE" class="AWARD_CATEGORY_CODE" id="AWARD_CATEGORY_CODE!!!">
+				<option value="">Select</option></select></td>
+			<td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]AWARD_NAME" value="" width="10" maxlength="60"></td>
+			<td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]RECEIVED_DATE" value="" width="20" class="psDateWidget"></td>
+			<td>
+				<select name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]SCHOLARSHIP" class="SCHOLARSHIP">
+					<option value="N">No</option>
+					<option value="Y">Yes</option>
+				</select>
+				<input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]SCHOLARSHIP_AMOUNT" value="" width="10" maxlength="25">
+			</td>
+			<td>
+				<select name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]ON_TRANSCRIPT" class="ON_TRANSCRIPT">
+					<option value="N">No</option>
+					<option value="Y">Yes</option>
+				</select>
+			</td>
+			<td id="~(id)">
+				<a name="undoNewAward" class="button">Undo</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script type="text/javascript">
+	var cnt = 0;
+	$j(document).ready( function() {
+		$j('form').change( function() {
+			$j('#id_form_save_alert_message').show();
+		});
+		$j('#addAward').click( function() {
+			cnt = cnt-1;
+			var tdata = $j('#clonedata tbody').children().clone(true);
+			//tdata.attr("id","clonedata" + cnt);
+			tdata.find('input,select,textarea').each( function() {
+				var name = $j(this).attr("name");
+				//console.log($j(this));
+				//console.log(name);
+				name = name.replace('!!!',cnt);
+				//console.log(name);
+				$j(this).attr("name",name);
+			});
+			//console.log(tdata);
+			//tdata.show();
+			$j('#tableData tbody').append(tdata);
+			//$j('.button-row').before(tdata);
+			//$j('#tbodyData').append(tdata);
+		});
+		$j('[name="deleteContact"]').click( function() {
+			$j(this).hide().next().show().next().show();
+			//$j('#deleteContact').hide();
+			//$j('#deleteContactCancel').show();
+			//$j('#deleteContactConfirm').show();
+		});
+		$j('[name="undoNewAward"]').click( function() {
+			$j(this).parent().parent().remove();
+		});
+		$j('[name="deleteContactConfirm"]').click( function() {
+			var idToDelete = $j(this).parent().attr('id');
+			var formAction = $j('form').attr('action');
+			//DC-STUDENTS:19564.S_NC_MEDICINE.S_NC_MEDICINE:32=on
+			$j('.button-row').append('<input type="hidden" name="DC-STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:'+idToDelete+'" value="on">');
+			$j(this).parent().parent().remove();
+		});
+		$j('[name="deleteContactCancel"]').click( function() {
+			$j(this).hide().next().hide();
+			$j(this).prev().show();
+			//$j('#deleteContact').show();
+			//$j('#deleteContactCancel').hide();
+			//$j('#deleteContactConfirm').hide();
+		});
+		//START CODE BLOCK FOR AWARD TYPES
+		var award_types = {};
+		~[tlist_sql;SELECT g.name, g.value FROM gen g WHERE g.cat = 'award_types' ORDER BY g.sortorder]
+		award_types['~(1;t)'] = '~(2;t)';[/tlist_sql]
+		for(var ddRow in award_types){
+			var option1 = document.createElement("option");
+			option1.value=ddRow;
+			option1.text=award_types[ddRow];
+			$j('.AWARD_CATEGORY_CODE').append(option1);
+		}
+		$j('.AWARD_CATEGORY_CODE').each( function(i,v) {
+			var inputValue = $j('#AWARD_CATEGORY_CODE_VALUE'+i).val();
+			$j('#AWARD_CATEGORY_CODE'+i).val(inputValue);
+		});
+		//END CODE BLOCK FOR AWARD TYPES
+		
+	});
+</script>
+</body>
+</html><!-- end right frame -->

@@ -1,0 +1,2 @@
+<option value=""></option>
+~[tlist_sql;select trim(code) as code, description from ps.s_nc_imm_system_codes where area = 'Immigrant Year' and active = 1 order by sort_order]<option value="~(code)">~(description)</option>[/tlist_sql]

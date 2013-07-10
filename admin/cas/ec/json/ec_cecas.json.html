@@ -1,0 +1,9 @@
+{
+~[tlist_sql;
+SELECT ec.ec_referred
+FROM ps.s_nc_ec ec
+LEFT JOIN ps.students stu ON stu.dcid = ec.studentsdcid
+WHERE stu.id = ~[gpv:stuid] ]
+"cecas" : "~(cecas)"
+[/tlist_sql]
+}

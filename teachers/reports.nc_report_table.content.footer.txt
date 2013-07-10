@@ -1,0 +1,8 @@
+<script type="text/javascript">
+  $j(function() {
+  $j('form').before('<ul class="tabs">\
+    <li class="selected"><a href="reports.html?ac=~[gpv:ac]&sectionid=~[gpv:sectionid]">System</a></li>\
+    <li><a href="statereports.html?ac=~[gpv:ac]&sectionid=~[gpv:sectionid]">State</a></li>\
+    </ul>');
+  });
+</script>

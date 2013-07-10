@@ -1,0 +1,14 @@
+~[tlist_sql;
+    SELECT
+        sch.name||' - '||sch.school_number school
+    FROM
+        ps.students stu
+    LEFT JOIN
+        ps.schools sch
+          ON sch.school_number = stu.schoolid
+    WHERE
+        stu.dcid = ~[gpv:dcid]]
+    {
+      "school" : "~(school;t)"
+    }
+[/tlist_sql]

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>New Medication Log</title>
+~[wc:UI_submitprogress]
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+    <script type="text/javascript">
+	var medicationList = {~[tlist_sql;SELECT 
+	    m.medication_code, --ref_medication.value, -- based on m.medication_code
+	    m.id,
+	    m.reason,
+	    m.per_request_as_necessary,
+	    m.rx_number,
+	    m.dosage,
+	    m.measurement_code, --ref_measurement.value, -- based on measurement_code field
+	    m.start_date,
+	    m.end_date,
+	    --m.scheduled_time,
+	    m.frequency,
+	    CASE WHEN m.sunday = 1 THEN 'Y' ELSE '' END,
+	    CASE WHEN m.monday = 1 THEN 'Y' ELSE '' END,
+	    CASE WHEN m.tuesday = 1 THEN 'Y' ELSE '' END,
+	    CASE WHEN m.wednesday = 1 THEN 'Y' ELSE '' END,
+	    CASE WHEN m.thursday = 1 THEN 'Y' ELSE '' END,
+	    CASE WHEN m.friday = 1 THEN 'Y' ELSE '' END,
+	    CASE WHEN m.saturday = 1 THEN 'Y' ELSE '' END,
+	    m.special_instructions
+	    FROM S_NC_MEDICINE m
+	    INNER JOIN Students s ON s.dcid = m.studentsdcid AND s.dcid = ~(rn)
+	    --LEFT OUTER JOIN gen ref_measurement ON ref_measurement.cat = 'measurement_cod' AND ref_measurement.name = m.measurement_code
+	    --LEFT OUTER JOIN gen ref_medication ON ref_medication.cat = 'medication_code' AND ref_medication.name = m.medication_code
+	    WHERE m.start_date <= SYSDATE AND m.end_date >= SYSDATE
+	    AND s.schoolid = ~(curschoolid)
+	    ORDER BY m.start_date]
+	    "~(medication_name;t)" : [
+		{
+		    "parent_id" : "~(parent_id;t)",
+		    "reason" : "~(reason;t)",
+		    "prn" : "~(prn;t)",
+		    "rx_number" : "~(rx_number;t)",
+		    "dosage" : "~(dosage;t)",
+		    "measurement_code" : "~(measurement_code;t)",
+		    "start_date" : "~(start_date;d)",
+		    "end_date" : "~(end_date;d)",
+		    "frequency" : "~(frequency;t)",
+		    "su" : "~(su;t)",
+		    "mo" : "~(mo;t)",
+		    "tu" : "~(tu;t)",
+		    "we" : "~(we;t)",
+		    "th" : "~(th;t)",
+		    "fr" : "~(fr;t)",
+		    "sa" : "~(sa;t)",
+		    "instructions" : "~(instructions;t)"
+		}
+	    ],
+	    [/tlist_sql]"null" : [
+	     ]
+	};
+	$j(document).ready( function() {
+	    $j('#medication').change( function() {
+		var medname = $j(this).val();
+		$j('#dosage').val(medicationList[medname][0].dosage);
+		$j('#dosage_unit_type').val(medicationList[medname][0].measurement_code);
+		$j('#dosage_unit_type_taken').val(medicationList[medname][0].measurement_code);
+		$j('#waste_dosage_unit_type').val(medicationList[medname][0].measurement_code);
+		$j('#dosage_taken').focus();
+		//console.log(medicationList[medname][0].dosage);
+	    });
+	});
+    </script>
+</head>
+
+<body>
+
+<form action="/admin/medicine_log/medicine_log.html?tbl=~(virtual.table_nbr;table=Medicine_Log;format=000)" method="POST">
+~[wc:admin_header_css]<!-- breadcrumb start -->
+<a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a>
+&gt; <a href="/admin/functions.html">~[text:psx.html.admin.functions.special_functions1]</a> &gt; <a href="/admin/medicine_log/functions.html">Medicine Administration</a><!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>New Medication Log</h1><!-- start of content and bounding box -->
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr class="~[evenoddrow]">
+    <td class="bold">Student</td>
+    <td>~([students]lastfirst)</td>
+</tr>
+<tr class="~[evenoddrow]">
+    <td class="bold">Medication</td>
+    <td><select name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]parenttable_id" id="medication"><option value="">Select</option>>~[tlist_sql;SELECT 
+	    m.medication_code, m.medication_code
+	    FROM S_NC_MEDICINE m
+	    INNER JOIN Students s ON s.dcid = m.studentsdcid AND s.dcid = ~(rn)
+	    WHERE m.start_date <= SYSDATE AND m.end_date >= SYSDATE
+	    AND s.schoolid = ~(curschoolid)
+	    ORDER BY m.start_date]<option value="~(1;t)">~(2;t)[/tlist_sql]</td>
+</tr>
+<tr class="~[evenoddrow]">
+    <td class="bold">Sched Date</td>
+    <td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]medication_date" value="~(f.currentdate)" class="psDateWidget"></td>
+</tr>
+<tr class="~[evenoddrow]">
+    <td class="bold">Time</td>
+    <td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]medication_time" value="~(f.currenttime)"></td>
+</tr>
+<tr class="~[evenoddrow]">
+    <td class="bold">Person</td>
+    <td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]administered_by" value="~[x:username]"></td>
+</tr>
+<tr class="~[evenoddrow]">
+    <td class="bold">Dosage</td>
+    <td>
+	<input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]dosage" value="" id="dosage" size="8">
+	<input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]dosage_unit_type" value="" id="dosage_unit_type" size="5">
+    </td>
+</tr>
+<tr class="~[evenoddrow]">
+    <td class="bold">Dosage Taken</td>
+    <td>
+	<input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]dosage_taken" value="" size="8" id="dosage_taken">
+	<input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]dosage_unit_type_taken" value="" size="5" id="dosage_unit_type_taken">
+    </td>
+</tr>
+<tr class="~[evenoddrow]">
+    <td class="bold">Dosage Waste</td>
+    <td>
+	<input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]waste_dosage" value="" size="8" id="waste_dosage">
+	<input type="text" name="CF-[STUDENTS:~(rn).S_NC_MEDICINE_HISTORY.S_NC_MEDICINE_HISTORY:-1]waste_dosage_unit_type" value="" size="5" id="waste_dosage_unit_type">
+    </td>
+</tr>
+</table>
+<br>
+
+<div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

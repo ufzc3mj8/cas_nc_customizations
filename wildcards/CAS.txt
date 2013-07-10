@@ -1,0 +1,31 @@
+<script type="text/javascript">
+  var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+  PearsonCas.Utility.parseVersionInformation = function(CasInfo) {
+    var result = [];
+    jQuery.each(PearsonCas.CasInfo, function(itemkey, item) {
+      jQuery.each(item, function(key, value) {
+        if (value) {
+          result.push(key + ' : ' + value + '\n');
+        }
+      })
+    });
+    return result;
+  };
+  PearsonCas.Utility.devAlert = function() {
+    var casVersionInformation;
+    if (typeof PearsonCas.CasInfo != "undefined") {
+      casVersionInformation = PearsonCas.Utility.parseVersionInformation(PearsonCas.CasInfo);
+    } else {
+      casVersionInformation = 'No authoring information found';
+    }
+    window.alert(casVersionInformation.join(''));
+  }
+  jQuery(function() {
+    if(jQuery('#legal').length == 0) {
+      jQuery("body").append("<div id='footer'><div id='legal'><p><span onclick='PearsonCas.Utility.devAlert();'>Customized by the Pearson Custom Application Solutions team</span>.</p></div></div>");
+    } else {
+      jQuery("#legal p").append(" <span onclick='PearsonCas.Utility.devAlert();'>Customized by the Pearson Custom Application Solutions team</span>.");
+    }
+  });
+</script>
+

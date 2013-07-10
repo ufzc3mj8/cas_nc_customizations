@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>Medicine Log</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a> &gt; <a href="/admin/functions.html" target="_top">Special Functions</a> &gt; <a href="/admin/medicine_log/functions.html" target="_top">Medicine Administration</a> &gt; Medicine Log<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>Medicine Log</h1>
+<form action="/admin/medicine_log/medicine_log.html" method="POST">
+<div class="box-round group">
+	<h2 class="toggle expanded">Filter</h2>
+	<div>
+			<fieldset class="inline">
+				<div>
+					<label>Student</label>
+					<select name="studentid"><option value="">ALL~[tlist_sql;SELECT s.id, case when ~[if.~[gpv:studentid]=]0[else]~[gpv:studentid][/if]=s.id then 'selected' end isselected, s.lastfirst FROM Students s WHERE s.enroll_status=0 and s.schoolid=~(curschoolid) ORDER BY s.lastfirst]<option value="~(1;t)" ~(isselected;t)>~(2;t)</option>[/tlist_sql]</select>
+				</div>
+				<div>
+					<label>Date Range</label>
+					<input type="text" name="sd" value="~[if.~[gpv:sd]=]~(f.currentdate)[else]~[gpv:sd][/if]"> to <input type="text" name="ed" value="~[if.~[gpv:ed]=]~(f.currentdate)[else]~[gpv:ed][/if]">
+				</div>			
+			</fieldset>
+		<div class="row-button" style="clear:both;">
+		<input type="hidden" name="tbl" value="~[gpv:tbl]">
+		<button type="submit" id="btnFilter" name="btnFilter" >Filter</button>
+		</div>
+	</div>
+</div>
+
+</form>
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+<td align="center" colspan="100%"><a href="medicine_log_edit.html?frn=~(virtual.table_nbr;table=Medicine_Setup;format=000)-99" id="btnNew" name="btnNew" class="button">New Dose</a></td>
+</tr>
+<tr bgcolor="#f6f6f6">
+<td class="bold">Student</td>
+<td class="bold">Medication</td>
+<td class="bold">Date</td>
+<td class="bold">Time</td>
+<td class="bold">Person</td>
+<td class="bold">Medication Taken</td>
+<td class="bold">Medication Wasted</td>
+</tr>
+	~[tlist_sql;SELECT
+		s.lastfirst,
+		med.medication_code,
+		his.medication_date,
+		his.medication_time,
+		his.administered_by,
+		his.dosage_taken,
+		his.dosage_unit_type_taken,--ref_measurement_taken.value,
+		his.waste_dosage,
+		his.waste_dosage_unit_type--ref_measurement_waste.value,
+	FROM S_NC_MEDICINE_HISTORY his
+	INNER JOIN S_NC_MEDICINE med ON his.parenttable_id = med.id
+	--LEFT OUTER JOIN gen ref_measurement_waste ON lower(ref_measurement_waste.cat) = 'measurement_cod' AND to_number(ref_measurement_waste.name) = to_number(his.waste_dosage_unit_type)
+	--LEFT OUTER JOIN gen ref_measurement_taken ON lower(ref_measurement_taken.cat) = 'measurement_cod' AND to_number(ref_measurement_taken.name) = to_number(his.dosage_unit_type_taken)
+	--INNER JOIN gen ref_medication ON ref_medication.cat = 'medication_code' AND to_number(ref_medication.name) = to_number(med.medication_code)
+	INNER JOIN students s ON s.dcid = his.studentsdcid
+	WHERE his.medication_date BETWEEN SYSDATE-1 AND SYSDATE+1
+	--WHERE his.medication_date BETWEEN to_date('~[gpv:sd;~(f.currentdate)]','mm/dd/yyyy') AND to_date('~[gpv:ed;~(f.currentdate)]','mm/dd/yyyy')
+	--~[if.~[gpv:studentid]=][else]AND s.id = ~[gpv:studentid][/if]
+        ORDER BY his.medication_date, s.lastfirst;alternatecolor]
+	<tr bgcolor="#edf3fe">
+		<td>~(lastfirst;t)</td>
+		<td>~(medication;t)</td>
+		<td>~(date;d)</td>
+		<td>~(time;t)</td>
+		<td>~(person;t)</td>
+		<td>~(dosage_taken;t) ~(dosage_taken_units;t)</td>
+		<td>~(dosage_wasted;t) ~(dosage_wasted_units;t)</td>
+	</tr>
+	[/tlist_sql]
+</table>
+<br>
+
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+
+</body>
+</html><!-- non framed -->

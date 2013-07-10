@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>~[text:psx.html.admin.functions.special_functions]</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin.functions.start_page]</a> &gt;~[text:psx.html.admin.functions.special_functions1]<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1></h1><!-- start of content and bounding box -->
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4">
+    <tr><td>
+    ~[tlist_sql;SELECT table_name, column_name
+FROM user_tab_cols
+WHERE table_name LIKE 'S_NC_%']~(1;t) - ~(2;t)<BR>[/tlist_sql]
+    </td></tr>
+</table>
+
+<!-- div class="button-row"></div-->
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+
+</body>
+</html><!-- non framed -->

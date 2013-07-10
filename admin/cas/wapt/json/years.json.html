@@ -1,0 +1,19 @@
+[
+~[tlist_sql;
+SELECT DISTINCT
+substr(trim(name),1,9) year,
+yearid
+FROM
+ps.terms
+WHERE
+portion = 1
+ORDER BY
+yearid
+]
+{
+"year" : "~(year;t)",
+"yearid" : "~(yearid;t)"
+},
+[/tlist_sql]
+{}
+]

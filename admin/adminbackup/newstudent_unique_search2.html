@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+    <title>~[text:psx.html.admin_students.newstudent.enroll_new_student]</title>
+
+    <style type="text/css" title="text/css">
+        <!--
+        headerrow {
+            border-width: 1pt;
+        }
+        -->
+    </style>
+    ~[wc:UI_js_includes]
+    ~[wc:commonscripts]
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+    ~[get_js_texts:psx.js.admin_validation.validationCommon.]
+    <script language="JavaScript" src="/admin/validation/validationCommon.js"></script>
+	<script language="JavaScript" src="/admin/JavaScript/phoneNumber.js"></script>	
+</head>
+
+<body>
+
+<form id="studentEnrollmentForm" action="newstudentns2.html" method="POST">
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.newstudent.start_page]</a> &gt; <a
+        href="/admin/functions.html" target="_top">~[text:psx.html.admin_students.newstudent.special_functions]</a> &gt;~[text:psx.html.admin_students.newstudent.enroll_new_student1]<!-- breadcrumb end -->
+~[wc:admin_navigation_css]
+
+<h1>~[text:psx.html.admin_students.newstudent.enroll_new_student2]</h1>
+<!-- start of content and bounding box -->
+<div class="box-round">
+	<table>
+	<tr>
+		<th>District</th>
+		<th>Student Number</th>
+		<th>Student Name</th>
+		<th>DOB</th>
+		<th>Entry Date</th>
+		<th>Exit date</th>
+		<th>Enroll Status</th>
+		<th>Percent Match</th>
+		<th>Use</th>
+	</tr>
+	~[tlist_sql;
+	WITH s AS (
+	    SELECT s.student_number, s.first_name, s.last_name, s.home_phone, s.street, s.city, s.state, s.zip, s.ethnicity, s.gender, s.entrydate, s.exitdate, s.lastfirst
+	    FROM students@PODS s WHERE s.home_phone = '111-111-1111'
+	)
+	SELECT MAX(s2.district_id), s1.student_number, MAX(s2.lastfirst), MAX(s2.dob), MAX(s2.entrydate), MAX(s2.exitdate), MIN(s2.enroll_status), ROUND((count(s1.*)/9)*100,2)
+	FROM (
+	    SELECT s.student_number
+	    FROM s WHERE s.home_phone LIKE ('%~[gpv:phone]%')
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE upper(s.first_name) LIKE UPPER('%~[gpv:first]%')
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE upper(s.last_name) LIKE upper('%~[gpv:last]%')
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE upper(s.street) LIKE upper('%~[gpb:dob]%')
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE upper(s.city) LIKE upper('%~[gpv:city]%')
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE upper(s.state) LIKE upper('%~[gpv:state]%')
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE s.zip LIKE '%~[gpv:zip]%'
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE upper(s.ethnicity) LIKE upper('%~[gpv:ethnicity]%')
+	    UNION ALL
+	    SELECT s.student_number
+	    FROM s WHERE upper(s.gender) LIKE upper('%~[gpv:gender]%')
+	) s1
+	INNER JOIN s2 ON s2.student_number = s1.student_number
+	GROUP BY s1.student_number
+	ORDER BY ROUND((count(s1.*)/9)*100,2) desc
+	;alternatecolor]
+	<tr bgcolor="#edf3fe">
+		<td>~(1;t)</td>
+		<td>~(3;t)</td>
+		<td>~(4;t)</td>
+		<td>~(5;d)</td>
+		<td>~(6;d)</td>
+		<td>~(7;d)</td>
+		<td>~(8;t)</td>
+		<td>~(9;t)</td>
+		<td><a href="newstudent_unique_search3.html?first=~(9;t)&last=~(10;t)&middle=~(11;t)&dob=~(5;d)&gender=~(12;t)&student_number=~(3;t)&rtestatus=1" class="button">Enroll</a></td>
+	</tr>[/tlist_sql]
+	</table>
+	<div class="button-row"><A HREF="newstudent_unique_search3.html?first=~[gpv:first]&last=~[gpv:last]~[if.~[gpv:dob]=][else]&dob=~[gpv:dob][/if]~[if.~[gpv:gender]=][else]&gender=~[gpv:gender][/if]~[if.~[gpv:student_number]=][else]&student_number=~[gpv:student_number][/if]&rtestatus=1" class="button">Enroll Student Not In List</A></div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+</form>
+</html><!-- non framed -->

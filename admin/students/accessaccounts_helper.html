@@ -1,0 +1,6 @@
+~[tlist_sql;SELECT SUM(c)
+FROM (
+    SELECT COUNT(*) c
+    FROM students
+    WHERE upper(student_web_id) = upper('~[gpv:id]')
+)]~(1;t)[/tlist_sql]

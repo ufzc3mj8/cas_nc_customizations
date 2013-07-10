@@ -1,0 +1,79 @@
+<!-- CAS ADD CONTENT -->
+<script type="text/javascript">
+    var startDate = new Date('~[tlist_sql;SELECT to_char(firstday,'mm/dd/yyyy') FROM terms WHERE schoolid = ~(curschoolid) AND id = ~(curyearid)00]~(1;t)[/tlist_sql]');
+    var endDate = new Date('~[tlist_sql;SELECT to_char(lastday,'mm/dd/yyyy') FROM terms WHERE schoolid = ~(curschoolid) AND id = ~(curyearid)00]~(1;t)[/tlist_sql]');
+    $j(document).ready(function() {
+	$j('#entrydate').parent().parent().after($j('#FedEthnicityDiv tbody').html());
+        $j('div.box-round table:first').addClass('linkDescList');
+	$j('input:radio[name="FedEthnicity"]').change(function() {
+	    var FedEthnicityVal = $j('input:radio[name="FedEthnicity"]:checked').val();
+            if (FedEthnicityVal === '1') {
+		FedEthnicityVal = 'Y'
+	    } else {
+		FedEthnicityVal = 'N'
+	    }
+	    //console.log(FedEthnicityVal);
+	    $j('#ethnicityID').val(FedEthnicityVal);
+	});
+	$j('#primaryethnicity').change( function() {
+	    var PrimaryEthnicityVal = $j(this).val();
+	    //console.log(PrimaryEthnicityVal);
+	    $j('#raceID').val(PrimaryEthnicityVal);
+	});
+	$j('#entrydate').change( function() {
+	    var currentDate = new Date($j(this).val());
+	    if (currentDate < startDate) {
+		var dd = startDate.getDate(); 
+		var mm = startDate.getMonth()+1;//January is 0! 
+		var yyyy = startDate.getFullYear();
+		$j('#entrydate').val('');
+		$j('#date_error').remove();
+		$j('#entrydate').parent().append('<p id="date_error" class="error-message" style="">Historical Date Entered. Please try again.</p>');
+		$j('#entrydate').focus();
+		//alert('You can not enter a date before the first day of the school year.\nDefaulting to first day of ~(yearname).');
+	    } else if (currentDate > endDate) {
+		var dd = endDate.getDate(); 
+		var mm = endDate.getMonth()+1;//January is 0! 
+		var yyyy = endDate.getFullYear();
+		$j('#entrydate').val('');
+		$j('#date_error').remove();
+		$j('#entrydate').parent().append('<p id="date_error" class="error-message" style="">Future Date Entered. Please try again.<BR>Change term to next school year if pre-enrolling students.</p>');
+		$j('#entrydate').focus();
+		//alert('You can not enter a date after the last day of the school year.\nDefaulting to last day of ~(yearname)\n\n\nAre you pre-enrolling students?\nChange term to next year if you are.');
+	    } else {
+		$j('#date_error').remove();
+	    }
+	});
+    });
+</script>
+
+<table id="FedEthnicityDiv" style="display: none">
+    <tbody>
+    <tr bgcolor="#edf3fe">
+	<td class="bold">Federal Ethnicity</td>
+	<td>
+	    <div>
+		<label>~[text:psx.html.admin_students.generaldemographics.is_the_student_hispanic_or_latino]</label>
+		<input id="defaultEthnicity" type="hidden" name="FedEthnicity" value="-1">
+		<div class="choicefloat"><input type="radio" name="FedEthnicity" value="1">~[text:psx.html.admin_students.generaldemographics.yes]</div>
+		<div class="choicefloat"><input type="radio" name="FedEthnicity" value="0">~[text:psx.html.admin_students.generaldemographics.no]</div>
+		~[if.pref.FRE_AllowDeclineEthnicity=1]<div class="choicefloat"><span class="declined"><input type="radio" name="FedEthnicity" value="2">~[pref:FRE_DeclineEthnicityText]</span></div>[/if]
+		<div class=clearit><!-- --></div>
+	    </div>
+	</td>
+    </tr>
+    <tr>
+        <td class="bold">Primary Race Code</td>
+        <td>
+	    <select id="primaryethnicity" name="primaryethnicity">
+	    <option value="">Select</option>
+	    ~[tlist_sql;SELECT substr(name,1,2), valuet
+		FROM GEN
+		WHERE cat = 'race']
+		<option value="~(1;t)">~(2;t)</option>[/tlist_sql]
+	    </select>
+	</td>
+    </tr>
+    </tbody>
+</table>
+<!-- CAS END CONTENT -->

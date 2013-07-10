@@ -1,0 +1,19 @@
+{
+    "terms" : [
+      ~[tlist_sql;
+        SELECT name
+        , to_char(firstday, 'mm/dd/yyyy')
+        , to_char(lastday, 'mm/dd/yyyy')
+        FROM terms
+        WHERE schoolid = ~(schoolid)
+        AND yearid = ~(v.curyearid)
+        ORDER BY id]
+      {
+        "name" : "~(name)",
+        "startDate" : "~(firstday)",
+        "endDate"   : "~(lastday)"
+      },
+      [/tlist_sql]
+      {}
+    ]
+}

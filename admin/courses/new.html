@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>~[text:psx.html.admin_courses.new.new_course]</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+
+<script>
+var _recordtext='';
+var _no_records_to_view='';
+var _batchtranslationloading='';
+var _pagetext='';
+var _thousandsSeparator='';
+</script>
+
+<script language="JavaScript" type="text/javascript" src="/scripts/jqgrid-locale.js"></script>
+<script language="JavaScript" type="text/javascript" src="/scripts/jquery.jqGrid.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="/scripts/course-prereqs/NewCourse.js"></script>
+
+<style>
+.ui-jqgrid-title { width:100%; }
+.ui-jqgrid-bdiv {border-bottom:1px solid #ccc; max-height:300px; overflow-x:hidden !important;}
+.ui-jqgrid .ui-jqgrid-sortable {cursor:default;}
+.ui-jqgrid .ui-jqgrid-btable{table-layout: auto;}
+.ui-jqgrid .ui-jqgrid-htable{table-layout: auto;}
+.ui-container {margin-right:10px; float: left; vertical-align: middle;}
+.bold {vertical-align: top !important;}
+</style>
+
+<script type="text/javascript">
+~[if.district.office]
+var schoolRecords = [
+ 	~[tlist_sql; select dcid, name, abbreviation, sortorder, school_number from schools;]
+		{"dcid":~(dcid;l), "name":"~(name;js)", "abbreviation":"~(abbreviation;js)", "sortOrder":~(sortorder;l), "school_number":~(school_number;l)},
+ 	[/tlist_sql]
+ 	null
+ ];
+[/if.district.office]
+
+
+var yearRecords = [
+	~[if.district.office]
+    	~[tlist_sql; select distinct yearid from terms where isyearrec=1;order_by=yearid desc]
+  	[else]	
+    	~[tlist_sql; select distinct yearid from terms where isyearrec=1 and schoolid=~(schoolid);order_by=yearid desc]
+    [/if.district.office]
+		{"yearid":~(yearid;l), "name":""},
+    	[/tlist_sql]
+ 	null
+];
+
+var curyearid = ~(yearid);
+
+function init(){
+	generateYearsTable(yearRecords);
+	~[if.district.office]
+	generateSchoolsTable(schoolRecords);
+	[/if.district.office]
+};
+
+$j(document).ready( function() {
+	init();
+});
+</script>
+
+</head>
+
+<body>
+
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_courses.new.start_page]</a> &gt; ~[if.district.office]<a href="/admin/district/home.html" target="_top">~[text:psx.html.admin_courses.new.district_setup]</a>[else]<a href="/admin/schoolsetup/home.html" target="_top">~[text:psx.html.admin_courses.new.school_setup]</a>[/if.district.office]
+		&gt; <a href="/admin/courses/home.html" target="_top">~[text:psx.html.admin_courses.new.courses]</a> &gt; ~[text:psx.html.admin_courses.new.new_course2]<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>~[text:psx.html.admin_courses.new.new_course3]</h1>
+<form action="/admin/changesrecorded.white_nf.html" method="POST" onSubmit = "newCourseSubmit();">
+<!-- start of content and bounding box -->
+<input name="schoolsYearsAssociationsEnabled" value="true" type="hidden">
+<input id="schools" name="schools" value="~(schoolid)" type="hidden">
+<input id="years" name="years" type="hidden">
+<div class="box-round">
+<table border="0" cellspacing="0" cellpadding="4" width="100%" class="linkDescList">
+        <tr>
+        <td><label>Select a course code</label></td>
+        <td><select name="coursecode" id="central_course_number" onchange="selectCourse()"><option value="">Select</option>
+            ~[tlist_sql;SELECT c.course_number, c.course_name FROM courses@DBL_ENTCON c]<option value="~(course_number;t)">~(course_number;t) / ~(course_name;t)</option>[/tlist_sql]
+        </select>
+        <p id="missingCourseNumber" class="error-message" style="display: none">Missing required field</p></td>
+    </tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.course_name]</label></td>
+<td><input type="text" name="[courses]course_name" value="" size="30" maxlength="40" id="course_name"></td>
+</tr>
+<tr>
+<td class="bold"><label>~[text:psx.html.admin_courses.new.course_number]</label></td>
+    <td>
+        State Code: <input type="text" name="coursePrefix" value="" readonly="readonly" id="course_number" size="10">
+        Local Suffix: <input type="text" name="courseSuffix" value="" id="course_suffix" onchange="constructCourse()" size="4" maxlength="3">
+    </td>
+</tr>
+<tr>
+    <td class="bold">Full Course Number</td>
+    <td><input type="text" name="[courses]course_number" value="" size="11" maxlength="11" id="full_course_number" readonly="readonly"></td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.alternate_course_number]</label></td>
+<td><input type="text" name="[courses]alt_course_number" value="" size="10"></td>
+</tr>
+<tr>
+
+~[if.district.office]
+<td>
+	
+	<div class="ui-container">
+	<label>~[text:psx.html.admin_courses.new.associate_school_with_courses]</label>
+	<div id="id_schools_grid_div">
+		<table id="schoolstable" ></table>
+	</div>
+	</div>
+</td>
+<td>
+	<div class="ui-container">
+	<label>~[text:psx.html.admin_courses.new.available_school_years]</label>
+	<div id="id_years_grid_div">
+		<table id="yearstable" ></table>
+	</div>
+	</div>
+</td>
+
+[else]
+
+<td>
+<label>~[text:psx.html.admin_courses.new.available_school_years1]</label>
+</td>
+<td>
+	<div class="ui-container">
+	<div id="id_years_grid_div">
+		<table id="yearstable" ></table>
+	</div>
+	</div>
+</td>
+
+[/if.district.office]
+</tr>
+
+
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.credit_hours]</label></td>
+<td><input type="text" name="[courses]credit_hours$format=numeric" value="" size="5" id="credit_hours"></td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.cip_code]</label></td>
+<td><input type="text" name="[courses]code" value="" size="14"> &nbsp; <input type="checkbox" name="[courses]vocational" value="1">~[text:psx.html.admin_courses.new.vocational_class]</td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.credit_type]</label></td>
+<td><input type="text" name="[courses]credittype" value="" size="12" id="credittype"> (~[text:psx.html.admin_courses.new.no_spaces])</td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.default_maximum_enrollment]</label></td>
+<td><input type="text" name="[courses]MaxClassSize" value="" size="12"></td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.course_notes]</label></td>
+<td><textarea name="[courses]prerequisites" rows="3" cols="33"></textarea></td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.grade_scale]</label></td>
+<td><select name="[courses]gradescaleid" special="gradescales"><option></select></td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.gpa_added_value_points]</label></td>
+<td><input type="text" name="[courses]gpa_addedvalue" value="0" size="10" id="gpa_addedvalue"> (~[text:psx.html.admin_courses.new.usually_zero])</td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.edit.exclude_from_storingfinalgrades]</label></td>
+<td><input type="checkbox" value="1" name="[courses]excludefromstoredgrades">
+	<br>~[text]psx.html.admin_courses.edit.optional_use_for_sections_that_are_not_graded[/text]
+</td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.exclude_from_gpa]</label></td>
+<td><input type="radio" name="[courses]excludefromgpa" value="0" checked>~[text:psx.html.admin_courses.new.include]<input type="radio" name="[courses]excludefromgpa" value="1">~[text:psx.html.admin_courses.new.exclude]</td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.exclude_from_class_rank]</label></td>
+<td><input type="radio" name="[courses]excludefromclassrank" value="0" checked>~[text:psx.html.admin_courses.new.include1]<input type="radio" name="[courses]excludefromclassrank" value="1">~[text:psx.html.admin_courses.new.exclude1]</td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.exclude_from_honor_roll]</label></td>
+<td><input type="radio" name="[courses]excludefromhonorroll" value="0" checked>~[text:psx.html.admin_courses.new.include2]<input type="radio" name="[courses]excludefromhonorroll" value="1">~[text:psx.html.admin_courses.new.exclude2]</td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.use_the_course_for_lunch]</label></td>
+<td><input type="checkbox" name="[courses]Sched_LunchCourse" value="1"></td>
+</tr>
+<tr>
+<td><label>~[text:psx.html.admin_courses.new.exclude_on_report_cardstranscripts]</label></td>
+<td><input type="checkbox" name="[courses]Sched_Do_Not_Print" value="1"></td>
+</tr>
+</table>
+
+<table border="0" cellspacing="0" cellpadding="4" width="100%">
+<tr><td width="40%" height="0"></td><td></td></tr>
+<!-- Start insert state specific information -->
+~[x:insertfile;state/custom~[displaypref:districtstate].html]
+<!-- End insert state specific information -->
+<!-- Start insert CREDO specific information-->
+~[if.pref.credostatuscode=1]
+~[x:insertfile;/admin/state/credo/CR_courses.html]
+[/if]
+<!--End insert CREDO specific information -->
+</table>
+
+<input type="hidden" name="ac" value="prim">
+<div class="row-button right">
+~[submitbutton]
+</div>
+</div>
+<!-- end of content of bounding box -->
+</form>
+
+~[wc:admin_footer_css]
+<script type="text/javascript">
+    $j(document).ready( function() {
+        $j('#central_course_number').blur( function() {
+            var len = $j(this).val().trim().length;
+            // If the user does not select a state course code, do not let the user proceed.
+            if (len === 0) {
+                $j(this).focus();
+                $j('#missingCourseNumber').show();
+            } else {
+                $j('#missingCourseNumber').hide("slow");
+            }
+        });
+    });
+function selectCourse() {
+    var course_number = $j('#central_course_number').val();
+    var course_suffix = $j('#course_suffix').val();
+    //alert(course_number);
+    $j.getJSON( "/admin/courses/new_helper.html?course_number=" + course_number, function(data) {
+        $j.each(data, function(key, val) {
+            $j('#'+key).val(val);
+            //console.log(key + ' - ' + val);
+        });
+    });
+    $j('#full_course_number').val(course_number + course_suffix);
+    $j('#course_suffix').focus();
+};
+function constructCourse() {
+    var coursePrefix = $j('#course_number').val();
+    var courseSuffix = $j('#course_suffix').val();
+    $j('#full_course_number').val(coursePrefix + courseSuffix);
+};
+</script>
+</body>
+</html><!-- non framed -->

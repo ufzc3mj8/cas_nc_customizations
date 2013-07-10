@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>W-APT Data Entry</title>
+    ~[wc:commonscripts]
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+    <script type="text/javascript" src="scripts/wapt.js"></script>
+    <style type="text/css">
+	.tbl1 { float: left; border: 1px solid; width: 35% }
+        .tbl2 { float: left; border: 1px solid; width: 65% }
+    </style>
+</head>
+<body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+        ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; W-APT Data Entry<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+        <h1>W-APT Data Entry</h1>
+        
+        <ul class="tabs">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="search.html">Search</a></li>
+            <li class="selected"><a href="data_entry.html">Data Entry</a></li>
+            <li><a href="roster.html">Roster</a></li>
+        </ul>
+<!-- start of content and bounding box -->
+        <div class="box-round">
+            <table border="0" cellspacing="0" cellpadding="4">
+                <tr class="headerrow">
+                    <td colspan="8">Test Demographics</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Grade Span</td>
+                    <td><select name="[students.s_nc_wapt_sheet_work]grade_range" id="range" onChange='changeSelect()'>
+                            <option value="">-- select one --</option>
+                            <option value="K1">Kindergarten (1)</option>
+                            <option value="K2">Kindergarten (2)</option>
+                            <option value="1-2">Grades 1-2</option>
+                            <option value="3-5">Grades 3-5</option>
+                            <option value="6-8">Grades 6-8</option>
+                            <option value="9-12">Grades 9-12</option>
+                        </select>
+                    </td>
+                    <td>Test Administered In</td>
+                    <td><select name="[students.s_nc_wapt_sheet_work]grade_semester" id="semester">
+                            <option value="">-- select one --</option>
+                        </select>
+                    </td>
+                    <td>Classification</td>
+                    <td><input type="text" name="[students.s_nc_wapt_sheet_work]class" value="" readonly="true"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Test Date</td>
+                    <td><input type="text" class="psDateWidget" name="[students.s_nc_wapt_sheet_work]test_dte" value="" size="10"></td>
+                    <td>LEA</td>
+                    <td><input type="text" name="" value="" readonly="true"></td>
+                    <td>School</td>
+                    <td><input type="text" name="[39]name" value="" readonly="true"></td>
+                    <td>Test Administrator</td>
+                    <td><input type="text" name="[students.s_nc_wapt_sheet_work]test_administrator" value="" size="30"></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>First Name</td>
+                    <td><input type="text" name="[01]first_name" value="" readonly="true"></td>
+                    <td>Last Name</td>
+                    <td><input type="text" name="[01]last_name" value="" readonly="true"></td>
+                    <td>Gender</td>
+                    <td><input type="text" name="[01]gender" value="" readonly="true"></td>
+                    <td>Grade</td>
+                    <td><input type="text" name="[01]grade_level" value="" readonly="true"></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Student Number</td>
+                    <td><input type="text" name="[01]student_number" value="" readonly="true"</td>
+                    <td>Home Language</td>
+                    <td><select name="[students.s_nc_wapt_sheet_work]homelang_id">
+                            <option value=""></option>
+                        </select>
+                    </td>
+                    <td>DOB</td>
+                    <td>~([01]dob)</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    
+                </tr>
+            </table>
+<!--            <table style="border: 1px solid; float: left; width: 400px">    -->
+<fieldset class="inline">
+    <table class="linkDescList tbl1">
+        <thead>
+                <tr class="headerrow">
+                    <th colspan="4">Composite Proficiency Level (CPL)</th>
+                </tr>
+        </thead>
+        <tbody id="tbl_cpl"></tbody>
+            </table>
+
+    <table class="tbl2">
+                <tr class="headerrow">
+                    <td colspan="4">Immigrant</td>
+                </tr>
+                <tr class="~[evenoddrow;reset]">
+                    <td>Student Born Outside of U.S.?</td>
+                    <td><select>
+                            <option value="">No</option>
+                            <option value="">Yes</option>
+                        </select>
+                    </td>
+                    <td>First Year in U.S. Schools</td>
+                    <td><select name="">
+                            <option value=""></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Student between 3 and 21 years old?</td>
+                    <td></td>
+                    <td>School Year Returned to U.S. Schools</td>
+                    <td><select name="">
+                            <option value=""></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Number of Years in U.S. Schools</td>
+                    <td></td>
+                    <td>First Full School Year OUT of U.S. Schools</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <b>*</b> Do not include pre-school children who are not enrolled in pre-school programs funded by your school system.<br>
+                        <b>*</b> Do not include community college or university students.<br>
+                        <b>*</b> Do not include students who are not enrolled in you school system, like older siblings who are not in your school.<br>
+                        <b>*</b> Do not include students from Puerto Rico. Do not include exchnage students.<br>
+                        <b>NOTE:</b> Any child born outside the U.S. and Puerto Rico may be eligible for immigrant status (i.e. Children of U.S. citizens, including children with <i>U.S. Citizen Born Abroad</i> birth certificates.)
+                    </td>
+                </tr>
+            </table>
+</fieldset>
+        <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+        </div>
+</form>
+</body>
+</html>

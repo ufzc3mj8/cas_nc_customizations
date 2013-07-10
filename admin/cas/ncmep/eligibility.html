@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>North Carolina Migrant Education Program</title>
+        ~[wc:commonscripts]
+        <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+        <link href="/images/css/print.css" rel="stylesheet" media="print">
+    </head>
+    <body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+    ~[wc:admin_header_frame_css]
+    <!-- breadcrumb start -->
+    <a href="/admin/home.html" target="_top">Start Page</a> &gt; 
+    <a href="admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; 
+    NCMEP
+    <!-- breadcrumb end -->
+    ~[wc:admin_navigation_frame_css]
+
+    ~[wc:title_student_begin_css]
+    North Carolina Migrant Education Program
+    ~[wc:title_student_end_css]
+
+    <ul class="tabs">
+
+    <li><a href="family.html?frn=~(studentfrn)">Family</a></li>
+    <li class="selected"><a href="eligibility.html?frn=~(studentfrn)">Eligibility</a></li>
+    <li><a href="children.html?frn=~(studentfrn)">Children</a></li>
+    </ul>
+
+    <!-- start of content and bounding box -->
+        <div class="box-round">
+            <table border="0" cellspacing="0" cellpadding="4">
+                <tr class="~[evenoddrow]">
+                    <td><b>From</b> School District</td>
+                    <td>City</td>
+                    <td>State</td>
+                    <td>Country</td>
+                    <td>QAD</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><select name="[students.s_nc_migrant_coe]from_school_district">
+                            
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]from_city">
+                            
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]from_state">
+                            <option value="AL">AL</option>
+                            <option value="AK">AK</option>
+                            <option value="AZ">AZ</option>
+                            <option value="AR">AR</option>
+                            <option value="CA">CA</option>
+                            <option value="CO">CO</option>
+                            <option value="CT">CT</option>
+                            <option value="DE">DE</option>
+                            <option value="DC">DC</option>
+                            <option value="FL">FL</option>
+                            <option value="GA">GA</option>
+                            <option value="HI">HI</option>
+                            <option value="ID">ID</option>
+                            <option value="IL">IL</option>
+                            <option value="IN">IN</option>
+                            <option value="IA">IA</option>
+                            <option value="KS">KS</option>
+                            <option value="KY">KY</option>
+                            <option value="LA">LA</option>
+                            <option value="ME">ME</option>
+                            <option value="MD">MD</option>
+                            <option value="MA">MA</option>
+                            <option value="MI">MI</option>
+                            <option value="MN">MN</option>
+                            <option value="MS">MS</option>
+                            <option value="MO">MO</option>
+                            <option value="MT">MT</option>
+                            <option value="NE">NE</option>
+                            <option value="NV">NV</option>
+                            <option value="NH">NH</option>
+                            <option value="NJ">NJ</option>
+                            <option value="NM">NM</option>
+                            <option value="NY">NY</option>
+                            <option value="NC" selected="selected">NC</option>
+                            <option value="ND">ND</option>
+                            <option value="OH">OH</option>
+                            <option value="OK">OK</option>
+                            <option value="OR">OR</option>
+                            <option value="PA">PA</option>
+                            <option value="RI">RI</option>
+                            <option value="SC">SC</option>
+                            <option value="SD">SD</option>
+                            <option value="TN">TN</option>
+                            <option value="TX">TX</option>
+                            <option value="UT">UT</option>
+                            <option value="VT">VT</option>
+                            <option value="VA">VA</option>
+                            <option value="WA">WA</option>
+                            <option value="WV">WV</option>
+                            <option value="WI">WI</option>
+                            <option value="WY">WY</option>
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]from_country">
+                            <option value=""></option>
+                            <option value="USA">USA</option>
+                            <option value="MEX">MEX</option>
+                        </select></td>
+                    <td><input type="text" class="psDateWidget" name="[students.s_nc_migrant_coe]qualifying_arrival_date" value="" size="10"></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><b>To</b> School District</td>
+                    <td>City</td>
+                    <td>State</td>
+                    <td></td>
+                    <td>Qualifying Move</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><select name="[students.s_nc_migrant_coe]to_school_district">
+                            
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]to_city">
+                            
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]to_state">
+                            <option value="AL">AL</option>
+                            <option value="AK">AK</option>
+                            <option value="AZ">AZ</option>
+                            <option value="AR">AR</option>
+                            <option value="CA">CA</option>
+                            <option value="CO">CO</option>
+                            <option value="CT">CT</option>
+                            <option value="DE">DE</option>
+                            <option value="DC">DC</option>
+                            <option value="FL">FL</option>
+                            <option value="GA">GA</option>
+                            <option value="HI">HI</option>
+                            <option value="ID">ID</option>
+                            <option value="IL">IL</option>
+                            <option value="IN">IN</option>
+                            <option value="IA">IA</option>
+                            <option value="KS">KS</option>
+                            <option value="KY">KY</option>
+                            <option value="LA">LA</option>
+                            <option value="ME">ME</option>
+                            <option value="MD">MD</option>
+                            <option value="MA">MA</option>
+                            <option value="MI">MI</option>
+                            <option value="MN">MN</option>
+                            <option value="MS">MS</option>
+                            <option value="MO">MO</option>
+                            <option value="MT">MT</option>
+                            <option value="NE">NE</option>
+                            <option value="NV">NV</option>
+                            <option value="NH">NH</option>
+                            <option value="NJ">NJ</option>
+                            <option value="NM">NM</option>
+                            <option value="NY">NY</option>
+                            <option value="NC" selected="selected">NC</option>
+                            <option value="ND">ND</option>
+                            <option value="OH">OH</option>
+                            <option value="OK">OK</option>
+                            <option value="OR">OR</option>
+                            <option value="PA">PA</option>
+                            <option value="RI">RI</option>
+                            <option value="SC">SC</option>
+                            <option value="SD">SD</option>
+                            <option value="TN">TN</option>
+                            <option value="TX">TX</option>
+                            <option value="UT">UT</option>
+                            <option value="VT">VT</option>
+                            <option value="VA">VA</option>
+                            <option value="WA">WA</option>
+                            <option value="WV">WV</option>
+                            <option value="WI">WI</option>
+                            <option value="WY">WY</option>
+                        </select></td>
+                    <td></td>
+                    <td><select name="[students.s_nc_migrant_coe]qualifying_move">
+                            <option value=""></option>
+                            <option value="Current ">Current </option>
+                            <option value="Previous">Previous</option>
+                        </select></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Children Moved</td>
+                    <td>Moved to Obtain</td>
+                    <td>Temp/Seas</td>
+                    <td>Agri/Fish</td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><select name="[students.s_nc_migrant_coe]children_moved">
+                            <option value=""></option>
+                            <option value="On own as worker">On own as worker</option>
+                            <option value="With the worker">With the worker</option>
+                            <option value="To join or precede the worker">To join or precede the worker</option>
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]moved_to_obtain">
+                            <option value=""></option>
+                            <option value="Qualifying Work – Obtained">Qualifying Work – Obtained</option>
+                            <option value="Any Work – Obtained Qualifying">Any Work – Obtained Qualifying</option>
+                            <option value="Qualifying Work – Did Not Obtain">Qualifying Work – Did Not Obtain</option>
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]temp_seas">
+                            <option value=""></option>
+                            <option value="T">T</option>
+                            <option value="S">S</option>
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]agri_fish">
+                            <option value=""></option>
+                            <option value="A">A</option>
+                            <option value="F">F</option>
+                        </select></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>If child(ren) moved "To join or precede the worker"</td>
+                    <td>If worker did not obtain qualifying work, the worker</td>
+                    <td>The work was temporary based on</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>The worker moved on: <input type="text" class="psDateWidget" name="[students.s_nc_migrant_coe]worker_moved_on" value="" size="10"></td>
+                    <td><select name="[students.s_nc_migrant_coe]did_not_obtain_qual_work">
+                            <option value=""></option>
+                            <option value="Sought Work">Sought Work</option>
+                            <option value="Has Prior History">Has Prior History</option>
+                            <option value="Prior History / Sought Work">Prior History / Sought Work</option>
+                        </select></td>
+                    <td><select name="[students.s_nc_migrant_coe]temp_work_based_on">
+                            <option value=""></option>
+                            <option value="Employer’s statement">Employer’s statement</option>
+                            <option value="Verification of state documentation">Verification of state documentation</option>
+                            <option value="Worker’s statement">Worker’s statement</option>
+                        </select></td>
+                </tr>
+                <tr>
+                    <td>The child(ren) moved on: <input type="text" class="psDateWidget" name="[students.s_nc_migrant_coe]children_moved_on" value="" size="10"></td>
+                    <td></td>
+                    <td><input type="checkbox" name="[students.s_nc_migrant_coe]personal_subsistence" value="1">Personal Subsistence</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Qualifying Activity</td>
+                    <td>Worker Name</td>
+                    <td>Worker is the child or the child's</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><select name="[students.s_nc_migrant_coe]qualifying_activity">
+                            
+                        </select></td>
+                        <td><input type="text" name="[students.s_nc_migrant_coe]workers_name" size="30"></td>
+                    <td><select name="workers_relationship">
+                            <option value=""></option>
+                            <option value="Parent">Parent</option>
+                            <option value="Guardian">Guardian</option>
+                            <option value="Spouse">Spouse</option>
+                        </select></td>
+                </tr>
+            </table>
+            <table border="0" cellspacing="0" cellpadding="4">
+                <tr class="~[evenoddrow]">
+                    <td>Children Moved Comments</td>
+                    <td>Moved to Obtain Comments</td>
+                    <td>Temp/Seas Comments</td>
+                    
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><textarea name="[students.s_nc_migrant_coe]children_moved_on_comment" cols="50" rows="5"></textarea></td>
+                    <td><textarea name="[students.s_nc_migrant_coe]moved_to_obtain_comment" cols="50" rows="5"></textarea></td>
+                    <td><textarea name="[students.s_nc_migrant_coe]temp_seas_comment" cols="50" rows="5"></textarea></td>
+                </tr>
+            </table>
+            <table border="0" cellspacing="0" cellpadding="4">
+                <tr class="~[evenoddrow]">
+                    <td>Other Comment Required</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><textarea name="[students.s_nc_migrant_coe]other_comment" cols="200" rows="3"></textarea></td>
+                </tr>
+            </table>
+        <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+        </div>
+    </body>
+</html>

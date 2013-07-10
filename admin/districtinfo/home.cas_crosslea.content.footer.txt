@@ -1,0 +1,21 @@
+<table id="moveContent" style="display: none">
+    <tbody>
+    <tr>
+	<td class="bold">Disable <del></del>Cross LEA (District Override)?</td>
+	<td>
+	    <select name="[pref]CrossLEADisable">
+                <option value="">No
+                <option value="Y">Yes
+            </select>
+	</td>
+    </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+    $j(document).ready( function() {
+	$j('.box-round table tr').removeAttr('bgcolor');
+	$j('div.box-round table').addClass('linkDescList');
+        $j('.box-round table tr:eq(2)').after($j('#moveContent tbody').html());
+	$j('#moveContent').remove();
+    });
+</script>

@@ -1,0 +1,89 @@
+<script type="text/javascript">
+    $j(document).ready( function() {
+        // SECURITY GROUP ENHANCEMENTS UF-005026
+        var selectedgroup = ~([05]group);
+        ~[if.~[x:userid]=0]
+        var usergroup = 0;
+        [else]
+        var usergroup = ~[tlist_sql;SELECT groupvalue FROM teachers WHERE ID = ~[x:userid]]~(1;t)[/tlist_sql]; 
+        [/if]
+        if (usergroup === 0) {
+            // do nothing... maintenance user
+        }
+        else if (selectedgroup < usergroup && selectedgroup > 1) {
+            // user group is not equal or higher than group user is editing - disable drop down
+            $j('[name*="UF-005026"]').attr("disabled", true);
+        }
+        else {
+            // remove higher user group options to prevent users from escalating their security privileges
+            var groups = $j('[name*="UF-005026"] option').length;
+            var currentGroup = 0;
+            for (i=1; i<groups; i++) {
+                currentGroup = $j('[name*="UF-005026"] option').eq(i).val();
+                if (currentGroup < usergroup && currentGroup > 1) {
+                    $j('[name*="UF-005026"] option').eq(i).attr("disabled", true);
+                }
+            }
+        }
+                 
+        // ADMIN LOGIN ID ENHANCEMENTS
+        var originalUserId = '~(loginid)';
+        originalUserId = originalUserId.toLowerCase();
+        if (originalUserId === '&nbsp\;') {
+            originalUserId = '';
+        }
+        $j('#adminloginid').after('<span id="adminErrorMsg"></span>');
+        $j('#adminloginid').change( function() {
+            $j('#adminErrorMsg').html('Checking for matches...');
+            //$j('#btnSubmit').attr("disabled","disabled");
+            var adminloginidvalue = $j('#adminloginid').val();
+            adminloginidvalue = adminloginidvalue.toLowerCase();
+            $j.ajax({
+                type    : 'POST',
+                url     : 'editpw_helper.html?id='+adminloginidvalue,
+                success : function(data, x, xhrobj) {
+                    if (data === '0' || originalUserId == adminloginidvalue) {
+                        //$j('#btnSubmit').removeAttr("disabled");
+                        $j('#adminloginid').removeClass('error');
+                        $j('#adminErrorMsg').html('Username valid!');
+                    }
+                    else {
+                        //$j('#btnSubmit').attr("disabled","disabled");
+                        $j('#adminErrorMsg').html('The username '+adminloginidvalue+' has been used already.');
+                        $j('#adminloginid').val(originalUserId).focus().addClass('error');
+                    }
+                }
+            });
+        });
+        
+        // TEACHER LOGIN ID ENHANCEMENTS
+        var originalTeacherUserId = '~(teacherloginid)';
+        originalTeacherUserId = originalTeacherUserId.toLowerCase();
+        if (originalTeacherUserId === '&nbsp\;') {
+            originalTeacherUserId = '';
+        }
+        $j('#teacherloginid').after('<span id="teacherErrorMsg"></span>');
+        $j('#teacherloginid').change( function() {
+            $j('#teacherErrorMsg').html('Checking for matches...');
+            //$j('#btnSubmit').attr("disabled","disabled");
+            var teacherloginidvalue = $j('#teacherloginid').val();
+            teacherloginidvalue = teacherloginidvalue.toLowerCase();
+            $j.ajax({
+                type    : 'POST',
+                url     : 'editpw_helper.html?id='+teacherloginidvalue,
+                success : function(data, x, xhrobj) {
+                    if (data === '0' || originalTeacherUserId == teacherloginidvalue) {
+                        //$j('#btnSubmit').removeAttr("disabled");
+                        $j('#teacherloginid').removeClass('error');
+                        $j('#teacherErrorMsg').html('Username valid!');
+                    }
+                    else {
+                        //$j('#btnSubmit').attr("disabled","disabled");
+                        $j('#teacherErrorMsg').html('The username '+teacherloginidvalue+' has been used already.');
+                        $j('#teacherloginid').val(originalTeacherUserId).focus().addClass('error');
+                    }
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,10 @@
+~[tlist_sql;SELECT c.course_number, c.course_name, c.credit_hours, c.credittype, c.gpa_addedvalue
+FROM courses@DBL_ENTCON c
+LEFT OUTER JOIN S_NC_COURSEINFO@DBL_ENTCON c_ext ON c_ext.coursesdcid = c.dcid
+WHERE c.course_number = '~[gpv:course_number]']{
+    "course_number" : "~(course_number;t)",
+    "course_name" : "~(course_name;t)",
+    "credit_hours" : "~(credit_hours;t)",
+    "credittype" : "~(credittype;t)",
+    "gpa_addedvalue" : "~(gpa_addedvalue)"
+}[/tlist_sql]

@@ -1,0 +1,91 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>EC Data</title>
+        ~[wc:commonscripts]
+        <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+        <link href="/images/css/print.css" rel="stylesheet" media="print">
+        <script type="text/javascript" src="js/ec.js"></script>
+         <script type="text/javascript" language="javascript">
+            function confirmation() {
+              var answer = confirm("Are you sure you want to send data to EC?");
+              if (answer)
+                  document.myform.submit();
+              else
+                  return false;
+            }
+
+            $j(document).ready(function(){
+                    $j.getJSON('json/ec_cecas.json.html?stuid=' + stuid, function(data){
+                          if (data.cecas === '1'){
+                             $j('#cecas').prop('disabled','disabled').val(data.cecas);
+                              }
+                          }
+                      )
+            });
+            var stuid='~(id)';
+        </script>
+    </head>
+    <body>
+        <form action="/admin/cas/ecdata.html?frn=~(studentfrn)" method="POST" id="myform" name="myform">
+            ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; EC Data<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+        ~[wc:title_student_begin_css]EC Data~[wc:title_student_end_css]
+    <!-- start of content and bounding box -->
+            <div class="box-round">
+                <table border="0" cellspacing="0" cellpadding="4">
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Send Demographics to EC</td>
+                        <td><select name="[students.s_nc_ec]ec_referred" id="cecas" onchange="confirmation();">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Primary Disability</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_primary_dis" value="" size="30" readonly="readonly"></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Secondary Disability</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_secondary_dis" value="" size="30" readonly="readonly"></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Plan Type</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_plan_type" value="" size="20" readonly="readonly"></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Environmental Setting</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_environ_setting" value="" size="50" readonly="readonly"></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Program/Services Begin Date</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_start_date" value="" size="20" readonly="readonly"></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Program/Services End Date</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_end_date" value="" size="20" readonly="readonly"></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Exit Date</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_exit_date" value="" size="20" readonly="readonly"></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Exit Reason</td>
+                        <td><input type="text" name="[students.s_nc_ec]ec_exit_reason" value="" size="20" readonly="readonly"></td>
+                    </tr>
+<!--
+                    <tr class="~[evenoddrow]">
+                        <td class="bold">Test and Accommodations</td>
+                    </tr>
+-->
+                </table>
+                <table id="accommodations"  class="linkDescList">
+                    <thead>
+                        <th colspan="2">Test and Accommodations</th>
+                    </thead>
+                </table>
+            </div>
+    <input type="hidden" name="ac" value="prim"> 
+    </form>
+    </body>
+    </html>

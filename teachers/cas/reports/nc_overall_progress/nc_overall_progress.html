@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <!-- Enter title here -->
+  <title>Overall Progress Report</title>
+  <script type="text/javascript" src="/scripts/cas/modernizr-2.6.2.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/images/cas/css/webreport.css" />
+  <script src="/scripts/requirejs/require.js"></script>
+  <script type="text/javascript">
+    require.config({
+      baseUrl : ~[scripts_url],
+      paths   : {
+        'jquery'                    : 'jquery-1.7.1.min',
+        'Handlebars'                : 'handlebars/require-handlebars.1.0.0.beta.4',
+        'Handlebars/i18nprecompile' : 'handlebars/hbs-i18nprecompile-0.2.1'
+      }
+    });
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "Report"                      : "NC Academic Progress",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+    var reportconfig = {
+      dothisfor          : "~[gpv:dothisfor]",
+      sectionid           : "~[gpv:sectionid]",
+      classaverage      : "~[gpv:class_average]",
+      classattendance   : "~[gpv:class_attendance]",
+      startdate          : "~[gpv:startdate]",
+      enddate            : "~[gpv:enddate]",
+      term               : "~[gpv:term]"
+    };
+  </script>
+  ~[wc:CAS]
+  <script type="text/javascript" src="/scripts/cas/functions/cas_handlebars.js"></script>
+</head>
+
+<body class="landscape">
+
+<div class="noprint box-round">
+  <h2>~[text:psx.html.admin_reports.studschedmatrix.instructions]</h2>
+
+  <p>~[text:psx.html.admin_reports.studschedmatrix.selected_page_breaks_and_print_options_will_be_output_when_t]</p>
+
+  <p>~[text:psx.html.admin_reports.studschedmatrix.note_that_due_to_browser_differences_some_browsers_may_fail_]<strong>~[text:psx.html.admin_reports.studschedmatrix.the_fully_supported_browsers_for_this_report_areinternet_exp]</strong>
+  </p>
+
+  <p>~[text:psx.html.admin_reports.studschedmatrix.tips_for_printing]</p>
+  <ul class="text">
+    <li>~[text:psx.html.admin_reports.studschedmatrix.turn_on_printing_of_backgrounds__shading_and_colorations_in_]</li>
+    <li>~[text:psx.html.admin_reports.studschedmatrix.turn]<strong>~[text:psx.html.admin_reports.studschedmatrix.off]</strong>~[text:psx.html.admin_reports.studschedmatrix.printing_of_header_information_in_your_browser_settings__if_]
+    </li>
+    <li>~[text:psx.html.admin_reports.studschedmatrix.it_is_advised_that_you_use_your_browsers_print_preview_featu]<strong>~[text:psx.html.admin_reports.studschedmatrix.you_may_adjust_text_size_using_the_text_font_size_controls_o]</strong>~[text:psx.html.admin_reports.studschedmatrix.doing_so_may_fix_cases_where_table_cells_end_up_spanning_pag]
+    </li>
+  </ul>
+  <p>~[text:psx.html.admin_reports.studschedmatrix.also_note_that_this_report_has_been_opened_in_a_new_window__]</p>
+</div>
+~[x:GetDoThisForStudents]
+~[x:SortSelection;Students:~[prefuser:nc_academic_progress_sort]]
+~[RepeatForEach:Students]
+<article id="studentarticle-~(id)" class="pagebody">
+  <table>
+    <thead>
+      <tr>
+        <td>
+          <header id="header-~(id)" class="pagewidth clearfix"></header>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <section id="studentheader-~(id)" class="pagewidth clearfix"></section>
+          <section id="assignments-~(id)" class="pagewidth tabledisplay"></section>
+          <div class="clearfix"></div>
+          ~[if.~[gpv:assignment_summary]=on]
+          <section id="gradesummary-~(id)" class="pagewidth clearfix"></section>
+          [/if]
+          ~[if.~[gpv:teacher_message]#]
+          <section class="teachermessagelabel">Message From Teacher&nbsp;</section>
+          <section class="teachermessage">~[gpv:teacher_message]&nbsp;</section>
+          [/if]
+          <section id="footer_~(id)" class="rcgroup clearfix">
+            ~[if.~[gpv:parent_signature]=on]
+            <div class="apparentsig">
+              <div class="apsignaturelabel">Parent Signature:</div>
+              <div class="apsignatureline">&nbsp;</div>
+            </div>
+            <div class="apapparentdate">
+              <div class="apsignaturelabel">Date:</div>
+              <div class="apsignatureline">&nbsp;</div>
+            </div>
+            [/if]
+          </section>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+[between:Students]
+<div class="clearfix" style="page-break-after: always; width: 100%;">
+  <div class="noprint" style="border-top: thin dotted;">
+  </div>
+</div>
+[/RepeatForEach:Students]
+<script type="text/javascript" src="js/reporttemplate.js"></script>
+</body>
+</html>

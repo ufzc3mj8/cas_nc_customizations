@@ -1,0 +1,18 @@
+~[tlist_sql;
+SELECT pl.description
+FROM S_NC_WAPT_DOM plc
+JOIN S_NC_WAPT_DOM pl
+ON plc.pl_id = pl.pl_id
+AND pl.area = 'PROF_LEVEL'
+AND pl.active='Y'
+WHERE plc.area = 'PROF_LEVEL_CONVERSION'
+AND plc.range_id = ~[gpv:rangeid]
+AND plc.test_id = ~[gpv:testid]
+AND plc.raw_score_max >= ~[gpv:rawscore]
+AND plc.raw_score_min <= ~[gpv:rawscore]
+AND plc.active='Y'
+]
+{
+"proflevel" : "~(description;t)"
+}
+[/tlist_sql]

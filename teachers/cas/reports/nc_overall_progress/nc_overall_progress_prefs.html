@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+  <title>Overall Progress report</title>
+  ~[wc:commonscripts]
+  <script type="text/javascript">
+    var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
+    PearsonCas.CasInfo.push({
+      "File"                        : "nc_overall_progress_prefs.html",
+      "Version"                     : "1.0",
+      "Created By"                  : "David Pond",
+      "Last Modified By"            : "",
+      "Customization Number"        : "",
+      "Developed for PowerSchool"   : "",
+      "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
+    });
+  </script>
+  ~[wc:CAS]
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form target="_blank" action="/teachers/cas/reports/nc_overall_progress/nc_overall_progress.html" method="POST" class="noSubmitLoading">
+  ~[wc:teachers_header_css]
+  ~[wc:teachers_navigation_css]
+  ~[wc:teachers_nav_css]
+
+  <h1>Overall Progress Report</h1><!-- start of content and bounding box -->
+  <div class="box-round">
+
+    <table border="0" cellpadding="2" cellspacing="0" width="100%" class="fourDTable">
+      ~[if.~[x:studsinset]=0]
+      <tr class="~[evenoddrow]">
+        <td>~[text]psx.html.teachers.reportsall.there_were_no_students_found_in_that_class[/text]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td align="center"><a href="javascript:history.back()" id="btnBack" class="button" name="btnBack">~[text:psx.html.teachers.reportsall.back]</a></td>
+      </tr>
+      [else]
+      <tr class="~[evenoddrow]">
+        <td>~[text]psx.html.teachers.reports.for_which_students[/text]</td>
+        <td>~[text]psx.html.teachers.reports.the__students_in_this_class,param:~[x:studsinset][/text]</td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">~[text:psx.html.admin_reports.studschedmatrixprefs.sort_order]</td>
+        <td>
+          <input type="radio" name="sort" value="lastfirst,gt,grade_level,gt" checked>~[text:psx.html.admin_reports.studschedmatrixprefs.last_name]<br>
+          <input type="radio" name="sort" value="grade_level,gt,lastfirst,gt">~[text:psx.html.admin_reports.studschedmatrixprefs.grade_level]<br>
+          <input type="radio" name="sort" value="home_room,gt,lastfirst,gt">~[text:psx.html.admin_reports.studschedmatrixprefs.homeroom]
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Reporting Term or Start Date and End Date<br>(Entering a date will clear the term box)
+        </td>
+        <td>
+          <label style="width:50pt;padding:0;float:left;font-weight:normal;" for="termselect">Term:</label><select id="termselect" name="term">
+            <option value="">Select a term or enter dates</option>
+          </select><br>
+          <label style="width:50pt;padding:0;float:left;font-weight:normal;" for="startdate">Start Date:</label><input type="text" class="psDateWidget" name="startdate" id="startdate" /><br>
+          <label style="width:50pt;padding:0;float:left;font-weight:normal;" for="enddate">End Date:</label><input type="text" class="psDateWidget" name="enddate" id="enddate" />
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Include Class Attendance
+        </td>
+        <td>
+          <input type="checkbox" name="class_attendance">
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Display Class Average Assignment Score
+        </td>
+        <td>
+          <input type="checkbox" name="class_average">
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Include Summary by Assignment Type
+        </td>
+        <td>
+          <input type="checkbox" name="assignment_summary">
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Include Parent Signature
+        </td>
+        <td>
+          <input type="checkbox" name="parent_signature">
+        </td>
+      </tr>
+      <tr class="~[evenoddrow]">
+        <td class="bold">
+          Message From Teacher
+        </td>
+        <td>
+          <textarea name="teacher_message" rows="4" cols="40"></textarea>
+        </td>
+      </tr>
+      [/if]
+    </table>
+    <br>
+    <input type="hidden" name="dothisfor" value="selected">
+    <input type="hidden" name="sectionid" value="~[gpv:sectionid]">
+    <input type="hidden" name="frn" value="003~[gpv:sectionid]">
+    <div class="button-row">
+      <input type="hidden" name="ac" value="prim">
+      <input type="hidden" name="userid" value="~[x:userid]">
+      ~[submitbutton]
+    </div>
+  </div>
+  <br>
+  <!-- end of content of bounding box -->
+
+  ~[wc:teachers_footer_css]
+</form>
+<script type="text/javascript">
+$j(document).ready(function() {
+  $j.getJSON("json/terms.json.html", function(response){
+    var termvalues = [];
+    termvalues = response.terms;
+    var resetTerm = function() {
+      $j('#termselect').prop('selectedIndex', 0);
+    }
+    $j.each(termvalues, function(index,val) {
+      if(val.name) {
+        $j('#termselect').append("<option>" + val.name + "</option>");
+      }
+    });
+    $j('#termselect').change(function(){
+      var terminfo = $j(this).val();
+      $j.each(termvalues, function(index,termdata) {
+        if (terminfo == termdata.name) {
+          $j('#startdate').val(termdata.startDate);
+          $j('#enddate').val(termdata.endDate);
+        }
+      })
+    });
+    $j('#startdate').change(function(){
+      resetTerm();
+    });
+    $j('#enddate').change(function(){
+      resetTerm();
+    });
+  });
+});
+</script>
+</body>
+</html><!-- non framed -->

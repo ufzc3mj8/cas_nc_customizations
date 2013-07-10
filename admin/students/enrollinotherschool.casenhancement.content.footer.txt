@@ -1,0 +1,65 @@
+<script type="text/javascript">
+    $j(document).ready( function() {
+        $j('[name="courseandsection"]').parent().parent().remove();
+        $j('#btnSubmit').parent().append($j('#courseandsectionelement>input'));
+        $j('#btnSubmit').parent().before($j('#sectionList'));
+        $j('#btnSubmit').remove();
+        $j('#courseandsection').attr('name','courseandsection');
+        $j('[name="Schoolid"]').change( function() {
+            $j('#sectionList').empty();
+            var schoolid = $j(this).val();
+            $j.ajax({
+                type    : 'POST',
+                url     : 'enrollinotherschool_helper.html?schoolid='+schoolid,
+                success : function(data, x, xhrobj) {
+                    $j('#sectionList').append(data);
+                    $j('input[name="search"]').keyup(function(e){
+                        var code = (e.keyCode ? e.keyCode : e.which);
+                        if(code == 8) {
+                                $j('tr.data-row').css("display", "");
+                                $j('tr.data-row').removeClass('selected');
+                        }
+                        var searchterm = $j(this).val();
+            
+                        if(searchterm.length > 0) {
+                            var match = $j('tr.data-row:contains("' + searchterm + '")');
+                            var nomatch = $j('tr.data-row:not(:contains("' + searchterm + '"))');
+                            //match.children().addClass('selected-cell');
+                            match.addClass('selected');
+                            nomatch.css("display", "none");
+                        } else {
+                            $j('tr.data-row').css("display", "");
+                            $j('tr.data-row').removeClass('selected');
+                            //$('tr.data-row td').removeClass('selected-cell');
+                        }
+                    });
+                }
+            });
+        });
+        $j('#sectionList').change( function() {
+            $j('#courseandsection').val();
+        });
+    });
+    function addSection(crs, sec, obj) {
+        $j('#button'+obj).remove();
+        $j('#td'+obj).toggleClass('loading');
+        $j('#td'+obj).html('Enrolling');
+        $j('#courseandsection').val(crs+'.'+sec);
+        dataString = $j('form').serialize();
+        //console.log(dataString);
+        $j.ajax({
+            type: "POST",
+            url: "/admin/changesrecorded.white.html",
+            data: dataString,
+            success: function(data,x,xhrobj){
+                //console.log(data);
+                $j('#td'+obj).empty();
+                $j('#td'+obj).html('Success!');
+                $j('#td'+obj).toggleClass('loading');
+                $j('#td'+obj).toggleClass('feedback-confirm');
+            }
+        });
+    }
+</script>
+<span id="courseandsectionelement"><input type="hidden" name="courseandsection2" value="" id="courseandsection"></span>
+<div class="box-round" id="sectionList"></div>

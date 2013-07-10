@@ -1,0 +1,11 @@
+<select name="schoolid" id="schoolid">
+        <option value="">Select School</option>
+        ~[tlist_sql;
+                SELECT sch.school_number, csch.CROSSLEA_DISABLED, sch.name
+                FROM schools@DBL_PSODS sch
+                LEFT OUTER JOIN S_NC_CROSSLEASCHOOLS@DBL_PSODS csch ON csch.schools_dcid = sch.dcid
+                WHERE sch.school_number <> 999999
+                AND sch.district_id = (SELECT P.DISTRICT_ID FROM PSODS.PREFS@DBL_PSODS P WHERE P.NAME = 'districtnumber'
+                        AND TO_CHAR(P.VALUE) = '~[gpv:leaid]')]
+        <option value="~(school_number;t)" ~(crosslea_disabled;t;if.test=Y;then=DISABLED;else=)>~(schoolname;t) ~(crosslea_disabled;t;if.test=Y;then=- Not Available;else=)</option>[/tlist_sql]
+    </select>

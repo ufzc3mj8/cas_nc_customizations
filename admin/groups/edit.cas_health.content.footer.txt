@@ -1,0 +1,12 @@
+<script type="text/javascript">
+	     $j(document).ready( function() {
+			  $j('select').each( function() {
+				       $j(this).children().each( function() {
+						    var text = $j(this).text();
+						    if (text === 'View/Modify/Delete') {
+								 $j(this).remove();
+						    }
+				       });
+			  });
+	     });
+</script>

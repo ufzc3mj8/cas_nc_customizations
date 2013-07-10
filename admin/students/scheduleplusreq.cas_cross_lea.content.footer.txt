@@ -1,0 +1,164 @@
+<div class="box-round group">
+    <h2 class="toggle collapsed">Cross LEA Information</h2>
+<div class="box-round">
+    <h2>Active Cross LEA Course Enrollments</h2>
+    <table class="linkDescList">
+        <thead>
+            <th>LEA</th>
+            <th>School</th>
+            <th>Course Name</th>
+            <th>Course Number</th>
+            <th>Section Number</th>
+            <th>Exp</th>
+            <th>Date Enrolled</th>
+            <th>Exit Date</th>
+        </thead>
+        <tbody>
+        ~[tlist_sql;SELECT 
+            (SELECT to_char(remote_prefs.value) FROM PSODS.PREFS@DBL_PSODS remote_prefs WHERE remote_prefs.district_id = remote_s.district_id AND remote_prefs.name = 'districtname'),
+            remote_sch.name,
+            remote_c.course_name, remote_sec.course_id, remote_sec.section_number, remote_sec.expression, remote_cc.dateenrolled, remote_cc.dateleft
+        FROM PSODS.STUDENTS@DBL_PSODS remote_s
+        INNER JOIN PSODS.CC@DBL_PSODS remote_cc 
+          ON remote_cc.student_id = remote_s.student_id 
+          AND remote_cc.dateleft >= SYSDATE-7
+          AND remote_cc.district_id = remote_s.district_id
+          AND remote_cc.section_id > 0
+        INNER JOIN PSODS.SECTIONS@DBL_PSODS remote_sec 
+          ON remote_sec.section_id = remote_cc.section_id
+          AND remote_sec.district_id = remote_cc.district_id
+        INNER JOIN PSODS.SCHOOLS@DBL_PSODS remote_sch
+          ON remote_sch.school_number = remote_sec.school_id
+          AND remote_sch.district_id = remote_sec.district_id
+        INNER JOIN PSODS.COURSES@DBL_PSODS remote_c
+          ON remote_c.course_number = remote_sec.course_id
+          AND remote_c.district_id = remote_sec.district_id
+        WHERE remote_s.student_number = '~([students]student_number)'
+        AND remote_s.dcid <> ~(rn)]
+        <tr>
+            <td>~(lea;t)</td>
+            <td>~(school;t)</td>
+            <td>~(course_name;t)</td>
+            <td>~(course_number;t)</td>
+            <td>~(section_number;t)</td>
+            <td>~(expression;t)</td>
+            <td>~(entrydate;d)</td>
+            <td>~(exitdate;d)</td>
+        </tr>
+        [/tlist_sql]
+        </tbody>
+    </table>
+    <h2>Local Cross LEA Requests</h2>
+<table class="linkDescList">
+    <tr class="headerRow">
+        <th>Source LEA</th>
+        <th>Destination LEA</th>
+        <th>Section ID</th>
+        <th>Entry Date</th>
+        <th>Status</th>
+        <th>Source LEA Host</th>
+        <th>Stop Date</th>
+        <th>Date Stamp</th>
+        <th>Drop</th>
+    </tr>
+~[tlist_sql;SELECT
+    S_NC_CROSSLEAREQUESTS.SOURCE_LEA_CODE,
+    --(
+    --    SELECT to_char(P2.VALUE)
+    --    FROM PSODS.PREFS@DBL_PSODS P2
+    --    WHERE P2.DISTRICT_ID = (SELECT to_char(p.value) FROM PSODS.PREFS@DBL_PSODS p WHERE p.name='districtnumber' AND to_char(p.value) = S_NC_CROSSLEAREQUESTS.SOURCE_LEA_CODE)
+    --    AND P2.NAME='districtname'
+    --) source,
+    S_NC_CROSSLEAREQUESTS.DEST_LEA_CODE,
+    --(
+    --    SELECT to_char(P2.VALUE)
+    --    FROM PSODS.PREFS@DBL_PSODS P2
+    --    WHERE P2.DISTRICT_ID = (SELECT to_char(p.value) FROM PSODS.PREFS@DBL_PSODS p WHERE p.name='districtnumber' AND to_char(p.value) = S_NC_CROSSLEAREQUESTS.DEST_LEA_CODE)
+    --    AND P2.NAME='districtname'
+    --) destination,
+    DEST_SECTION_ID,
+    SECTION_ENTRY_DATE,
+    CASE SELECT_PROCESSED
+        WHEN NULL THEN 'PENDING'
+        WHEN 'D' THEN 'DROPPED'
+        WHEN 'W' THEN 'WAITLISTED'
+        WHEN 'P' THEN 'SUCCESS'
+        WHEN 'E' THEN 'ERROR'
+        WHEN 'R' THEN 'REJECTED'
+        ELSE 'PENDING' END,
+    SOURCE_LEA_HOST,
+    STOP_DATE,
+    TIMEDATESTAMP,
+    CASE SELECT_PROCESSED WHEN 'D' THEN '1' ELSE '0' END,
+    SUBSTR('~(studentfrn)',4),
+    ID
+    FROM S_NC_CROSSLEAREQUESTS
+    WHERE studentsdcid = ~(rn);alternatecolor]
+    <tr bgcolor="#edf3fe">
+        <td>~(sourceleacode;t)</td>
+        <td>~(destination;t)</td>
+        <td>~(sectionid;t)</td>
+        <td>~(entrydate;d)</td>
+        <td>~(successful;t)</td>
+        <td>~(sourceleahost;t)</td>
+        <td>~(stopdate;d)</td>
+        <td>~(datestamp;d)</td>
+        <td>
+            <a href="#" class="dropCourse button" style="display: ~(display;t;if.test=1;then=none;else=inline)">Drop</a>
+            <input type="hidden" name="CF-[STUDENTS:~(rn).S_NC_CROSSLEAREQUESTS.S_NC_CROSSLEAREQUESTS:~(id;t)]SELECT_PROCESSED" value="D" width="10" id="SELECT_PROCESSED~(id;t)">
+        </td>
+    </tr>
+[/tlist_sql]
+</table>
+    <h2>Local Cross LEA Enrollments</h2>
+<table class="linkDescList">
+    <thead>
+    <tr class="headerRow">
+        <th>Destination LEA</th>
+        <th>Section ID</th>
+        <th>Entry Date</th>
+        <th>Status</th>
+        <th>Source LEA Code</th>
+        <th>Source LEA Host</th>
+        <th>Stop Date</th>
+        <th>Date Stamp</th>
+    </tr>
+    </thead><tbody>
+~[tlist_sql;
+SELECT DEST_LEA_CODE, DEST_SECTION_ID, SECTION_ENTRY_DATE, 
+    CASE SELECT_PROCESSED
+        WHEN NULL THEN 'PENDING'
+        WHEN 'D' THEN 'DROPPED'
+        WHEN 'W' THEN 'WAITLISTED'
+        WHEN 'P' THEN 'SUCCESS'
+        WHEN 'E' THEN 'ERROR'
+        WHEN 'R' THEN 'REJECTED'
+        ELSE 'PENDING' END, SOURCE_LEA_CODE, SOURCE_LEA_HOST, STOP_DATE, TIMEDATESTAMP
+FROM S_NC_CROSSLEAENROLLMENTS
+WHERE studentsdcid = ~(rn)]
+    <tr>
+        <td>~(destination;t)</td>
+        <td>~(sectionid;t)</td>
+        <td>~(entrydate;d)</td>
+        <td>~(successful;t)</td>
+        <td>~(sourceleacode;t)</td>
+        <td>~(sourceleahost;t)</td>
+        <td>~(stopdate;d)</td>
+        <td>~(datestamp;d)</td>
+    </tr>
+[/tlist_sql]
+    </tbody>
+</table>
+</div>
+<script type="text/javascript">
+    $j(document).ready( function() {
+        $j('.dropCourse').click( function() {
+            $j('#dropForm').append($j(this).next());
+            $j('#dropForm').submit();
+        });
+    });
+</script>
+<form action="/admin/students/scheduleplusreq.html?frn=~(studentfrn)" id="dropForm">
+    <input type="hidden" name="ac" value="prim">
+</form>
+</div>

@@ -1,0 +1,48 @@
+<table id="extendedData" class="linkDescList">
+<thead>
+<tr class="headerRow">
+    <td colspan="2" class="bold">
+        Extended Data
+    </td>
+</tr>
+</thead>
+<tbody>
+<tr><td><label>ACADEMIC_LEVEL_CODE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]ACADEMIC_LEVEL_CODE" value="" size="65" maxlength="60" class="VARCHAR2"></td></tr>
+<tr><td><label>ACADEMIC_PROGRAM_INDICATOR</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]ACADEMIC_PROGRAM_INDICATOR" value="" size="15" maxlength="10" class="VARCHAR2"></td></tr>
+<tr><td><label>CAREER_PREP_IND</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]CAREER_PREP_IND" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>COURSE_EXTERNAL_PROVIDER</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_EXTERNAL_PROVIDER" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>COURSE_GENDER</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_GENDER" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>COURSE_GRADE_LEVEL_RANGE_HIGH</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_GRADE_LEVEL_RANGE_HIGH" value="" size="16" maxlength="11" class="psNumWidget"></td></tr>
+<tr><td><label>COURSE_GRADE_LEVEL_RANGE_LOW</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_GRADE_LEVEL_RANGE_LOW" value="" size="16" maxlength="11" class="psNumWidget"></td></tr>
+<tr><td><label>COURSE_NAME_POSTSECONDARY</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_NAME_POSTSECONDARY" value="" size="35" maxlength="160" class="VARCHAR2"></td></tr>
+<tr><td><label>COURSE_NAME_STATE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_NAME_STATE" value="" size="35" maxlength="160" class="VARCHAR2"></td></tr>
+<tr><td><label>COURSE_NUMBER_POSTSECONDARY</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_NUMBER_POSTSECONDARY" value="" size="49" maxlength="44" class="VARCHAR2"></td></tr>
+<tr><td><label>COURSE_NUMBER_STATE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_NUMBER_STATE" value="" size="49" maxlength="44" class="VARCHAR2"></td></tr>
+<tr><td><label>COURSE_THIRDPARTY_PROVIDER</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]COURSE_THIRDPARTY_PROVIDER" value="" size="35" maxlength="30" class="VARCHAR2"></td></tr>
+<tr><td><label>CREDIT_HOURS_POSTSECONDARY</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]CREDIT_HOURS_POSTSECONDARY" value="" size="30" maxlength="25" class="psNumWidget"></td></tr>
+<tr><td><label>CREDIT_VALUE_MULTIPLIER</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]CREDIT_VALUE_MULTIPLIER" value="" size="30" maxlength="25" class="psNumWidget"></td></tr>
+<tr><td><label>CTE_LEVEL_INDICATOR</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]CTE_LEVEL_INDICATOR" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>DELIVERY_MODE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]DELIVERY_MODE" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>EXAM</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]EXAM" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>HIGH_SCHOOL_CREDIT</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]HIGH_SCHOOL_CREDIT" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>HIGH_SCHOOL_CREDIT_APPLY</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]HIGH_SCHOOL_CREDIT_APPLY" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>HONORS</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]HONORS" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>HOW_TAKEN_CODE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]HOW_TAKEN_CODE" value="" size="16" maxlength="11" class="psNumWidget"></td></tr>
+<tr><td><label>NO_OF_REPEATS</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]NO_OF_REPEATS" value="" size="16" maxlength="11" class="psNumWidget"></td></tr>
+<tr><td><label>POST_SEC_INSTITUTION_CODE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]POST_SEC_INSTITUTION_CODE" value="" size="10" maxlength="5" class="VARCHAR2"></td></tr>
+<tr><td><label>SCHOOL_MODE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SCHOOL_MODE" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>SELECT_BLENDED_CONTENT</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SELECT_BLENDED_CONTENT" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>SELECT_CREDIT_RECOVERY</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SELECT_CREDIT_RECOVERY" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>SELECT_NONSTATE_COURSE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SELECT_NONSTATE_COURSE" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>SELECT_PILOT_COURSE</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SELECT_PILOT_COURSE" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>SELECT_STATE_TEST</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SELECT_STATE_TEST" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>SHORT_NAME</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SHORT_NAME" value="" size="15" maxlength="10" class="VARCHAR2"></td></tr>
+<tr><td><label>SUB_DEPARTMENT_ID</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]SUB_DEPARTMENT_ID" value="" size="16" maxlength="11" class="psNumWidget"></td></tr>
+<tr><td><label>TRADITIONAL_GENDER</label></td><td><input type="text" name="[courses.S_NC_COURSEINFO]TRADITIONAL_GENDER" value="" size="6" maxlength="1" class="VARCHAR2"></td></tr>
+</tbody>
+</table>
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table').first().after($j('#extendedData'));
+});
+</script>

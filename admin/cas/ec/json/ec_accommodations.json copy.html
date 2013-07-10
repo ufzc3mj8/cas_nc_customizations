@@ -1,0 +1,28 @@
+[
+~[tlist_sql;
+SELECT
+    gen_test.value,
+    gen_acc.value
+FROM ps.s_nc_ec ec
+INNER JOIN ps.s_nc_ec_accommodations_test acct
+  ON acct.studentsdcid = ec.studentsdcid
+LEFT JOIN ps.s_nc_ec_accommodations_comment accc
+  ON accc.s_nc_ec_accommodations_testid = acct.id
+LEFT JOIN ps.students stu
+  ON stu.dcid = ec.studentsdcid
+LEFT JOIN ps.gen gen_test
+  ON gen_test.name = acct.test_code
+  AND gen_test.cat = 'test_code'
+LEFT JOIN ps.gen gen_acc
+  ON gen_acc.name = accc.accommodation_code
+  AND gen_acc.cat = 'accomm_code'
+WHERE stu.id = ~[gpv:stuid]
+ORDER BY acct.test_code, accc.accommodation_code
+]
+{
+"test" : "~(gen_test.value;t)",
+"accommodation" : "~(gen_acc.value;t)"
+},
+[/tlist_sql]
+{}
+]

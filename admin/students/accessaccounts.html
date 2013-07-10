@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+    <title>~[brij_render:admin-accountmanagement-pkg;:GetStudentAccessAccountsPageTitle;]</title>
+
+    ~[wc:commonscripts]
+	~[wc:UI_div_popup]<!--includes utilities.js-->
+    <!--YUI JS-->
+    <script type="text/javascript" src="/scripts/yui/2.7.0/button/button-min.js"></script>
+	<script type="text/javascript" src="/scripts/yui/2.7.0/json/json-min.js"></script>
+	<script type="text/javascript" src="/scripts/yui/2.7.0/datasource/datasource-min.js"></script>
+	<script type="text/javascript" src="/scripts/yui/2.7.0/autocomplete/autocomplete-min.js"></script>
+	<script type="text/javascript" src="/scripts/yui/2.7.0/datatable/datatable-min.js"></script>
+	<script type="text/javascript" src="/scripts/yui/2.7.0/paginator/paginator-min.js"></script>
+	<script type="text/javascript" src="/scripts/glowbutton.js"></script>
+
+	~[get_js_texts:psx.js.scripts.parentaccess_modal_dialog.]
+	<script src="/scripts/parentaccess_modal_dialog.js" type="text/javascript"></script>
+	
+	<!--YUI CSS-->
+	<link rel="stylesheet" type="text/css" href="/struts/xhtml/styles.css">
+	<link rel="stylesheet" type="text/css" href="/scripts/yui/2.7.0/assets/skins/sam/skin.css">
+	<link rel="stylesheet" type="text/css" href="/scripts/yui/2.7.0/paginator/assets/skins/sam/paginator.css">
+	<link rel="stylesheet" type="text/css" href="/scripts/yui/2.7.0/datatable/assets/skins/sam/datatable.css">
+	
+	<link rel="stylesheet" type="text/css" href="/scripts/course-prereqs/CourseRequests.css">
+	<!--Normal CSS-->
+	<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+
+</head>
+
+<body class="yui-skin-sam">
+
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.accessaccounts.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.accessaccounts.student_selection]</a> &gt; ~[brij_render:admin-accountmanagement-pkg;:GetStudentAccessAccountsPageTitle;]<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]~[brij_render:admin-accountmanagement-pkg;:GetStudentAccessAccountsPageTitle;]~[wc:title_student_end_css]
+~[x:assignidandpassword]
+
+~[SetPostValue:studentsLdapEnabled=~[ldapisenabledstudent]]
+
+~[brij_renderform:admin-accountmanagement-pkg;:GetStudentAccessAccounts;:admin-accountmanagement-pkg;:SaveStudentAccessAccounts]
+
+~[wc:admin_footer_frame_css]
+
+<script type="text/javascript">
+
+	function setSaved() {
+		var autogen = '~[gpv:assignid]';
+		if (autogen == 'yes') {
+			var savedDiv = $('changes-saved-container');
+			var savedText = $('saved');
+			savedDiv.innerHTML = '<div id="changes-saved-message" class="feedback-confirm">'+savedText.value+'</div>';
+		}
+
+	}
+
+	function addEvent(obj, evType, fn){ 
+		if (obj.addEventListener){ 
+			obj.addEventListener(evType, fn, false); 
+			return true; 
+		} else if (obj.attachEvent){ 
+			var r = obj.attachEvent("on"+evType, fn); 
+			return r; 
+		} else { 
+			return false; 
+		} 
+	}
+	
+	addEvent(window, 'load', setSaved);	
+	
+</script>
+
+<script type="text/javascript">
+//  LOGIN ID ENHANCEMENTS
+var originalUserId = '~(student_web_id)';
+originalUserId = originalUserId.toLowerCase();
+if (originalUserId === '&nbsp\;') {
+    originalUserId = '';
+}
+$j('#studentwebid').after('<span id="ErrorMsg"></span>');
+$j('#studentwebid').change( function() {
+    $j('#ErrorMsg').html('Checking for matches...');
+    //$j('#btnSubmit').attr("disabled","disabled");
+    var loginidvalue = $j('#studentwebid').val();
+    loginidvalue = loginidvalue.toLowerCase();
+    $j.ajax({
+	type    : 'POST',
+	url     : 'accessaccounts_helper.html?id='+loginidvalue,
+	success : function(data, x, xhrobj) {
+	    if (data === '0' || originalUserId == loginidvalue) {
+		//$j('#btnSubmit').removeAttr("disabled");
+		$j('#studentwebid').removeClass('error');
+		$j('#ErrorMsg').html('Username valid!');
+	    }
+	    else {
+		//$j('#btnSubmit').attr("disabled","disabled");
+		$j('#ErrorMsg').html('The username '+loginidvalue+' has been used already.');
+		$j('#studentwebid').val(originalUserId).focus().addClass('error');
+	    }
+	}
+    });
+});
+</script>
+
+</body>
+</html><!-- end right frame -->

@@ -1,0 +1,69 @@
+{
+~[x:GetDoThisForStudents]
+~[RepeatForEach:Students]
+"student-~(id)"       :   {
+  "assignments" : [
+    ~[tlist_sql;
+      SELECT p_a.name
+      , p_as.score
+      , p_a.pointspossible
+      , (p_as.score/p_a.pointspossible)*100 percent
+      , round((SELECT AVG(score/p_a.pointspossible)
+          FROM psm_assignmentscore
+          WHERE sectionassignmentid = p_sa.id)*100,2) classavg
+      , to_char(p_sa.dateassignedtosection, 'DD-MON-YY')
+      , to_char(p_sa.dateassignmentdue, 'DD-MON-YY')
+      , CASE
+        WHEN p_as.turnedinlate = 0
+        THEN NULL
+        ELSE '*'
+        END late
+      , CASE
+        WHEN p_as.exempt = 0
+        THEN NULL
+        ELSE '*'
+        END exempt
+      , CASE
+        WHEN p_a.extracreditpoints = 0
+        THEN NULL
+        ELSE p_a.extracreditpoints
+        END extracredit
+      , p_as.commentvalue
+      FROM psm_assignmentscore p_as
+      JOIN psm_sectionassignment p_sa
+      ON p_as.sectionassignmentid = p_sa.id
+      JOIN psm_assignment p_a
+      ON p_sa.assignmentid = p_a.id
+      JOIN psm_sectionenrollment p_se
+      ON p_as.sectionenrollmentid = p_se.id
+      JOIN sync_sectionmap s_sm
+      ON p_se.sectionid = s_sm.sectionid
+      JOIN sections s
+      ON s_sm.sectionsdcid = s.dcid
+      JOIN psm_student p_student
+      ON p_se.studentid = p_student.id
+      WHERE p_student.studentidentifier = ~(id)
+      AND s.id = ~[gpv:sectionid]
+      AND p_sa.dateassignmentdue BETWEEN to_date('~[gpv:startdate]','mm/dd/yyyy') AND to_date('~[gpv:enddate]','mm/dd/yyyy')
+      ORDER BY p_sa.dateassignmentdue asc
+    ]
+    {
+      "name"          : "~(p_a.name)",
+      "score"         : "~(p_as.score)",
+      "max"           : "~(p_a.pointspossible)",
+      "percent"       : "~(percent)",
+      "classAverage"  : "~(classavg)",
+      "assignDate"    : "~(p_sa.dateassignedtosection)",
+      "dueDate"       : "~(p_sa.dateassignmentdue)",
+      "late"          : "~(p_as.turnedinlate)",
+      "exempt"        : "~(p_as.exempt)",
+      "extraCredit"   : "~(extracreditpoints)",
+      "comment"       : "~(s1.comment_value)"
+    },
+    [/tlist_sql]
+    {}
+  ]
+}
+[between:Students],
+[/RepeatForEach:Students]
+}

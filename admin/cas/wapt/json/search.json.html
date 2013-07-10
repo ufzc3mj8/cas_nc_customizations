@@ -1,0 +1,45 @@
+[
+~[tlist_sql;
+SELECT
+    wapt.studentsdcid,
+    wapt.id,                                
+    wapt.grade_range_id,
+    wapt.test_dte,
+    sch.district_number,
+    sch.school_number,
+    wapt.test_administrator,
+    stu.grade_level,
+    stu.first_name,
+    stu.last_name,
+    stu.student_number,
+    to_char(stu.dob,'mm/dd/yyyy') dob,
+    stu.enroll_status
+FROM
+    ps.s_nc_wapt_sheet_items wapt
+LEFT JOIN
+    ps.students stu
+      ON wapt.studentsdcid = stu.dcid
+LEFT JOIN
+    ps.schools sch
+      ON sch.school_number = stu.schoolid
+WHERE
+    (stu.schoolid=0 OR stu.schoolid=~(curschoolid))
+]
+{
+"studentdcid" : "~(wapt.studentsdcid;t)",
+"wapt_id" : "~(wapt.id;t)",
+"grade_range" : "~(wapt.grade_range_id;t)",
+"test_date" : "~(wapt.test_dte;t)",
+"lea_code" : "~(sch.district_number;t)",
+"school_code" : "~(sch.school_number;t)",
+"test_administrator" : "~(wapt.test_administrator;t)",
+"grade_level" : "~(stu.grade_level;t)",
+"first_name" : "~(stu.first_name;t)",
+"last_name" : "~(stu.last_name;t)",
+"student_number" : "~(stu.student_number;t)",
+"dob" : "~(dob;t)",
+"enroll_status" : "~(stu.enroll_status;t)"
+},
+[/tlist_sql]
+{}
+]

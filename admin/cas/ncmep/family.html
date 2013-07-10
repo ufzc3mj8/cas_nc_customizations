@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>North Carolina Migrant Education Program</title>
+        ~[wc:commonscripts]
+        <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+        <link href="/images/css/print.css" rel="stylesheet" media="print">
+    </head>
+    <body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+    ~[wc:admin_header_frame_css]
+    <!-- breadcrumb start -->
+    <a href="/admin/home.html" target="_top">Start Page</a> &gt; 
+    <a href="admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; 
+    NCMEP
+    <!-- breadcrumb end -->
+    ~[wc:admin_navigation_frame_css]
+
+    ~[wc:title_student_begin_css]
+    North Carolina Migrant Education Program
+    ~[wc:title_student_end_css]
+
+    <ul class="tabs">
+
+    <li class="selected"><a href="family.html?frn=~(studentfrn)">Family</a></li>
+    <li><a href="eligibility.html?frn=~(studentfrn)">Eligibility</a></li>
+    <li><a href="children.html?frn=~(studentfrn)">Children</a></li>
+    </ul>
+
+    <!-- start of content and bounding box -->
+        <div class="box-round">
+            <table border="0" cellspacing="0" cellpadding="4">
+                <tr class="~[evenoddrow]">
+                    <td>Male Parent/Guardian Last Name</td>
+                    <td>Male Parent/Guardian First Name</td>
+                    <td>Old Current Parent Last Name</td>
+                    <td>Old Current Parent First Name</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="" value="" size="20"></td>
+                    <td><input type="text" name="" value="" size="20"></td>
+                    <td><input type="text" name="" value="" size="20"></td>
+                    <td><input type="text" name="" value="" size="20"></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td>Female Parent/Guardian Last Name</td>
+                    <td>Female Parent/Guardian First Name</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="" value="" size="20"></td>
+                    <td><input type="text" name="" value="" size="20"></td>
+                </tr>
+            </table>
+            <table>
+                <tr class="~[evenoddrow]">
+                    <td>Current Address</td>
+                    <td>City</td>
+                    <td>State</td>
+                    <td>Zip</td>
+                    <td>Current Home Phone</td>
+                    <td>Current Contact Phone</td>
+                </tr>
+                <tr class="~[evenoddrow]">
+                    <td><input type="text" name="[01]street" value="" size="30"></td>
+                    <td><select name="[01]city">
+                            <option value=""></option>
+                        </select></td>
+                    <td><select name="[01]state">
+                            <option value="AL">AL</option>
+                            <option value="AK">AK</option>
+                            <option value="AZ">AZ</option>
+                            <option value="AR">AR</option>
+                            <option value="CA">CA</option>
+                            <option value="CO">CO</option>
+                            <option value="CT">CT</option>
+                            <option value="DE">DE</option>
+                            <option value="DC">DC</option>
+                            <option value="FL">FL</option>
+                            <option value="GA">GA</option>
+                            <option value="HI">HI</option>
+                            <option value="ID">ID</option>
+                            <option value="IL">IL</option>
+                            <option value="IN">IN</option>
+                            <option value="IA">IA</option>
+                            <option value="KS">KS</option>
+                            <option value="KY">KY</option>
+                            <option value="LA">LA</option>
+                            <option value="ME">ME</option>
+                            <option value="MD">MD</option>
+                            <option value="MA">MA</option>
+                            <option value="MI">MI</option>
+                            <option value="MN">MN</option>
+                            <option value="MS">MS</option>
+                            <option value="MO">MO</option>
+                            <option value="MT">MT</option>
+                            <option value="NE">NE</option>
+                            <option value="NV">NV</option>
+                            <option value="NH">NH</option>
+                            <option value="NJ">NJ</option>
+                            <option value="NM">NM</option>
+                            <option value="NY">NY</option>
+                            <option value="NC" selected="selected">NC</option>
+                            <option value="ND">ND</option>
+                            <option value="OH">OH</option>
+                            <option value="OK">OK</option>
+                            <option value="OR">OR</option>
+                            <option value="PA">PA</option>
+                            <option value="RI">RI</option>
+                            <option value="SC">SC</option>
+                            <option value="SD">SD</option>
+                            <option value="TN">TN</option>
+                            <option value="TX">TX</option>
+                            <option value="UT">UT</option>
+                            <option value="VT">VT</option>
+                            <option value="VA">VA</option>
+                            <option value="WA">WA</option>
+                            <option value="WV">WV</option>
+                            <option value="WI">WI</option>
+                            <option value="WY">WY</option>
+                        </select></td>
+                    <td><input type="text" name="[01]zip" value="" size="8"></td>
+                    <td><input type="text" name="[01]home_phone" value="" size="15"></td>
+                    <td><input type="text" name="" value="" size="15"></td>
+                </tr>
+            </table>
+        <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>COE</title>
+    ~[wc:commonscripts]
+    <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+    <link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+<body>
+    <form action="/admin/changesrecorded.white.html" method="POST">
+        ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/students/home.html?selectstudent=nosearch" target="_top">Student Selection</a> &gt; COE<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+        ~[wc:title_student_begin_css]COE~[wc:title_student_end_css]
+<!-- start of content and bounding box -->
+        <div class="box-round">
+            <table class="tableToGrid paginateGrid">
+                <thead>
+                    <th>School Year</th>
+                    <th>QA Date</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <td></td>
+                </tbody>
+                <td align="center"><a href="family.html?frn=~(studentfrn)" id="btnNew" name="btnNew" class="button">New</a></td>
+            </table>
+        <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+        </div>
+</form>
+</body>
+</html>

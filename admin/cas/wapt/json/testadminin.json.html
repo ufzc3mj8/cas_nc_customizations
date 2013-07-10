@@ -1,0 +1,17 @@
+[
+  ~[tlist_sql;
+    SELECT codes
+    , description
+    FROM S_NC_WAPT_DOM
+    WHERE area = 'GRADE_SEMESTER'
+    AND range_id = ~[gpv:rangeid]
+    AND active='Y'
+    ORDER BY codes
+  ]
+  {
+    "code" : "~(codes;t)",
+    "description" : "~(description;t)"
+  },
+  [/tlist_sql]
+  {}
+]

@@ -1,0 +1,10 @@
+[
+~[tlist_sql; 
+SELECT name
+FROM gradplan gp
+INNER JOIN gpversion gpver
+ON gpver.gradplanid=gp.id
+WHERE gpver.startyear > ~[gpv:year]
+OR gpver.endyear < ~[gpv:year]]{"name":"~(name)"},
+[/tlist_sql] {"name":""}
+]

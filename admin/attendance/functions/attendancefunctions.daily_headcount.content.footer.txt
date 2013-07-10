@@ -1,0 +1,3 @@
+<script type="text/javascript">
+  $j("tr:contains('Recalculate Daily Attendance Minutes')").before("<tr><td><a href=\"/admin/cas/daily_headcount/home.html\">Daily Headcount Adjustment</a></td><td>Change enrollments for students absent on their first day of enrollment</td></tr>");
+</script>

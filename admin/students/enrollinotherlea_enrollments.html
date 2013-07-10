@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Enroll In A Class At Another LEA</title>
+~[wc:UI_js_includes]
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_students.enrollinotherschool.start_page]</a> &gt; <a href="home.html?selectstudent=nosearch" target="_top">~[text:psx.html.admin_students.enrollinotherschool.student_selection]</a> &gt; <a href="/admin/students/functions.html?frn=~(studentfrn)">~[text:psx.html.admin_students.enrollinotherschool.functions]</a> &gt; Enroll In A Class At Another LEA<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[wc:title_student_begin_css]Enroll In A Class At Another LEA~[wc:title_student_end_css]
+
+<!-- start of content and bounding box -->
+<ul class="tabs">
+    <li><a href="/admin/students/enrollinotherlea.html?frn=~(studentfrn)">Enroll Student</a></li>
+    <li><a href="/admin/students/enrollinotherlea_requests.html?frn=~(studentfrn)">View Requests</a></li>
+    <li class="selected"><a href="/admin/students/enrollinotherlea_enrollments.html?frn=~(studentfrn)">View Enrollments</a></li>
+</ul>
+<div class="box-round">
+<table class="linkDescList">
+    <thead>
+    <tr class="headerRow">
+        <th>Destination LEA</th>
+        <th>Section ID</th>
+        <th>Entry Date</th>
+        <th>Status</th>
+        <th>Source LEA Code</th>
+        <th>Source LEA Host</th>
+        <th>Stop Date</th>
+        <th>Date Stamp</th>
+    </tr>
+    </thead><tbody>
+~[tlist_sql;
+SELECT DEST_LEA_CODE, DEST_SECTION_ID, SECTION_ENTRY_DATE, 
+    CASE SELECT_PROCESSED
+        WHEN NULL THEN 'PENDING'
+        WHEN 'D' THEN 'DROPPED'
+        WHEN 'W' THEN 'WAITLISTED'
+        WHEN 'P' THEN 'SUCCESS'
+        WHEN 'E' THEN 'ERROR'
+        WHEN 'R' THEN 'REJECTED'
+        ELSE 'PENDING' END, SOURCE_LEA_CODE, SOURCE_LEA_HOST, STOP_DATE, TIMEDATESTAMP
+FROM S_NC_CROSSLEAENROLLMENTS
+WHERE studentsdcid = ~(rn)]
+    <tr>
+        <td>~(destination;t)</td>
+        <td>~(sectionid;t)</td>
+        <td>~(entrydate;d)</td>
+        <td>~(successful;t)</td>
+        <td>~(sourceleacode;t)</td>
+        <td>~(sourceleahost;t)</td>
+        <td>~(stopdate;d)</td>
+        <td>~(datestamp;d)</td>
+    </tr>
+[/tlist_sql]
+    </tbody>
+</table>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+
+</body>
+</html><!-- end right frame -->

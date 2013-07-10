@@ -1,0 +1,16 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table tr').removeAttr('class');
+    $j('.box-round table').addClass('linkDescList');
+    
+    $j('div.box-round:first table:first').append(
+    '<tr class="'+classname+'"><td><a href="/admin/medicine_log/functions.html">Medicine Administration</a></td><td>Perform Medicine Administration Functions</td></tr>'
+    );
+    $j('div.box-round:first table:first').append(
+    '<tr class="'+classname+'"><td><a href="/admin/cas/ncmep/migrant.html">Migrant Administration</a></td><td>Perform Migrant Administration Functions</td></tr>'
+    );
+    $j('div.box-round:first table:first').append(
+    '<tr class="'+classname+'"><td><a href="/admin/cas/wapt/home.html">W-APT Administration</a></td><td>Perform W-APT Administration Functions</td></tr>'
+    );
+})
+</script>

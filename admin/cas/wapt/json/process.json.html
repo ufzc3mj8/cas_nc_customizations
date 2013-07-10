@@ -1,0 +1,40 @@
+[
+~[tlist_sql;
+SELECT
+sw.studentsdcid,
+stu.lastfirst,
+stu.student_number,
+stu.grade_level,
+sw.test_dte,
+sw.test_administrator,
+sw.class,
+sw.grade_range,
+sw.grade_semester,
+sw.speaking_raw,
+sw.writing_raw,
+sw.writing_pl,
+sw.listening_raw,
+sw.reading_raw
+FROM ps.s_nc_wapt_sheet_work_items sw
+LEFT JOIN ps.students stu
+ON stu.dcid = sw.studentsdcid
+]
+{
+"studentsdcid" : "~(sw.studentsdcid;t)",
+"lastfirst" : "~(stu.lastfirst;t)",
+"student_number" : "~(stu.student_number;t)",
+"grade_level" : "~(stu.grade_level;t)",
+"test_date" : "~(sw.test_dte;t)",
+"test_administrator" : "~(sw.test_administrator;t)",
+"class" : "~(sw.class;t)",
+"grade_range" : "~(sw.grade_range;t)",
+"grade_semester" : "~(sw.grade_semester;t)",
+"speaking_raw" : "~(sw.speaking_raw;t)",
+"writing_raw" : "~(sw.writing_raw;t)",
+"writing_pl" : "~(sw.writing_pl;t)",
+"listening_raw" : "~(sw.listening_raw;t)",
+"reading_raw" : "~(sw.reading_raw;t)"
+},
+[/tlist_sql]
+{}
+]

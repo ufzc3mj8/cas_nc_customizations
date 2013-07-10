@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>~[text:psx.html.admin_tech.storegrades3.permanently_store_grades]</title>
+~[wc:UI_js_includes]
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+<script src="/scripts/storedgrades/storedgrades.js"></script>
+
+<script type="text/javascript">
+
+	_messages['psx.html.admin_tech.storegrades3.store_term_confirmation'] = '~[text:psx.html.admin_tech.storegrades3.store_term_confirmation]';
+	_messages['psx.html.admin_tech.storegrades3.yes'] = '~[text:psx.html.admin_tech.storegrades3.yes]';
+	_messages['psx.html.admin_tech.storegrades3.cancel'] = '~[text:psx.html.admin_tech.storegrades3.cancel]';
+	_messages['psx.html.admin_tech.storegrades3.store_term_confirmation'] = '~[text:psx.html.admin_tech.storegrades3.store_term_confirmation]';
+	_messages['psx.html.admin_tech.storegrades3.recently_started_term'] = '~[text:psx.html.admin_tech.storegrades3.recently_started_term]';
+	_messages['psx.html.admin_tech.storegrades3.past_term'] = '~[text:psx.html.admin_tech.storegrades3.past_term]';
+	_messages['psx.html.admin_tech.storegrades3.future_term'] = '~[text:psx.html.admin_tech.storegrades3.future_term]';
+	_messages['psx.html.admin_tech.storegrades3.are_you_sure_you_want_to_proceed'] = '~[text:psx.html.admin_tech.storegrades3.are_you_sure_you_want_to_proceed]';
+	
+
+
+	$j(document).ready( function() {
+	$j("#fieldstorecode").attr("value",$j('#laststorecode').val());
+	$j("#fieldstorecodefg").attr("value",$j('#laststorecodefg').val());
+	$j("#fieldattpointsnumpts").attr("value",$j('#lastattpointsnumpts').val());
+	$j("#fieldattpointsnograde").attr("value",$j('#lastattpointsnograde').val());
+	$j("#fieldattpointscomment").attr("value",$j('#lastattpointscomment').val());
+	$j('input:radio[name=termsradio]').click(storegrades3_radiotoggle);
+	$j('[name=storeselect]').change(storegrades3_storeselect2);
+    // create checkboxes
+    $j.ajax({
+        url: '/admin/GetPluginCodesJSON.action',
+        data: {
+            'plugin': 'GradeLevel'
+        },
+        type: 'POST',
+        cache: true,
+        dataType: 'json',
+        success: function(json) {
+            if (json) {
+                var schoolLowGrade = ~(school.info;low_grade);
+                var schoolHighGrade = ~(school.info;high_grade);
+                sg_createGradeCheckBoxes(schoolLowGrade, schoolHighGrade, json);
+            }
+        }
+    });
+	// user settings for expand/collapse
+	initSGToggleState(~[x:getUserPrefJSON.Text;User.PermStorGradFiltToggleState], '#PermStorGrad');
+	initSGToggleState(~[x:getUserPrefJSON.Text;User.PermStorGradVarCreditFiltToggleState], '#PermStorGradVarCredit');
+	initSGToggleState(~[x:getUserPrefJSON.Text;User.PermStorGradAdvancedOptionsToggleState], '#PermStorGradAdvOpt');
+
+    // set onclick to save toggle setting
+    $j(document).on('click', 'th.toggle', function(ev) {
+        var state = 'collapse';
+        if ($j(this).hasClass('expanded')) {
+            state = 'expand';
+        }
+	    var userPrefName = $j(this).attr("userprefname");
+	    saveFilterToggleState(userPrefName, state);
+    });
+    
+	setupPsComboBoxWidget();
+	
+	
+	var today_str = '~[long.date]';
+	updateTermsTable('all',today_str);
+
+});
+
+function setupPsComboBoxWidget() {
+
+    var termcodes = [~[tlist2;termbins;schoolid=~(curschoolid);yearid=~(curyearid)]"~(storecode)",[/tlist]""];
+    var options='';
+    for (var i=0;i<termcodes.length;i++) {
+    	if (options.indexOf(termcodes[i]) == -1) {
+    		if (options.length>0) options += ',';
+    		options += termcodes[i];
+    	}
+    }
+    $j("#fieldstorecodefg").attr('options',options);
+	if( $j( 'input.psComboBoxWidget' ).length ){
+
+		require(['psComboBoxWidget'], function(t){
+			var psComboBoxWidget = t;
+			psComboBoxWidget.initializeComboBoxWidget("required");
+			psComboBoxWidget.addRequired("fieldstorecodefg");
+		});
+	}
+	
+	function setCaps(input) {
+		if (input.attr('caps')) {
+			input.css('text-transform', 'uppercase');
+			input.keyup(function() {
+				$j(this).val($j(this).val().toUpperCase());
+			});
+		}
+	}
+	
+	setCaps($j("#fieldstorecodefg"));
+	setCaps($j("#fieldstorecode"));
+	
+}
+
+</script>
+
+
+<style type="text/css">
+.box-round table.linkDescList th {
+    background-color: #BAD3E5 !important;
+}
+.ui-autocomplete { 
+	position:absolute;
+    width: 62px;overflow:auto;
+}
+button.required + em {
+    font-size: 150%;
+    margin-left: 5px;
+}
+
+.italic {
+    font-style: italic;
+}
+</style>
+</head>
+
+<body>
+
+<form action="/admin/tech/operationprogress.html" method="POST">
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_tech.storegrades3.start_page]</a> &gt; <a href="/admin/tech/home.html">~[text:psx.html.admin_tech.storegrades3.system_administrator]</a> &gt;~[text:psx.html.admin_tech.storegrades3.permanently_store_grades1]<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>~[text:psx.html.admin_tech.storegrades3.permanently_store_grades2]</h1><!-- start of content and bounding box -->
+<div class="box-round">
+
+<table class="linkDescList" id="which_grades_table">
+<colgroup>
+    <col/>
+</colgroup>
+<thead>
+<tr>
+    <th>~[text:psx.html.admin_tech.storegrades3.which_grades]</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+<td>
+~[text:psx.html.admin_tech.storegrades3.use_this_final_grade__reporting_term]
+<input type="text" class="psComboBoxWidget required noIndicator" name="storecodefg" id="fieldstorecodefg" caps="1" size="3" ~[getValidation:storedgrades_storecode] />
+<input type="hidden" name="[pref]storecodefg" id="laststorecodefg" value="" size="3"/>
+</td>
+</tr>
+<tr>
+<td>~[text:psx.html.admin_tech.storegrades3.save_with_this_historic_store_code]
+<input type="text" class="required" name="storecode" id="fieldstorecode" caps="1" value="" ~[getValidation:storedgrades_storecode] size="3">
+<input type="hidden" name="[pref]storecode1" id="laststorecode" value="" size="3"/>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<table class="linkDescList" id="enrollment_table">
+<colgroup>
+    <col/>
+</colgroup>
+<thead>
+<tr>
+    <th>~[text:psx.html.admin_tech.storegrades3.exclude_include_class_enrollments]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><input type="checkbox" name="excludeenrolledafter" value="1">~[text:psx.html.admin_tech.storegrades3.exclude_enrollment_records_where_the_student_enrolled_in_the]<input type="text" class="psDateWidget" name="enrolldate" value="00/00/0000" size="10"></td>
+</tr>
+<tr>
+<td><input type="checkbox" name="excludedroppedbefore" value="1">~[text:psx.html.admin_tech.storegrades3.exclude_enrollment_records_where_the_student_dropped_the_cla]<input type="text" class="psDateWidget" name="dropdate" value="00/00/0000" size="10"></td>
+</tr>
+<tr>
+<td><input type="checkbox" name="includeonlyeao" value="1">~[text:psx.html.admin_tech.storegrades3.include_only_enrollment_records_that_are_currently_active_an]<input type="text" class="psDateWidget" name="eaodate" value="00/00/0000" size="10"></td>
+</tr>
+</tbody>
+</table>
+
+<table class="linkDescList" id="PermStorGrad">
+    <colgroup>
+        <col style="width: 360px;"/>
+        <col/>
+    </colgroup>
+    <thead>
+    <tr>
+        <th colspan="2" class="toggle" userprefname="User.PermStorGradFiltToggleState" data-target="filter_tbody">~[text:psx.html.admin_tech.storegrades3.filter_storing_selection]</th>
+    </tr>
+    </thead>
+    <tbody id="filter_tbody">
+    <tr>
+        ~[if.~[x:studsinset]="0"]
+        <td colspan="2"><input type="checkbox" id="student_selection_check" name="usestudentselection" value="true" disabled/>
+        [else]
+        <td colspan="2"><input type="checkbox" id="student_selection_check" name="usestudentselection" value="true"/>
+        [/if]
+        ~[text]psx.html.admin_tech.storegrades3.student_selection,param:~[x:studsinset][/text]
+        </td>
+    </tr>
+    <tr>
+        <td>~[text:psx.html.admin_tech.storegrades3.request_that_grades_be_stored_only_for_a_specific_section]</td>
+        <td><input type="text" name="courseandsection" value="" size="13">~[text:psx.html.admin_tech.storegrades3.coursesection]</td>
+    </tr>
+    <tr id="filter_grade">
+        <td>~[text:psx.html.admin_tech.storegrades3.student_grade_level]</td>
+        <td id="filter_grade_td"></td>
+    </tr>
+    <tr id="filter_track">
+        <td>~[text:psx.html.admin_tech.storegrades3.track]</td>
+        <td><input type="checkbox" id="track_a" name="f_track_a" value="A"/> A
+            &nbsp;&nbsp;<input type="checkbox" id="track_b" name="f_track_b" value="B"/> B
+            &nbsp;&nbsp;<input type="checkbox" id="track_c" name="f_track_c" value="C"/> C
+            &nbsp;&nbsp;<input type="checkbox" id="track_d" name="f_track_d" value="D"/> D
+            &nbsp;&nbsp;<input type="checkbox" id="track_e" name="f_track_e" value="E"/> E
+            &nbsp;&nbsp;<input type="checkbox" id="track_f" name="f_track_f" value="F"/> F
+        </td>
+    </tr>
+    <tr id="filter_exit">
+        <td>~[text:psx.html.admin_tech.storegrades3.student_school_exit_date]</td>
+        <td>
+            ~[text:psx.html.admin_tech.storegrades3.from] <input type="text" id="filter_exitdate_start" class="psDateWidget noformat" name="f_exitdate_start" value="" size="10" ~[getValidation:storedgrades_exitdate_start]/> ~[text:psx.html.admin_tech.storegrades3.to]
+            <input type="text" id="filter_exitdate_end" class="psDateWidget" name="f_exitdate_end" value="" size="10" ~[getValidation:storedgrades_exitdate_end]/>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="linkDescList">
+<colgroup>
+    <col style="width: 23%;"/>
+    <col style="width: 25%;"/>
+    <col style="width: 22%;"/>
+    <col style="width: 30%"/>
+</colgroup>
+<thead>
+<tr>
+<th colspan="2">~[text:psx.html.admin_tech.storegrades3.classes_by_term_length]
+</th>
+<th>~[text:psx.html.admin_tech.storegrades3.store]</th>
+<th>~[text:psx.html.admin_tech.storegrades3._of_course_credit]</th>
+</tr>
+</thead>
+<tbody id="term_tbody">
+<tr class="radiodefault">
+<td  id="term_storedefault_name_~(id)">~[tlist;terms;*storeterms;alternatecolor;sortcmd;portion,&gt;,startday,&gt;]~(name)</td>
+<td  id="term_storedefault_range_~(id)"  firstday="~(firstday;l)" lastday="~(lastday;l)" portion="~(portion)">(~(firstday) - ~(lastday))</td>
+<td>
+  <select name="storeselect"  id="term_~(id)_storedefault" value="0">
+    <option value="0">~[text:psx.html.admin_tech.storegrades3.do_not_store]</option>
+    <option value="1">~[text:psx.html.admin_tech.storegrades3.store_with_credit]</option>
+    <option value="2">~[text:psx.html.admin_tech.storegrades3.store_with_no_credit]</option>
+  </select>
+  </td>
+  <td>
+  <input type="text" class="sg_percentinput noIndicator" disabled="disabled" name="term_~(id)_pct" id="term_~(id)_pctdefault" value="" ~[getValidation:storedgrades_percent] size="6"><label class="sg_grayable gray">%</label>
+</td>
+</tr>
+<tr class="radioall hide">
+<td  id="term_storeall_name_~(id)" >~[tlist;terms;schoolid=~(curschoolid);yearid=~[curserveryearid];alternatecolor;sortcmd;portion,&gt;,startday,&gt;]~(name)</td>
+<td  id="term_storeall_range_~(id)" firstday="~(firstday;l)" lastday="~(lastday;l)" portion="~(portion)">(~(firstday) - ~(lastday))</td>
+<td>
+  <select name="storeselect" id="term_~(id)_storeall" value="0">
+    <option value="0">~[text:psx.html.admin_tech.storegrades3.do_not_store]</option>
+    <option value="1">~[text:psx.html.admin_tech.storegrades3.store_with_credit]</option>
+    <option value="2">~[text:psx.html.admin_tech.storegrades3.store_with_no_credit]</option>
+  </select>
+  </td>
+  <td>
+  <input type="text" class="sg_percentinput noIndicator" disabled="disabled" name="term_~(id)_pctall" id="term_~(id)_pctall" value="" ~[getValidation:storedgrades_percent] size="6"><label class="sg_grayable gray">%</label>
+</td>
+</tr>
+</tbody>
+</table>
+
+<table class="linkDescList">
+<tr>
+<td>
+~[text:psx.html.admin_tech.storegrades3.show_all_terms_explain_text]
+<p>
+~[text:psx.html.admin_tech.storegrades3.show_all_terms]&nbsp;
+	<input type="radio" name="termsradio" value="default" class="radioDivPre" id="radiodefault" checked>~[text:psx.html.admin_tech.storegrades3.no]
+	<input type="radio" name="termsradio" value="all" class="radioDivPre" id="radioall">~[text:psx.html.admin_tech.storegrades3.yes]
+</td>
+</tr>
+</table>
+
+<table class="linkDescList">
+<colgroup>
+    <col style="width: 360px;"/>
+    <col/>
+</colgroup>
+<thead>
+<tr>
+<th colspan="2">~[text:psx.html.admin_tech.storegrades3.options_for_classes_enrolled_at_other_schools]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~[text:psx.html.admin_tech.storegrades3.store_grades_for_classes_enrolled_at]</td>
+<td><select name="storewhichschool"><option value="all">~[text:psx.html.admin_tech.storegrades3.all_schools]<option value="current">~[text:psx.html.admin_tech.storegrades3.this_school_only]</select></td>
+</tr>
+<tr>
+<td>~[text:psx.html.admin_tech.storegrades3.record_the_school_name_of]</td>
+<td><select name="storeschoolname"><option value="current">~[text:psx.html.admin_tech.storegrades3.this_school]<option value="foreign">~[text:psx.html.admin_tech.storegrades3.the_other_school]</select></td>
+</tr>
+</tbody>
+</table>
+
+<table class="linkDescList">
+<colgroup>
+    <col style="width: 25px;"/>
+    <col/>
+</colgroup>
+<thead>
+<tr>
+<th colspan="2">~[text:psx.html.admin_tech.storegrades3.options_for_withholding_credit__only_those_items_checked_can]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><input type="checkbox" name="withhold-attpoints" value="true"></td>
+<td>~[text:psx.html.admin_tech.storegrades3.if_more_than]<input type="text" name="attpointsnumpts" id="fieldattpointsnumpts" value="" size="4">~[text:psx.html.admin_tech.storegrades3.attendance_points_have_accumulated_between_the_dates_of]<input type="text" class="psDateWidget noformat" name="d1" value="00/00/00" size="9">~[text:psx.html.admin_tech.storegrades3.and]<input type="text" class="psDateWidget" name="d2" value="00/00/00" size="9">~[text:psx.html.admin_tech.storegrades3.then_give_the_student_a_grade_of]<input type="text" name="attpointsnograde" id="fieldattpointsnograde" value="NG" size="4">~[text:psx.html.admin_tech.storegrades3.and_store_the_real_grade_in_the_teacher_comment_field_with_t]<input type="text" name="attpointscomment" id="fieldattpointscomment" value="~[text:psx.html.admin_tech.storegrades3.credit_withheld_due_to_excessive_attendance_points]" size="64">
+<input type="hidden" name="[pref]attpointsnumpts" id="lastattpointsnumpts" value="" size="4"/>
+<input type="hidden" name="[pref]attpointsnograde" id="lastattpointsnograde" value="NG" size="4"/>
+<input type="hidden" name="[pref]attpointscomment" id="lastattpointscomment" value="~[text:psx.html.admin_tech.storegrades3.credit_withheld_due_to_excessive_attendance_points]" size="64"/>
+</td>
+</tr>
+</tbody>
+</table>
+
+<table class="linkDescList" id="PermStorGradAdvOpt">
+<colgroup>
+    <col style="width: 360px;"/>
+    <col/>
+</colgroup>
+<thead>
+<tr>
+    <th id="advanced_options_th" colspan="2" class="collapsedHeaderPeek toggle" userprefname="User.PermStorGradAdvancedOptionsToggleState" data-target="advanced_options_tbody" data-text-collapsed="~[text:psx.html.admin_tech.storegrades3.advanced_potential_and_earned_credit_options]" data-text-expanded="~[text:psx.html.admin_tech.storegrades3.advanced_potential_and_earned_credit_options]">
+        ~[text:psx.html.admin_tech.storegrades3.advanced_potential_and_earned_credit_options]
+    </th>
+</tr>
+</thead>
+<tbody id="advanced_options_tbody">
+<tr>
+    <td>~[text:psx.html.admin_tech.storegrades3.when_storing_with_credit]</td>
+    <td>
+        <select id="credit_type_select" name="credittypetoaward" onchange="updateSGCollapsedHeaderText(this, '#advanced_options_th', ['0']);">
+            <option value="0" selected>~[text:psx.html.admin_tech.storegrades3.store_both_earned_and_potential_credit]</option>
+            <option value="1">~[text:psx.html.admin_tech.storegrades3.store_potential_credit_only]</option>
+            <option value="2">~[text:psx.html.admin_tech.storegrades3.store_earned_credit_only]</option>
+        </select>
+    </td>
+</tr>
+</tbody>
+</table>
+
+<table class="linkDescList" id="PermStorGradVarCredit">
+<colgroup>
+    <col style="width: 360px;"/>
+    <col/>
+</colgroup>
+<thead>
+<tr>
+<th colspan="2" class="toggle" userprefname="User.PermStorGradVarCreditFiltToggleState" data-target="variable_credit_tbody">~[text:psx.html.admin_tech.storegrades3.variale_credit_storing_preferences]</th>
+</tr>
+</thead>
+<tbody id="variable_credit_tbody">
+<tr>
+<td>~[text:psx.html.admin_tech.storegrades3.store_these_credit_hours]</td>
+<td><select name="whichVarCreditToStore"><option value="both">~[text:psx.html.admin_tech.storegrades3.awarded_and_attempted]<option value="awarded">~[text:psx.html.admin_tech.storegrades3.awarded]<option value="attempted">~[text:psx.html.admin_tech.storegrades3.attempted]<option value="none">~[text:psx.html.admin_tech.storegrades3.none]</select></td>
+</tr>
+<tr>
+<td>~[text]psx.html.admin_tech.storegrades3.store_this_when_teacher_has_not_entered_variable_credit_hours[/text]</td>
+<td><select name="varCreditNullSubstitute"><option value="current">~[text:psx.html.admin_tech.storegrades3.credit_hours_for_course_gradescale]<option value="zero">0</select></td>
+</tr>
+<tr>
+<td>~[text:psx.html.admin_tech.storegrades3.round_or_truncate] </td>
+<td><select name="varCreditRndOrTruncate"><option value="rnd">~[text:psx.html.admin_tech.storegrades3.round] <option value="truncate">~[text:psx.html.admin_tech.storegrades3.truncate]</select></td>
+</tr>
+<tr>
+<td>~[text:psx.html.admin_tech.storegrades3.number_of_decimal_places_in_variable_credit_hours] </td>
+<td><select name="varCreditNumDecimalPlaces"><option value="zero">0<option value="one">1<option value="two">2<option value="three">3<option value="four">4</select>~[text:psx.html.admin_tech.storegrades3.decimal_places]</td> 
+</tr>
+</tbody>
+</table>
+<div class="button-row"><INPUT TYPE="hidden" NAME="ac" VALUE="prim"><INPUT TYPE="hidden" NAME="ac" VALUE="sg_storegrades"><input type="hidden" name="operationname" value="Permanently Store Grades"><button type="submit" id="btnStoreGrades" name="btnStoreGrades">~[text:psx.html.admin_tech.storegrades3.store_current_grades]</button></div>
+</div>
+<!-- end of content of bounding box -->
+
+<script type="text/javascript">
+$j('[name="storewhichschool"]').val('current');
+</script>
+
+
+
+~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

@@ -1,0 +1,36 @@
+WITH s AS (
+SELECT s.student_number, s.first_name, s.last_name, s.home_phone, s.street, s.city, s.state, s.zip, s.ethnicity, s.gender
+FROM students@PODS s WHERE s.home_phone = '111-111-1111'
+)
+SELECT student_number, ROUND((count(*)/9)*100,2)
+FROM (
+SELECT s.student_number
+FROM s WHERE s.home_phone = '111-111-1111'
+UNION ALL
+SELECT s.student_number
+FROM s WHERE upper(s.first_name) LIKE UPPER('%ORA%')
+UNION ALL
+SELECT s.student_number
+FROM s WHERE upper(s.last_name) LIKE upper('%Razz%')
+UNION ALL
+SELECT s.student_number
+FROM s WHERE upper(s.street) LIKE upper('%PowErs%')
+UNION ALL
+SELECT s.student_number
+FROM s WHERE upper(s.city) LIKE upper('%rmo%')
+UNION ALL
+SELECT s.student_number
+FROM s WHERE upper(s.state) LIKE upper('%SC%')
+UNION ALL
+SELECT s.student_number
+FROM s WHERE s.zip LIKE '%063%'
+UNION ALL
+SELECT s.student_number
+FROM s WHERE upper(s.ethnicity) LIKE upper('%B%')
+UNION ALL
+SELECT s.student_number
+FROM s WHERE upper(s.gender) LIKE upper('%f%')
+)
+GROUP BY student_number
+ORDER BY  ROUND((count(*)/9)*100,2) desc;
+

@@ -1,0 +1,11 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j.ajax({
+        type    : 'POST',
+        url     : 's_nc_staffinfo.html?frn=204~([teachers]users_dcid)',
+        success : function(data, x, xhrobj) {
+            $j('.box-round table').first().append(data);
+        }
+    });
+});
+</script>

@@ -1,0 +1,27 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('div.box-round:first table:first').hide();
+    $j('div.box-round:first table:first tr').removeAttr('bgcolor');
+    $j('div.box-round:first table:first tr:lt(1)').attr('bgcolor','#f6f6f6');
+    $j('div.box-round:first table:first tr:gt(0)').each( function(index) {
+        var evenodd = index%2;
+        if (evenodd === 0) {
+            $j(this).attr('bgcolor','#d7ebf4');
+        }
+    });
+    //$j('div.box-round:first table:first').addClass('linkDescList');
+    
+    var currentGroup = ~[tlist_sql;SELECT users.groupvalue FROM schoolstaff INNER JOIN users ON users.dcid = schoolstaff.users_dcid WHERE schoolstaff.id = ~[x:userid]]~(1;t)[/tlist_sql];
+    if (currentGroup === 1) {
+        $j('div.box-round:first').empty().append('<table id="group1data"><tr><td>You do not have security privileges to access this page</td></tr></table>');
+    } else if (currentGroup >= 150) {
+        $j('div.box-round:first table tr:gt(1)').each( function() {
+            var groupNumber = parseInt($j(this).children().first().text());
+            if (groupNumber < 150) {
+                $j(this).remove();
+            }
+        });
+    };
+    $j('div.box-round:first table:first').show();
+});
+</script>

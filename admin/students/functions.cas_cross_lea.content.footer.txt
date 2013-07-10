@@ -1,0 +1,7 @@
+<script type="text/javascript">
+    $j(document).ready( function() {
+        $j('.box-round table tr').removeClass('oddRow').removeClass('evenRow');
+        $j('.box-round table').addClass('linkDescList');
+        $j('.box-round table tr:eq(5)').after('<tr><td><a href="/admin/students/enrollinotherlea.html?frn=~(studentfrn)">Enroll In A Class At Another LEA</a></td></tr>');
+    });
+</script>

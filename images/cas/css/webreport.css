@@ -1,0 +1,899 @@
+@media screen, print {
+  BODY {
+    font-size   : 9pt;
+    font-family : Arial, serif;
+    }
+
+  .counterreset {
+    counter-reset : page 0;
+    display       : none;
+    }
+
+  .landscape {
+    width : 758pt;
+    }
+
+  .portrait {
+    width : 534pt;
+    }
+
+  table {
+    page-break-inside : auto;
+    }
+
+  tr {
+    page-break-inside : avoid;
+    page-break-after  : auto;
+    }
+
+  thead {
+    display : table-header-group;
+    }
+
+  tfoot {
+    display : table-footer-group;
+    }
+
+  .tabledisplay {
+    display : table;
+    }
+
+  .bordered {
+    border-collapse : collapse;
+    border          : 1pt solid #000;
+    }
+
+  .boxround {
+    border-radius : 8px;
+    border        : 1pt solid #000;
+    }
+
+  .col2of2 {
+    width : 220pt;
+    float : right;
+    }
+
+  .gpalabel {
+    width : 140pt;
+    float : left;
+    }
+
+  .gpadata {
+    width : 120pt;
+    float : left;
+    }
+
+  .outsideborder {
+    border-collapse : collapse;
+    border          : 1pt solid #000;
+    width           : 534pt;
+    }
+
+  .outsideboder td {
+    padding : 5pt;
+    }
+
+  .infolabelleft {
+    float      : left;
+    width      : 40pt;
+    text-align : right;
+    }
+
+  .headerlabelright {
+    float         : right;
+    width         : 50pt;
+    padding-right : 5pt;
+    text-align    : right;
+    }
+
+  .headerdataright {
+    float         : right;
+    width         : 30pt;
+    padding-right : 5pt;
+    text-align    : left;
+    }
+
+  .infodataleft {
+    float        : left;
+    width        : 216pt;
+    padding-left : 5pt;
+    text-align   : left;
+    }
+
+  .infolabelright {
+    float      : left;
+    width      : 120pt;
+    text-align : right;
+    }
+
+  .grouptitle {
+    font-weight : 700;
+    width       : 267pt;
+    }
+
+  .infodataright {
+    float        : left;
+    width        : 90pt;
+    padding-left : 5pt;
+    text-align   : left;
+    }
+
+  .signature {
+    float : right;
+    width : 300pt;
+    }
+
+  .studentdata {
+    display      : table;
+    width        : 524pt;
+    margin-left  : auto;
+    margin-right : auto;
+    border-style : solid none none;
+    border-width : thin;
+    }
+
+  .creditsremaining {
+    float        : left;
+    width        : 245pt;
+    padding-left : 5pt;
+    }
+
+  .award {
+    float   : left;
+    width   : 255pt;
+    padding : 0 0 0 5pt;
+    }
+
+  .testheader {
+    display       : table-cell;
+    font-weight   : 700;
+    border-bottom : 1pt solid #000;
+    text-align    : center;
+    }
+
+  .testname {
+    float       : left;
+    width       : 180pt;
+    font-style  : italic;
+    font-weight : 600;
+    }
+
+  .testscorename {
+    float   : left;
+    width   : 200pt;
+    padding : 0 0 0 5pt;
+    }
+
+  .testdate {
+    float       : right;
+    width       : 180pt;
+    text-align  : right;
+    font-style  : italic;
+    font-weight : 600;
+    }
+
+  .testscoredesc {
+    float   : left;
+    width   : 170pt;
+    padding : 0 0 0 10pt;
+    }
+
+  .testscore {
+    float      : left;
+    width      : 74pt;
+    text-align : center;
+    }
+
+  .page1header {
+    text-align   : center;
+    margin-left  : auto;
+    margin-right : auto;
+    width        : 524pt;
+    }
+
+  .pagenumber {
+    float             : right;
+    width             : 30pt;
+    padding-right     : 5pt;
+    text-align        : left;
+    counter-increment : pages;
+    }
+
+  .pagenumber:after {
+    content : counter(pages);
+    }
+
+  .headerdate {
+    float        : left;
+    width        : 80pt;
+    padding-left : 5pt;
+    text-align   : left;
+    }
+
+  .coursename {
+    float : left;
+    width : 130pt;
+    }
+
+  .coursenumber {
+    float : left;
+    width : 60pt;
+    }
+
+  .gradeyear {
+    float        : left;
+    width        : 200pt;
+    border-color : #000;
+    border-style : solid hidden;
+    border-width : 1pt;
+    }
+
+  .gyspan {
+    width : 80pt;
+    float : left;
+    }
+
+  .lettergrade {
+    float      : left;
+    width      : 30pt;
+    text-align : center;
+    }
+
+  .flag {
+    float : left;
+    width : 40pt;
+    }
+
+  .gradelabel {
+    float : left;
+    width : 80pt;
+    }
+
+  .yearabbr {
+    float : left;
+    width : 100pt;
+    }
+
+  .courseheadergroup {
+    width        : 250pt;
+    float        : left;
+    font-weight  : 700;
+    border-style : solid hidden;
+    border-width : thin;
+    }
+
+  .markheadergroup {
+    width        : 30pt;
+    float        : left;
+    border-style : solid hidden hidden;
+    border-width : thin;
+    }
+
+  .pointsgroup {
+    width        : 110pt;
+    float        : left;
+    border-style : solid hidden hidden;
+    border-width : thin;
+    }
+
+  .creditsgroup {
+    width        : 50pt;
+    float        : left;
+    border-style : solid hidden hidden;
+    border-width : thin;
+    }
+
+  .flagsgroup {
+    width        : 40pt;
+    float        : left;
+    border-style : solid hidden hidden;
+    border-width : thin;
+    }
+
+  .prevschooldate {
+    width      : 80pt;
+    text-align : center;
+    }
+
+  .theader {
+    border-bottom : 1pt solid #000;
+    }
+
+  .attendanceyear {
+    width      : 45pt;
+    text-align : center;
+    }
+
+  .attendancenum {
+    width      : 60pt;
+    text-align : left;
+    }
+
+  .dosename {
+    font-weight : 600;
+    clear       : both;
+    font-style  : italic;
+    }
+
+  .dosedate {
+    float   : left;
+    padding : 0 5pt;
+    }
+
+  .gradesgroup {
+    margin-left  : auto;
+    margin-right : auto;
+    width        : 524pt;
+    display      : table-row;
+    }
+
+  .headerbordered {
+    font-size    : 0;
+    border-style : hidden hidden solid;
+    border-width : thin;
+    }
+
+  .footerbordered {
+    font-size    : 0;
+    border-style : solid hidden hidden;
+    border-width : thin;
+    }
+
+  .courseheader {
+    width : 200pt;
+    float : left;
+    }
+
+  .cellspacing {
+    width : 5pt;
+    float : left;
+    }
+
+  .topborder {
+    border-style : solid none none;
+    border-width : 1pt;
+    }
+
+  .tableheader {
+    font-weight : 700;
+    display     : table-cell;
+    text-align  : center;
+    height      : 24pt;
+    }
+
+  th {
+    vertical-align : bottom;
+    }
+
+  .gslabel {
+    font-weight : 700;
+    text-align  : center;
+    padding     : 10pt 0 0;
+    }
+
+  .gsgrouping {
+    padding : 10pt 0 0;
+    }
+
+  .gsnumeric {
+    width : 42pt;
+    }
+
+  .indextable td, .gstable td {
+    vertical-align : top;
+    padding        : 0;
+    }
+
+  .indextitle {
+    font-weight : 700;
+    width       : 100%;
+    padding     : 10pt 0 0;
+    }
+
+  .indexitemlabel {
+    width   : 40pt;
+    padding : 0;
+    }
+
+  .indexitemvalue {
+    width   : 130pt;
+    padding : 0;
+    }
+
+  .indexflagvalue {
+    width : 500pt;
+    }
+
+  .indexacademiclabel {
+    width      : 5pt;
+    text-align : center;
+    }
+
+  .indexacademic {
+    width : 160pt;
+    }
+
+  .indexeoclabel {
+    width : 120pt;
+    }
+
+  .rightheader {
+    float      : right;
+    width      : 240pt;
+    text-align : left;
+    }
+
+  .leftheader {
+    float      : left;
+    width      : 200pt;
+    text-align : left;
+    }
+
+  .header {
+    font-size   : 18px;
+    font-weight : 700;
+    }
+
+  .header2 {
+    font-size   : 16px;
+    font-weight : 700;
+    }
+
+  .header3 {
+    font-size   : 14px;
+    font-weight : 700;
+    }
+
+  .schoolleftdata {
+    float       : left;
+    font-weight : 700;
+    width       : 180pt;
+    margin      : 3pt 0;
+    }
+
+  .rctitle {
+    font-size   : 18px;
+    font-weight : 700;
+    text-align  : left;
+    }
+
+  .rcabsences {
+    font-weight : 700;
+    float       : left;
+    width       : 130pt;
+    }
+
+  .rcabsencecount {
+    font-weight : 700;
+    float       : left;
+    width       : 60pt;
+    }
+
+  .rcgradetable {
+    border-collapse : collapse;
+    width           : 100%;
+    }
+
+  .rcdate {
+    font-size   : 14px;
+    font-weight : 700;
+    text-align  : left;
+    }
+
+  .rcstudent {
+    font-size   : 16px;
+    font-weight : 700;
+    text-align  : left;
+    float       : left;
+    width       : 140pt;
+    }
+
+  .rcstudentno {
+    font-size   : 16px;
+    font-weight : 700;
+    text-align  : right;
+    float       : right;
+    width       : 60pt;
+    }
+
+  .rcgradelabel {
+    float       : left;
+    width       : 40pt;
+    font-weight : 400;
+    margin      : 3pt 0;
+    }
+
+  .rcgradelevel {
+    float       : left;
+    font-weight : 700;
+    width       : 45pt;
+    margin      : 3pt 0;
+    }
+
+  .rchomeroom {
+    float       : left;
+    font-weight : 700;
+    width       : 55pt;
+    margin      : 3pt 0;
+    }
+
+  .rccoursebox {
+    vertical-align : top;
+    width          : 126pt;
+    border-right   : 2pt solid #000;
+    padding        : 2pt;
+    }
+
+  .rcstorecodelabel {
+    float : left;
+    width : 30pt;
+    }
+
+  .rcdatelabel {
+    text-align : center;
+    }
+
+  .rcgradebox {
+    vertical-align : top;
+    border         : 1pt solid #000;
+    width          : 58pt;
+    padding        : 2pt;
+    }
+
+  .rccommentbox {
+    vertical-align : top;
+    padding        : 2pt;
+    }
+
+  .rcgrade {
+    float : left;
+    width : 28pt;
+    }
+
+  .rcstudaddress {
+    font-weight : 400;
+    }
+
+  .signaturelabel {
+    float  : left;
+    margin : 30pt 0 0;
+    }
+
+  .signatureline {
+    float         : left;
+    border-bottom : 1pt solid #000;
+    width         : 140pt;
+    margin        : 30pt 0 0;
+    }
+
+  .messagelabel {
+    font-size : 11pt;
+    margin    : 0 0 5pt;
+    }
+
+  .apheader {
+    border-radius : 8pt;
+    border        : 1pt solid #000;
+    width         : 100%;
+    }
+
+  .aptitle {
+    font-weight : 700;
+    font-size   : 14pt;
+    }
+
+  .apstudentname {
+    font-weight : 700;
+    font-size   : 14pt;
+    width       : 252pt;
+    float       : left;
+    padding     : 2pt;
+    }
+
+  .appupilinfo {
+    float   : left;
+    padding : 0 3pt;
+    }
+
+  .apclassabsencelabel {
+    float       : left;
+    line-height : 36pt;
+    height      : 24pt;
+    font-weight : 700;
+    padding     : 0 3pt;
+    }
+
+  .absentbox {
+    float      : left;
+    width      : 40pt;
+    text-align : center;
+    border     : 1pt solid #000;
+    }
+
+  .absencetotals {
+    width : 84pt;
+    float : left;
+    }
+
+  .abstenttitle {
+    float       : left;
+    width       : 41pt;
+    font-weight : 700;
+    text-align  : center;
+    }
+
+  .appupiltitle {
+    font-weight : 700;
+    width       : 54pt;
+    float       : left;
+    }
+
+  .apcourselabel {
+    font-size : 12pt;
+    float     : left;
+    }
+
+  .apcourseinfo {
+    font-size   : 12pt;
+    font-weight : 700;
+    float       : left;
+    padding     : 0 5pt;
+    }
+
+  .appupilnumber {
+    float : left;
+    width : 54pt;
+    }
+
+  .apcol1of3 {
+    float       : left;
+    width       : 180pt;
+    height      : 30pt;
+    line-height : 40pt;
+    padding     : 5pt;
+    }
+
+  .apcol2of3 {
+    float      : left;
+    width      : 360pt;
+    text-align : center;
+    padding    : 5pt;
+    }
+
+  .apcol3of3 {
+    float      : right;
+    width      : 100pt;
+    font-size  : 7pt;
+    text-align : right;
+    padding    : 5pt;
+    }
+
+  .assignmenttable {
+    border-bottom   : 2pt solid #000;
+    width           : 100%;
+    border-collapse : collapse;
+    }
+
+  .assignmentname {
+    width      : 108pt;
+    text-align : left;
+    }
+
+  .assignmenthalf {
+    width      : 36pt;
+    text-align : center;
+    }
+
+  .assignmentdate {
+    width      : 54pt;
+    text-align : center;
+    }
+
+  .assignmentheader {
+    font-weight    : 700;
+    border-bottom  : 2pt solid #000;
+    vertical-align : bottom;
+    }
+
+  .assignmentrow {
+    border-style : solid hidden;
+    border-width : 1pt;
+    }
+
+  .apsummaryname {
+    width   : 162pt;
+    padding : 0;
+    }
+
+  .apcategoryname {
+    text-align : left;
+    }
+
+  .apsummaryinfo {
+    text-align : center;
+    width      : 100pt;
+    padding    : 0;
+    }
+
+  .apsummaryterm {
+    font-size   : 10pt;
+    font-weight : 700;
+    float       : left;
+    }
+
+  .apsummarytitle {
+    font-size : 12pt;
+    }
+
+  .apsummarycategories {
+    margin-left     : auto;
+    margin-right    : auto;
+    width           : 500pt;
+    border-collapse : collapse;
+    border-bottom   : 2pt solid #000;
+    }
+
+  .apsummarytable {
+    border-collapse : collapse;
+    float           : left;
+    }
+
+  .apsummarytable td {
+    border : 1pt solid #000;
+    }
+
+  .apsummarycategory {
+    width : 94pt;
+    }
+
+  .apsummaryavg {
+    width      : 94pt;
+    text-align : center;
+    }
+
+  .apsummarylabel2 {
+    width       : 270pt;
+    text-align  : right;
+    float       : left;
+    font-weight : 700;
+    padding     : 0 3pt 0 0;
+    }
+
+  .apsignaturelabel {
+    width       : 84pt;
+    font-weight : 700;
+    float       : left;
+    text-align  : right;
+    height      : 25pt;
+    line-height : 50pt;
+    }
+
+  .apsignatureline {
+    width         : 280pt;
+    border-bottom : 1pt solid #000;
+    float         : left;
+    height        : 30pt;
+    }
+
+  .teachermessagelabel {
+    float       : left;
+    width       : 140pt;
+    text-align  : right;
+    font-weight : 700;
+    }
+
+  .teachermessage {
+    float  : left;
+    width  : 478pt;
+    border : 1pt solid #000;
+    }
+
+  .pageNum {
+    float             : left;
+    counter-increment : page;
+    }
+
+  .clearfix:after {
+    clear       : both;
+    content     : ".";
+    display     : block;
+    height      : 0;
+    line-height : 0;
+    visibility  : hidden;
+    }
+
+  .clearfix {
+    display : inline-block;
+    }
+
+  html[xmlns] .clearfix {
+    display : block;
+    }
+
+  * html .clearfix {
+    height : 1%;
+    }
+
+  .pagewidth, .gstable, .rcgroup, .courseinfo {
+    width : 100%;
+    }
+
+  .halfpagecol, .col1of2 {
+    width : 262pt;
+    float : left;
+    }
+
+  .schoolname, .rcparenttitle, .apsummarytable thead {
+    font-weight : 700;
+    }
+
+  .weightedpoints, .unweightedpoints, .credithours {
+    float      : left;
+    width      : 50pt;
+    text-align : center;
+    }
+
+  .gradegroup, .gradesheaderrow {
+    display : table-row;
+    }
+
+  .schoolleftlabel, .rchomeroomlabel {
+    float       : left;
+    width       : 60pt;
+    font-weight : 400;
+    margin      : 3pt 0;
+    }
+
+  .principalsig, .pageLabel {
+    float : left;
+    }
+
+  .parentsig, .apclassabsence, .apparentdate {
+    float : right;
+    }
+
+  #spinner {
+    position    : fixed;
+    top         : 50%;
+    left        : 50%;
+    height      : 400px;
+    width       : 700px;
+    margin-top  : -200px;
+    margin-left : -350px;
+    }
+
+  .prevschoolname, .attendanceschoolname {
+    width : 180pt;
+    }
+
+  .prevschoolgrade, .attendanceschool, .attendancegrade {
+    width      : 50pt;
+    text-align : center;
+    }
+
+  .spacer, .gsgrade, .indexhyphen, .gsequal {
+    width : 5pt;
+    }
+
+  .hidden, .colhidden, article {
+    display : none;
+    }
+  }
+
+@media print {
+  .noprint, #legal p {
+    display : none;
+    }
+  }
+
+@media screen {
+  .noprint {
+    color : red;
+    }
+
+  #legal p {
+    color       : #999;
+    font-family : Arial, sans-Serif;
+    font-size   : 11px;
+    }
+  }

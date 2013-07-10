@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- non framed -->
+<head>
+<title>~[if.~(rn)=-99]~[text:psx.html.admin_entrycodes.edit.new][else]~[text:psx.html.admin_entrycodes.edit.edit][/if] Code Definition</title>
+~[wc:UI_js_includes]
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+
+<form action="~[referer]" method="POST">
+~[wc:admin_header_css]
+<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_entrycodes.edit.start_page]</a> &gt;
+<a href="/admin/district/home.html" target="_top">~[text:psx.html.admin_entrycodes.edit.district_setup]</a> &gt;
+<a href="/admin/cas/ec_codes/home.html">Code Category Definition</a> &gt;
+<a href="~[referer]">Code Definition for ~[gpv:cat]</a> &gt;
+~[if.~(rn)=-99]New[else]Edit[/if] Code Definition<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<h1>~[if.~(rn)=-99]~[text:psx.html.admin_entrycodes.edit.new1][else]~[text:psx.html.admin_entrycodes.edit.edit1][/if] Code Definition</h1><!-- start of content and bounding box -->
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr bgcolor="#f6f6f6">
+<td class="bold">~[text:psx.html.admin_entrycodes.edit.option]</td>
+<td class="bold">~[text:psx.html.admin_entrycodes.edit.value]</td>
+</tr>
+<tr bgcolor="#edf3fe">
+<td class="bold">Code shortname</td>
+<td><input type="text" name="[gen]name" value="" size="15"></td>
+</tr>
+<tr>
+<td class="bold">Code Meaning</td>
+<td><input type="text" name="[gen]value" value="" size="40"></td>
+</tr>
+<tr bgcolor="#edf3fe">
+<td class="bold">~[text:psx.html.admin_entrycodes.edit.sort_order]</td>
+<td><input type="text" name="[gen]sortorder" size="4" value=""></td>
+</tr>
+</table>
+
+<br>
+
+<div class="button-row"><input type="hidden" name="ac" value="prim"><input type="hidden" name="[gen]cat" value="~[gpv:cat]">~(deletebutton2)~[submitbutton]</div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_css]
+</form>
+
+</body>
+</html><!-- non framed -->

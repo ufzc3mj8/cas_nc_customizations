@@ -1,0 +1,21 @@
+var loading_overlay = $('#loading_overlay');
+                loading_overlay.ajaxStart(function () {
+                    loading_overlay.show();
+                });
+                loading_overlay.ajaxStop(function () {
+                    loading_overlay.hide();
+                });
+36:12
+<div id="loading_overlay"></div>
+36:28
+#loading_overlay {
+    display: hidden;
+    position: fixed;
+    top: 0;
+    background: rgb(0, 0, 0) transparent;
+    background-color: rgba(0, 0, 0, 0.9);
+    height: 100%;
+    width: 100%;
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+
+}

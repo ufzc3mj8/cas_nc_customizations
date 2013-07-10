@@ -1,0 +1,37 @@
+[
+~[tlist_sql;
+with stustatus as
+(select stu.dcid sdcid, stu.id id, count(*) cnt
+from students stu
+inner join reenrollments re on re.studentid = stu.id
+where stu.grade_level >= 0 and re.grade_level >= 0
+--and re.entrydate >= to_date('6/1/'||(to_char(sysdate,'YYYY')-1),'MM/DD/YYYY')
+group by stu.dcid, stu.id)
+
+select stustatus.sdcid studcid, lepdata.lep_status_id lep, case when lepdata.lep_status_id is null then 'Initial' 
+ when lepdata.lep_status_id in (1,2) and to_date(wiclass.test_dte, 'MM/DD/YYYY') 
+  between to_date('6/1/'||(to_char(sysdate,'YYYY')-1),'MM/DD/YYYY') 
+  and to_date('12/31/'||(to_char(sysdate,'YYYY')-1),'MM/DD/YYYY') then 'Reclassification'
+ when lepdata.lep_status_id in (4,5) then 'Initial' 
+  when lepdata.lep_status_id = 3 
+    and to_date(wiclass.test_dte, 'MM/DD/YYYY') 
+      not between to_date('6/1/'||(to_char(sysdate,'YYYY')-1),'MM/DD/YYYY') 
+      and to_date('12/31/'||(to_char(sysdate,'YYYY')-1),'MM/DD/YYYY')
+    and (accwork.school_year_id <> 21 or accwork.school_year_id is null)
+    and (stustatus.cnt > 0 or stustatus.cnt is null)
+  then 'Instructional Update'  
+ end calcclass
+from stustatus
+left outer join s_nc_wapt_sheet_items wiclass on stustatus.sdcid = wiclass.studentsdcid
+left outer join s_nc_lep_data lepdata on lepdata.studentsdcid = stustatus.sdcid
+left outer join s_nc_access_work accwork on accwork.studentsdcid = stustatus.sdcid
+where stustatus.sdcid = ~[gpv:studcid]
+]
+{
+"studcid" : "~(studcid;t)",
+"lep" : "~(lep;t)",
+"calcclass" : "~(calcclass;t)"
+}
+[/tlist_sql]
+{}
+]

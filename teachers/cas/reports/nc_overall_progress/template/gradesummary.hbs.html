@@ -1,0 +1,36 @@
+<table class="apsummarycategories">
+  <thead class="assignmentheader">
+    <tr>
+      <th colspan="4" class="apsummarytitle">Summary</th>
+    </tr>
+    <tr>
+      <th class="apcategoryname">Category</th>
+      <th>Average</th>
+      <th>Total Points Possible</th>
+      <th>Total Points Earned</th>
+    </tr>
+  </thead>
+  <tbody>
+{{#each academic}}
+  {{#if name}}
+  <tr class="assignmentrow">
+    <td class="apsummaryname">{{name}}</td>
+    <td class="apsummaryinfo">({{average}}%)</td>
+    <td class="apsummaryinfo">{{tpp}}</td>
+    <td class="apsummaryinfo">{{tpe}}</td>
+  </tr>
+  {{/if}}
+{{/each}}
+{{#each categories}}
+  {{#if name}}
+  <tr class="assignmentrow">
+    <td class="apsummaryname">&nbsp;&nbsp;&nbsp;&nbsp;{{name}}</td>
+    <td class="apsummaryinfo">({{average}}%)</td>
+    <td class="apsummaryinfo">{{tpp}}</td>
+    <td class="apsummaryinfo">{{tpe}}</td>
+  </tr>
+  {{/if}}
+{{/each}}
+  </tbody>
+</table>
+<p></p>

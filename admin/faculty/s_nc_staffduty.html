@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Staff Duty Details</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+<form action="/admin/changesrecorded.white.html" method="POST">
+~[wc:admin_header_frame_css]
+<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_teacherschedules.sched.start_page]</a>
+&gt; Staff Duty Details
+<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[if.~[gpv:dispic]=1]<span class="account-photo">~[facultytitlephoto]</span>[/if]
+<h1>Staff Duty Details - ~([users]lastfirst)</h1>
+
+<!-- start of content and bounding box -->
+<div class="box-round">
+
+<table border="0" cellspacing="0" cellpadding="4" class="fourDTable">
+<tr>
+<tr><td><label>Direct Student Contact</label></td><td colspan="3"><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]DIRECT_STUDENT_CONTACT_IND" value="1"></td></tr>
+<tr><td><label>SCHOOL_ID</label></td><td><select name="[USERS.S_NC_STAFFDUTY]SCHOOL_ID"><option value=""> Select School</option>
+	   ~[tlist_sql;
+        		   SELECT school_number, name
+        		   FROM schools
+        		   WHERE school_number != 999999
+       			   ORDER BY name]
+        <option value="~(school_number)">~(name)</option>
+		[/tlist_sql]
+		</select></td></tr>
+<tr><td><label>STAFF_DUTY_CODE</label></td><td colspan="3"><input type="text" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_CODE" value="" size="11" maxlength="6" class="VARCHAR2"></td></tr>
+<tr><td><label>STAFF_DUTY_DURATION_PERCENT</label></td><td colspan="3"><input type="integer" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_DURATION_PERCENT" value="" size="5" maxlength="3" class="VARCHAR2"></td></tr>
+<tr><td><label>STAFF_DURATION_TIME</label></td><td colspan="3"><input type="text" name="[USERS.S_NC_STAFFDUTY]STAFF_DURATION_TIME" value="" size="8" maxlength="6" class="VARCHAR2"></td></tr>
+<td><label>STAFF_DUTY_MON</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_MON" value="1"></td>
+<td><label>MON_PERIOD</label></td><td><select name="[USERS.S_NC_STAFFDUTY]MON_PERIOD"><option value="">0
+    <option value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7<option value="8">8<option value="9">9<option value="10">10
+    <option value="11">11<option value="12">12<option value="13">13<option value="14">14<option value="15">15<option value="16">16<option value="17">17<option value="18">18<option value="19">19<option value="20">20</select></td></tr>
+<tr><td><label>STAFF_DUTY_TUE</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_TUE" value="1"></td>
+<td><label>TUE_PERIOD</label></td><td><select name="[USERS.S_NC_STAFFDUTY]TUE_PERIOD"><option value="">0
+    <option value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7<option value="8">8<option value="9">9<option value="10">10
+    <option value="11">11<option value="12">12<option value="13">13<option value="14">14<option value="15">15<option value="16">16<option value="17">17<option value="18">18<option value="19">19<option value="20">20</select></td></tr>
+<tr><td><label>STAFF_DUTY_WED</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_WED" value="1"></td>
+<td><label>WED_PERIOD</label></td><td><select name="[USERS.S_NC_STAFFDUTY]WED_PERIOD"><option value="">0
+    <option value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7<option value="8">8<option value="9">9<option value="10">10
+    <option value="11">11<option value="12">12<option value="13">13<option value="14">14<option value="15">15<option value="16">16<option value="17">17<option value="18">18<option value="19">19<option value="20">20</select></td></tr>
+<tr><td><label>STAFF_DUTY_THU</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_THU" value="1"></td>
+<td><label>THU_PERIOD</label></td><td><select name="[USERS.S_NC_STAFFDUTY]THU_PERIOD"><option value="">0
+    <option value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7<option value="8">8<option value="9">9<option value="10">10
+    <option value="11">11<option value="12">12<option value="13">13<option value="14">14<option value="15">15<option value="16">16<option value="17">17<option value="18">18<option value="19">19<option value="20">20</select></td></tr>
+<option value="20">20</select></td></tr>
+<tr><td><label>STAFF_DUTY_FRI</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_FRI" value="1"></td>
+<td><label>FRI_PERIOD</label></td><td><select name="[USERS.S_NC_STAFFDUTY]FRI_PERIOD"><option value="">0
+    <option value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7<option value="8">8<option value="9">9<option value="10">10
+    <option value="11">11<option value="12">12<option value="13">13<option value="14">14<option value="15">15<option value="16">16<option value="17">17<option value="18">18<option value="19">19<option value="20">20</select></td></tr>
+<tr><td><label>STAFF_DUTY_SAT</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_SAT" value="1"></td>
+<td><label>SAT_PERIOD</label></td><td><select name="[USERS.S_NC_STAFFDUTY]SAT_PERIOD"><option value="">0
+    <option value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7<option value="8">8<option value="9">9<option value="10">10
+    <option value="11">11<option value="12">12<option value="13">13<option value="14">14<option value="15">15<option value="16">16<option value="17">17<option value="18">18<option value="19">19<option value="20">20</select></td></tr>
+<tr><td><label>STAFF_DUTY_SUN</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFDUTY]STAFF_DUTY_SUN" value="1"></td>
+<td><label>SUN_PERIOD</label></td><td><select name="[USERS.S_NC_STAFFDUTY]SUN_PERIOD"><option value="">0
+    <option value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7<option value="8">8<option value="9">9<option value="10">10
+    <option value="11">11<option value="12">12<option value="13">13<option value="14">14<option value="15">15<option value="16">16<option value="17">17<option value="18">18<option value="19">19<option value="20">20</select></td></tr>
+<tr><td><label>NUMBER_OF_STUDENTS</label></td><td><input type="text" name="[USERS.S_NC_STAFFDUTY]NUMBER_OF_STUDENTS" value="" size="6" maxlength="4" class="VARCHAR2"></td></tr>
+
+
+</td>
+</tr>
+</table>
+
+<div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+</body>
+</html><!-- end right frame -->
+

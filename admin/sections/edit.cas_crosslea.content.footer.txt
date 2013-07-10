@@ -1,0 +1,22 @@
+<table id="moveContent" style="display: none">
+    <tbody>
+    <tr>
+	<td class="bold">Disable <del></del>Cross LEA (Section Override)?</td>
+	<td>
+	    <select name="[SECTIONS.S_NC_CROSSLEASECTIONS]CROSSLEA_DISABLED">
+                <option value="">No
+                <option value="Y">Yes
+            </select>
+	    <input type="hidden" name="ac" value="prim">
+	</td>
+    </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+    $j(document).ready( function() {
+	$j('div.box-round table:first tr').removeAttr('class');
+	$j('div.box-round table:first').addClass('linkDescList');
+        $j("td:contains('Room')").parent().after($j('#moveContent tbody').html());
+	$j('#moveContent').remove();
+    });
+</script>

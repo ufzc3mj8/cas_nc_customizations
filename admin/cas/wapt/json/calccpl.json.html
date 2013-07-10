@@ -1,0 +1,23 @@
+[
+ ~[tlist_sql;
+    SELECT CASE
+      WHEN test_id = 1
+      THEN 'speakingpl'
+      WHEN test_id = 2
+      THEN 'writingpl'
+      WHEN test_id = 3
+      THEN 'listeningpl'
+      WHEN test_id = 4
+      THEN 'readingpl'
+      END scores
+    , weight
+    FROM S_NC_WAPT_DOM
+    WHERE area = 'CPL_XREF'
+    AND range_id=~[gpv:rangeid]]
+    {
+      "testscore" : "~(scores;t)",
+      "weight" : "~(weight;t)"
+    },
+    [/tlist_sql]
+    {}
+]

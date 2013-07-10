@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>~[text:psx.html.public.create_multi_student_account.powerschool_parent_sign_in]</title>
+<meta http-equiv="X-UA-Compatible" content="IE=8"/>
+<link href="/images/css/screen.css" rel="stylesheet" type="text/css" media="screen" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta name="viewport" content="width=device-width" />
+<script language="JavaScript" src="/admin/javascript/aes.js" type="text/javascript"></script>    
+<script language="JavaScript" src="/admin/javascript/md5.js" type="text/javascript"></script>
+<title>~[brij_publicrender:public-parentaccess-pkg;:RenderCreateAccountPageTitle]</title>
+<script language="JavaScript" type="text/javascript">
+var pskey = "~[x:pskey]";
+var pstoken="~[x:pstoken]";
+</script>
+</head>
+<body class="pslogin" id="parent-create">
+  <div id="container">
+    <div id="branding-powerschool"><a href="/public/"><img src="/images/img/ps7-logo-lrg.png" alt="PowerSchool"  width="280" height="41" /></a></div>
+
+			~[brij_publicrenderform:public-parentaccess-pkg;:GetCreateMultiStudentFormPage;:public-parentaccess-pkg;:SubmitCreateMultiStudentForm]
+	<div id="footer">
+      <div id="legal">
+        <p>~[text:psx.common.copyright]</p>
+      </div>
+      <p id="pearsoncorplink"><a href="http://www.pearsonschoolsystems.com" target="_blank">~[text:psx.html.public.create_multi_student_account.wwwpearsonschoolsystemscom]</a></p>
+</div>
+  </div>
+
+<div id="branding-pearson" class="group" style="clear:both;">
+			  <div id="logo-pearson"></div>
+			  <div id="tagline-pearson"></div>
+</div>
+<!-- START CAS CODE -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+~[tlist_sql;SELECT count(*) FROM students]~(1;t)[/tlist_sql]TEST
+<!-- END CAS CODE -->
+<script type="text/javascript">
+// START CAS CODE
+var $j = jQuery.noConflict();
+
+
+// END CAS CODE
+function alertwindow (directory, alerttype, frn) {
+	w = window.open("/"+directory+"/alerts/"+alerttype+"alert.html?frn="+frn, "alert", "toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,width=350,height=250");
+}
+
+function helpwindow (url) {
+	w = window.open(url, "help", "toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,width=570,height=500");
+}
+
+function helptext (text) {
+	window.status = text;
+	return true;
+}
+
+function $(id) {
+	return document.getElementById(id);
+}
+
+
+function maxlength( field, maxlimit ) {
+    if ( field.value.length >= maxlimit ) {
+        field.value = field.value.substring( 0, maxlimit-1 );
+        return false;
+    }
+}
+
+function noNumbers(e) {
+    var keynum, keychar, numcheck;
+    if(window.event) keynum = e.keyCode; // IE
+    else if(e.which) keynum = e.which; // Netscape/Firefox/Opera
+    keychar = String.fromCharCode(keynum);
+    numcheck = /\d/;
+    return !numcheck.test(keychar);
+}
+
+function onlyNumbers(e) {
+    return !noNumbers(e);
+}
+
+</script>
+~[get_js_texts:psx.js.admin_javascript.validate_date.]
+<script language="JavaScript" type="text/javascript" src="/admin/JavaScript/validate_date.js"></script>
+~[get_js_texts:psx.js.scripts.PasswordStrength.]
+<script language="JavaScript" type="text/javascript" src="/scripts/PasswordStrength.js"></script>
+</body>
+</html>
