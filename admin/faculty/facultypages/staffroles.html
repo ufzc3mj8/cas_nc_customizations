@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Staff Roles</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+	<style type="text/css">
+		.alternateTable:nth-of-type(odd) {background: #EDF3FE;}
+		.alternateTable:nth-of-type(even) {background: #D7EDF4;}
+	</style>
+</head>
+
+<body>
+
+<form action="/admin/faculty/facultypages/staffroles.html?frn=005~(rn)" method="POST" id="mainForm">
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.start_page]</a> &gt; <a href="/admin/faculty/search.html" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.staff]</a> &gt; <a href="/admin/faculty/home.html?selectteacher=nosearch" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.select_a_staff_member]</a> &gt; Staff Roles - ~(lastfirst) &nbsp; ~(teachernumber)<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+
+<span class="account-photo">~[facultytitlephoto]</span>
+<h1>Staff Qualifications - ~(lastfirst) &nbsp; ~(teachernumber)</h1>
+
+<div id="id_form_save_alert_message" class="feedback-alert" style="display: none"> Your changes have not yet been saved.  Click the Submit button.</div>
+
+<!-- start of content and bounding box -->
+<div class="box-round" id="divData">
+	<a id="addRecord" class="button">New Record</a>
+	<table id="tableData" class="linkDescList">
+		<thead>
+		<tr class="headerRow">
+			<th>Occupation Code</th>
+			<th>Start Date</th>
+			<th>End Date</th>
+			<th>Staff Role Duration Time</th>
+			<th>Staff Role Percent of Time</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+~[tlist_sql;SELECT
+USERSDCID,
+ID,
+OCCUPATION_CODE,
+START_DATE,
+END_DATE,
+STAFF_ROLE_DURATION_TIME,
+STAFF_ROLE_PERCENT_OF_TIME
+FROM S_NC_STAFFROLES
+WHERE USERSDCID = ~(RN)
+ORDER BY START_DATE DESC]
+		<tr>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]OCCUPATION_CODE" value="~(OCCUPATION_CODE;t)" width="6" maxlength="5"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]START_DATE" value="~(START_DATE;d)" width="9" maxlength="8" class="psDateWidget"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]END_DATE" value="~(END_DATE;d)" width="9" maxlength="8" class="psDateWidget"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]STAFF_ROLE_DURATION_TIME" value="~(STAFF_ROLE_DURATION_TIME;t)" width="7" maxlength="6"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]STAFF_ROLE_PERCENT_OF_TIME" value="~(STAFF_ROLE_PERCENT_OF_TIME;t)" width="4" maxlength="3"></td>
+			<td id="~(id)">
+				<a name="deleteRecord" class="button">Delete Record</a>
+				<a name="deleteRecordCancel" class="button" style="display: none">Cancel Delete</a>
+				<a name="deleteRecordConfirm" class="button" style="display: none;background-color: Orange">Confirm Delete</a>
+			</td>
+		</tr>
+	[/tlist_sql]
+		</tbody>
+	</table>
+<div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</div>
+
+
+<br>
+
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+<table id="clonedata" style="display: none" class="alternateTable">
+	<tbody id="tbodyCloneData">
+		<tr>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]OCCUPATION_CODE" value="" width="6" maxlength="5"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]START_DATE" value="" width="9" maxlength="8"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]END_DATE" value="" width="9" maxlength="8"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]STAFF_ROLE_DURATION_TIME" value="" width="37" maxlength="6"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]STAFF_ROLE_PERCENT_OF_TIME" value="" width="4" maxlength="3"></td>
+			<td id="~(id)">
+				<a name="undoNewRecord" class="button">Undo</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script type="text/javascript">
+	var cnt = 0;
+	$j(document).ready( function() {
+		$j('form').change( function() {
+			$j('#id_form_save_alert_message').show();
+		});
+		$j('#addRecord').click( function() {
+			cnt = cnt-1;
+			var tdata = $j('#clonedata tbody').children().clone(true);
+			tdata.find('input,select,textarea').each( function() {
+				var name = $j(this).attr("name");
+				name = name.replace('!!!',cnt);
+				$j(this).attr("name",name);
+			});
+			$j('#tableData tbody').append(tdata);
+		});
+
+		$j('[name="deleteRecord"]').click( function() {
+			$j(this).hide().next().show().next().show();
+		});
+
+		$j('[name="undoNewRecord"]').click( function() {
+			$j(this).parent().parent().remove();
+		});
+
+		$j('[name="deleteRecordConfirm"]').click( function() {
+			var idToDelete = $j(this).parent().attr('id');
+			var formAction = $j('form').attr('action');
+			$j('.button-row').append('<input type="hidden" name="DC-USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:'+idToDelete+'" value="on">');
+			$j(this).parent().parent().remove();
+		});
+
+		$j('[name="deleteRecordCancel"]').click( function() {
+			$j(this).hide().next().hide();
+			$j(this).prev().show();
+		});
+		
+	});
+</script>
+</body>
+</html><!-- end right frame -->

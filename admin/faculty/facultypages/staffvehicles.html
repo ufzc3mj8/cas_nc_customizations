@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Staff Vehicles</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+	<style type="text/css">
+		.alternateTable:nth-of-type(odd) {background: #EDF3FE;}
+		.alternateTable:nth-of-type(even) {background: #D7EDF4;}
+	</style>
+</head>
+
+<body>
+
+<form action="/admin/faculty/facultypages/staffvehicles.html?frn=005~(rn)" method="POST" id="mainForm">
+~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.start_page]</a> &gt; <a href="/admin/faculty/search.html" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.staff]</a> &gt; <a href="/admin/faculty/home.html?selectteacher=nosearch" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.select_a_staff_member]</a> &gt; Staff Vehicle - ~(lastfirst) &nbsp; ~(teachernumber)<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+
+<span class="account-photo">~[facultytitlephoto]</span>
+<h1>Staff Vehicle - ~(lastfirst) &nbsp; ~(teachernumber)</h1>
+
+<div id="id_form_save_alert_message" class="feedback-alert" style="display: none"> Your changes have not yet been saved.  Click the Submit button.</div>
+
+<!-- start of content and bounding box -->
+<div class="box-round" id="divData">
+	<a id="addRecord" class="button">New Record</a>
+	<table id="tableData" class="linkDescList">
+		<thead>
+		<tr class="headerRow">
+			<th>Make</th>
+			<th>Model</th>
+			<th>License Plate Number</th>
+			<th>Parking Space Number</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+~[tlist_sql;SELECT
+USERSDCID,
+ID,
+VEHICLE_MAKE,
+VEHICLE_MODEL,
+VEHICLE_LICENSE_NUMBER,
+PARKING_SPACE_NUMBER
+FROM S_NC_STAFFVEHICLE
+WHERE USERSDCID = ~(RN)
+ORDER BY VEHICLE_MAKE]
+		<tr>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:~(id)]VEHICLE_MAKE" value="~(VEHICLE_MAKE;t)" width="20" maxlength="25"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:~(id)]VEHICLE_MODEL" value="~(VEHICLE_MODEL;t)" width="20" maxlength="25"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:~(id)]VEHICLE_LICENSE_NUMBER" value="~(VEHICLE_LICENSE_NUMBER;t)" width="11" maxlength="10"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:~(id)]PARKING_SPACE_NUMBER" value="~(PARKING_SPACE_NUMBER;t)" width="5" maxlength="4"></td>
+			<td id="~(id)">
+				<a name="deleteRecord" class="button">Delete Record</a>
+				<a name="deleteRecordCancel" class="button" style="display: none">Cancel Delete</a>
+				<a name="deleteRecordConfirm" class="button" style="display: none;background-color: Orange">Confirm Delete</a>
+			</td>
+		</tr>
+	[/tlist_sql]
+		</tbody>
+	</table>
+<div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</div>
+
+
+<br>
+
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+<table id="clonedata" style="display: none" class="alternateTable">
+	<tbody id="tbodyCloneData">
+		<tr>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:!!!]VEHICLE_MAKE" value="" width="20" maxlength="25"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:!!!]VEHICLE_MODEL" value="" width="20" maxlength="25"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:!!!]VEHICLE_LICENSE_NUMBER" value="" width="9" maxlength="8"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:!!!]PARKING_SPACE_NUMBER" value="" width="5" maxlength="4"></td>
+			<td id="~(id)">
+				<a name="undoNewRecord" class="button">Undo</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<script type="text/javascript">
+	var cnt = 0;
+	$j(document).ready( function() {
+		$j('form').change( function() {
+			$j('#id_form_save_alert_message').show();
+		});
+		$j('#addRecord').click( function() {
+			cnt = cnt-1;
+			var tdata = $j('#clonedata tbody').children().clone(true);
+			//tdata.attr("id","clonedata" + cnt);
+			tdata.find('input,select,textarea').each( function() {
+				var name = $j(this).attr("name");
+				//console.log($j(this));
+				//console.log(name);
+				name = name.replace('!!!',cnt);
+				//console.log(name);
+				$j(this).attr("name",name);
+			});
+			//console.log(tdata);
+			//tdata.show();
+			$j('#tableData tbody').append(tdata);
+			//$j('.button-row').before(tdata);
+			//$j('#tbodyData').append(tdata);
+		});
+		$j('[name="deleteRecord"]').click( function() {
+			$j(this).hide().next().show().next().show();
+			//$j('#deleteContact').hide();
+			//$j('#deleteContactCancel').show();
+			//$j('#deleteContactConfirm').show();
+		});
+		$j('[name="undoNewRecord"]').click( function() {
+			$j(this).parent().parent().remove();
+		});
+		$j('[name="deleteRecordConfirm"]').click( function() {
+			var idToDelete = $j(this).parent().attr('id');
+			var formAction = $j('form').attr('action');
+			//DC-STUDENTS:19564.S_NC_MEDICINE.S_NC_MEDICINE:32=on
+			$j('.button-row').append('<input type="hidden" name="DC-USERS:~(rn).S_NC_STAFFVEHICLE.S_NC_STAFFVEHICLE:'+idToDelete+'" value="on">');
+			$j(this).parent().parent().remove();
+		});
+		$j('[name="deleteRecordCancel"]').click( function() {
+			$j(this).hide().next().hide();
+			$j(this).prev().show();
+			//$j('#deleteContact').show();
+			//$j('#deleteContactCancel').hide();
+			//$j('#deleteContactConfirm').hide();
+		});
+		
+	});
+</script>
+</body>
+</html><!-- end right frame -->

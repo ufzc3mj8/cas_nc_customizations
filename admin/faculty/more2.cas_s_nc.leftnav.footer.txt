@@ -1,8 +1,8 @@
 <h3>NCDPI Screens</h3>
 <ul>
-    <li><a href="/admin/faculty/s_nc_staffinfo.html?frn=204~(rn)">Staff Info</a></li>
-    <li><a href="/admin/faculty/s_nc_staffduty.html?frn=204~(rn)">Staff Duty</a></li>
-    <li><a href="/admin/faculty/s_nc_staffqualify.html?frn=204~(rn)">Staff Qualify</a></li>
-    <li><a href="/admin/faculty/s_nc_staffrole.html?frn=204~(rn)">Staff Role</a></li>
-    <li><a href="/admin/faculty/s_nc_staffvehicle.html?frn=204~(rn)">Staff Vehicle</a></li>
+    <li><a href="/admin/faculty/facultypages/s_nc_staffinfo.html?frn=204~(rn)">Staff Info</a></li>
+    <li><a href="/admin/faculty/facultypages/s_nc_staffduty.html?frn=204~(rn)">Staff Duty</a></li>
+    <li><a href="/admin/faculty/facultypages/staffqualify.html?frn=204~(rn)">Staff Qualify</a></li>
+    <li><a href="/admin/faculty/facultypages/staffroles.html?frn=204~(rn)">Staff Role</a></li>
+    <li><a href="/admin/faculty/facultypages/staffvehicles.html?frn=204~(rn)">Staff Vehicle</a></li>
 </ul>
