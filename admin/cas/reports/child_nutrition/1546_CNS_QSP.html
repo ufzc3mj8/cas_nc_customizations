@@ -2,13 +2,13 @@
 <html class="no-js">
 <!-- non framed -->
 <head>
-  <title>1509 Child Nutrition Extract</title>
+  <title>1546 Child Nutrition Extract</title>
   <script type="text/javascript" src="/scripts/cas/modernizr-2.6.2.min.js"></script>
   ~[wc:commonscripts]
   <script type="text/javascript">
     var PearsonCas = PearsonCas || {CasInfo : [], Utility : {}};
     PearsonCas.CasInfo.push({
-      "File"                        : "1509_Linker_rephub.html",
+      "File"                        : "1546_CNS_QSP.html",
       "Version"                     : "1.0",
       "Created By"                  : "Alex Alvarado",
       "Last Modified By"            : "",
@@ -25,10 +25,10 @@
 <body>
 ~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.start_page]</a> &gt; <a href="/admin/functions.html"
                                                                                                                                                                    target="_top">~[text:psx.html.admin_reports.studschedmatrixprefs.special_functions]</a>
-&gt; <a href="/admin/studentlist/functions.html">~[text:psx.html.admin_reports.studschedmatrixprefs.group_functions]</a> &gt; 1509 Child Nutrition Extract<!-- breadcrumb end -->
+&gt; <a href="/admin/studentlist/functions.html">~[text:psx.html.admin_reports.studschedmatrixprefs.group_functions]</a> &gt; 1546 Child Nutrition Extract<!-- breadcrumb end -->
 ~[wc:admin_navigation_css]
 
-<h1>1509 Child Nutrition Extract</h1>
+<h1>1546 Child Nutrition Extract</h1>
 <!-- start of content and bounding box -->
 <div class="box-round">
   <script type="text/javascript" language="javascript" src="/scripts/cas/jquery.dataTables.min.js"></script>
@@ -73,70 +73,67 @@
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
   <thead>
     <tr>
-      <th>Student ID</th>
-      <th>SSN</th>
+	  <th>First Name</th>
+      <th>Entry Date</th>
       <th>Last Name</th>
-      <th>First Name</th>
-      <th>Birth Date</th>
 	  <th>Grade</th>
-	  <th>Long Name</th>
-	  <th>Homeroom</th>
-	  <th>Street Number</th>
-	  <th>Street Name</th>
-	  <th>Apartment</th>
+	  <th>School</th>	 
+      <th>Student ID</th>	  
+      <th>Birth Date</th>
+	  <th>Homeroom</th>	  
+	  <th>Address</th>
+	  <th>PO Box</th>
 	  <th>City</th>
 	  <th>State</th>
 	  <th>Zip Code</th>
-	  <th>Parent</th>
-	  <th>Current Status</th>
+	  <th>Student Status</th>
+	  <th>Phone Number</th>
     </tr>
   </thead>
   <tbody>
-  ~[tlist_sql;select s.student_number, s.ssn, s.last_name surname, s.first_name, s.dob birth_date, s.grade_level grade, sch.name school_name,
-s.home_room homeroom, NVL(SubStr(trim(S.STREET),1,InStr(trim(S.STREET),' ')),' ') street_number,
-NVL(TRIM(SubStr(trim(S.STREET),InStr(trim(S.STREET),' '))),' ') street_name,
-NVL(TRIM(SubStr(S.STREET,InStr(S.STREET,',', -1, 1)+1)),' ') as apt, s.city, s.state, s.zip zip_code, s.mother parent_last_name, s.exitdate
+  ~[tlist_sql;select s.first_name "FIRST NAME", s.entrydate "Admission Date", s.last_name "LAST NAME", s.grade_level grade, sch.name "SCHOOL", s.student_number "STUDENT ID", s.dob "BIRTH DATE",
+s.home_room homeroom, s.street Address, ' ' P_O_Box, s.city, s.state, s.zip zip_code,
+CASE
+WHEN s.enroll_status = 0 THEN 'A' ELSE 'I' END activesw, s.home_phone "PHONE NUMBER"
 from students s
 left join schools sch on s.schoolid = sch.school_number
-where s.entrydate > to_date('6/30/2013','mm/dd/yyyy')]
+where s.schoolid <> 999999 and s.entrydate < to_date('6/30/2013','mm/dd/yyyy')]
     <tr>
-        <td>~(student_number;t)</td>
-        <td>~(ssn;t)</td>
-        <td>~(surname;t)</td>
         <td>~(first_name;t)</td>
-        <td>~(birth_date;d)</td>
+        <td>~(entrydate;d)</td>
+        <td>~(last_name;t)</td>
         <td>~(grade;t)</td>
-        <td>~(school_name;t)</td>
-        <td>~(homeroom;t)</td>
-        <td>~(street_number;t)</td>
-        <td>~(street_name;t)</td>
-        <td>~(apartment;t)</td>
-        <td>~(city;t)</td>
-        <td>~(state;t)</td>
-        <td>~(zip_code;t)</td>
-        <td>~(parent_last_name;t)</td>
-        <td>~(exitdate;d)</td>
+        <td>~(name;t)</td>
+		<td>~(student_number;t)</td>
+		<td>~(dob;d)</td>
+		<td>~(homeroom;t)</td>
+		<td>~(street;t)</td>
+		<td>~(P_O_Box;t)</td>
+		<td>~(city;t)</td>
+		<td>~(state;t)</td>
+		<td>~(zip_code;t)</td>
+		<td>~(activesw;t)</td>
+		<td>~(home_phone;t)</td>
     </tr>
   [/tlist_sql]
   </tbody>
   <tfoot>
     <tr>
-      <th>Student ID</th>
-      <th>SSN</th>
+	  <th>First Name</th>
+      <th>Entry Date</th>
       <th>Last Name</th>
-      <th>First Name</th>
-      <th>Birth Date</th>
 	  <th>Grade</th>
-	  <th>Long Name</th>
-	  <th>Homeroom</th>
-	  <th>Street Number</th>
-	  <th>Street Name</th>
-	  <th>Apartment</th>
+	  <th>School</th>	 
+      <th>Student ID</th>	  
+      <th>Birth Date</th>
+	  <th>Homeroom</th>	  
+	  <th>Address</th>
+	  <th>PO Box</th>
 	  <th>City</th>
 	  <th>State</th>
 	  <th>Zip Code</th>
-	  <th>Parent</th>
-	  <th>Current Status</th>
+	  <th>Student Status</th>
+	  <th>Phone Number</th>
     </tr>
   </tfoot>
 </table>
