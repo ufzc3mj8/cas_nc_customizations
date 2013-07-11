@@ -10,10 +10,10 @@
     PearsonCas.CasInfo.push({
       "File"                        : "1509_Linker_rephub.html",
       "Version"                     : "1.0",
-      "Created By"                  : "David Pond",
+      "Created By"                  : "Jeff Swanburg",
       "Last Modified By"            : "",
       "Customization Number"        : "",
-      "Developed for PowerSchool"   : "",
+      "Developed for PowerSchool"   : "7.8.0.0",
       "Current PowerSchool Version" : "~[displaypref:lastversionnumber]"
     });
   </script>
@@ -95,14 +95,10 @@
   ~[tlist_sql;select s.student_number, s.ssn, s.last_name surname, s.first_name, s.dob birth_date, s.grade_level grade, sch.name school_name,
 s.home_room homeroom, NVL(SubStr(trim(S.STREET),1,InStr(trim(S.STREET),' ')),' ') street_number,
 NVL(TRIM(SubStr(trim(S.STREET),InStr(trim(S.STREET),' '))),' ') street_name,
-CASE
-  WHEN InStr(trim(S.STREET),'Apt') <> 0 THEN
-  NVL(TRIM(SubStr(trim(S.STREET),InStr(trim(S.STREET),'Apt'))),' ')
-  ELSE ' '
-  END apt, s.city, s.state, s.zip zip_code, s.mother parent_last_name, s.exitdate
+NVL(TRIM(SubStr(S.STREET,InStr(S.STREET,',', -1, 1)+1)),' ') as apt, s.city, s.state, s.zip zip_code, s.mother parent_last_name, s.exitdate
 from students s
 left join schools sch on s.schoolid = sch.school_number
-where s.entrydate > to_date('6/30/2012','mm/dd/yyyy')]
+where s.entrydate > to_date('6/30/2013','mm/dd/yyyy')]
     <tr>
         <td>~(student_number;t)</td>
         <td>~(ssn;t)</td>
@@ -119,7 +115,7 @@ where s.entrydate > to_date('6/30/2012','mm/dd/yyyy')]
         <td>~(state;t)</td>
         <td>~(zip_code;t)</td>
         <td>~(parent_last_name;t)</td>
-        <td>~(exitdate;t)</td>
+        <td>~(exitdate;d)</td>
     </tr>
   [/tlist_sql]
   </tbody>
