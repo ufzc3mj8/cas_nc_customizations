@@ -1,3 +1,4 @@
+~[if.district.office]
 <script type="text/javascript">
 $j(document).ready( function() {
 $j('div.box-round table:first').after('<table class="linkDescList">'
@@ -10,3 +11,4 @@ $j('div.box-round table:first').after('<table class="linkDescList">'
     +'</table>');
 });
 </script>
+[/if.district.office]
