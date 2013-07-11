@@ -63,6 +63,23 @@ function init(){
 $j(document).ready( function() {
 	init();
 });
+$j(document).ready(function() {
+	var opts = $j('#central_course_number option').map(function(){
+		return [[this.value, $j(this).text()]];
+});
+
+
+$j('#someinput').keyup(function(){
+	var rxp = new RegExp($j('#someinput').val(), 'i');
+	var optlist = $j('#central_course_number').empty();
+	opts.each(function(){
+		if (rxp.test(this[1])) {
+			optlist.append($j('<option/>').attr('value', this[0]).text(this[1]));
+		}
+	});      
+});
+      
+  });
 </script>
 
 </head>
@@ -80,12 +97,20 @@ $j(document).ready( function() {
 <input id="years" name="years" type="hidden">
 <div class="box-round">
 <table border="0" cellspacing="0" cellpadding="4" width="100%" class="linkDescList">
+	<tr>
+		<td><label>Course Filter:</label></td>
+		<td><input id="someinput"></td>
+	</tr>
         <tr>
-        <td><label>Select a course code</label></td>
-        <td><select name="coursecode" id="central_course_number" onchange="selectCourse()"><option value="">Select</option>
-            ~[tlist_sql;SELECT c.course_number, c.course_name FROM courses@DBL_ENTCON c]<option value="~(course_number;t)">~(course_number;t) / ~(course_name;t)</option>[/tlist_sql]
-        </select>
-        <p id="missingCourseNumber" class="error-message" style="display: none">Missing required field</p></td>
+		<td><label>Select a course code</label></td>
+		<td><select name="coursecode" id="central_course_number" onchange="selectCourse()"><option value="">Select</option>
+			~[tlist_sql;
+			    SELECT c.course_number, c.course_name
+			    FROM courses@DBL_ENTCON c
+			    ORDER BY]<option value="~(course_number;t)">~(course_number;t) / ~(course_name;t)</option>[/tlist_sql]
+		    </select>
+		    <p id="missingCourseNumber" class="error-message" style="display: none">Missing required field</p>
+		</td>
     </tr>
 <tr>
 <td><label>~[text:psx.html.admin_courses.new.course_name]</label></td>
