@@ -1,0 +1,6 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('#nav-main-frame table tr:eq(1) td a').last().after(
+    '<BR><a href="/admin/cas/ec/ecdata.html?frn=~(studentfrn)">EC Data</a>'
+})
+</script>
