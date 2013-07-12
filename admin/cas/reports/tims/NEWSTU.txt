@@ -10,8 +10,12 @@ SELECT
     RPAD(NVL(STU.LAST_NAME,' '),30)||  -- Last Name
     RPAD(NVL(STU.FIRST_NAME,' '),30)|| -- First Name
     RPAD(NVL(SubStr(STU.STREET,1,InStr(STU.STREET,' ')),' '),6)||  -- House Number
-    RPAD(NVL(TRIM(SubStr(STU.STREET,InStr(STU.STREET,' '))),' '),30)|| -- Street Name
-    RPAD(' ',10)|| -- Apt Number
+    RPAD(NVL(Substr(TRIM(SubStr(upper(STU.STREET),InStr(upper(STU.STREET),' '))), 1,instr(TRIM(SubStr(upper(STU.STREET),InStr(upper(STU.STREET),' '))),'APT') - 1),' '),30)|| -- Street Name
+    RPAD(NVL(CASE
+  WHEN InStr(trim(UPPER(STU.STREET)),'APT') <> 0 THEN
+  NVL(TRIM(SubStr(trim(UPPER(STU.STREET)),InStr(trim(UPPER(STU.STREET)),'APT'))),' ')
+  ELSE ' '
+  END,' '),10)|| -- Apt Number
     RPAD(' ',150)|| -- Mailing Address
     RPAD(NVL(STU.CITY,' '),30)|| -- City
     RPAD(' ',4)||  -- City Code
@@ -39,7 +43,7 @@ SELECT
     RPAD(' ',1)|| -- BLANK
     RPAD(' ',9)|| -- Home School
     RPAD(NVL(to_char(STU.NEXT_SCHOOL),' '),9)|| -- Next School
-    RPAD(NVL(to_char(STU.GRADE_LEVEL),' '),2)|| -- Current Grade Level
+    LPAD(NVL(to_char(STU.GRADE_LEVEL,'FM00'),'0'),2)|| -- Current Grade Level
     RPAD(NVL(CASE 
           WHEN EC.EC_PRIMARY_DIS = '1' THEN 'Y'
           ELSE 'N'
