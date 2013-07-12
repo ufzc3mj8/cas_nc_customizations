@@ -61,16 +61,12 @@
         if (actionDuration === '') {
             $j('#add_action_button').hide();
             $j('#actionDuration').addClass('error').focus();
-        } else {
-            $j('#add_action_button').show();
-            $j('#actionDuration').removeClass('error');
-        }
-        if (startDate === '') {
+        } else if (startDate === ''){
             $j('#add_action_button').hide();
             $j('#actionBeginDate').addClass('error').focus();
-        } else {
+        } else if (startDate !== '' && actionDuration!== '') {
             $j('#add_action_button').show();
-            $j('#actionBeginDate').removeClass('error');
+            $j('#actionDuration').removeClass('error');
         }
         //END LOGIC
         //START LOGIC TO FIX ZERO-PADDED DATES
