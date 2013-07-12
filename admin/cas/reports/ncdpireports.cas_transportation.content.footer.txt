@@ -1,0 +1,10 @@
+<script type="text/javascript">
+$j(document).ready( function() {
+$j('div.box-round table:first').after('<table class="linkDescList">'
+    +'<thead><tr class="headerRow"><th>Transportation</th><th>Description</th></tr></thead>'
+    +'<tbody>'
+    +'<tr><td><a href="/admin/cas/reports/tims/newstu.txt">TIMS Extract</a></td><td>NC TIMS Extract. Right Clink link and choose Save As...</td></tr>'
+    +'</tbody>'
+    +'</table>');
+});
+</script>

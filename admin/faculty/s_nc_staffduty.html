@@ -31,16 +31,26 @@
          <th>Code</th>
          <th>Duration</th>
          <th>M</th>
+         <th>Per</th>
          <th>T</th>
+         <th>Per</th>
          <th>W</th>
+         <th>Per</th>
          <th>H</th>
+         <th>Per</th>
          <th>F</th>
+         <th>Per</th>
          <th>Sa</th>
+         <th>Per</th>
          <th>Su</th>
+         <th>Per</th>
       </tr>
    </thead>
    <tbody>
-    ~[tlist_sql;SELECT SCHOOL_ID, ID, '~(rn)', STAFF_DUTY_CODE, STAFF_DUTY_DURATION_TIME,
+    ~[tlist_sql;SELECT (SELECT name FROM SCHOOLS WHERE SCHOOL_NUMBER = SCHOOL_ID),
+    ID, '~(rn)',
+    (SELECT g.value FROM gen g WHERE g.cat = 'staff_duty' AND g.name = STAFF_DUTY_CODE),
+    STAFF_DUTY_DURATION_TIME,
     STAFF_DUTY_MON, MON_PERIOD,
     STAFF_DUTY_TUE, TUE_PERIOD,
     STAFF_DUTY_WED, WED_PERIOD,
@@ -54,13 +64,13 @@
             <td>~(school;t)</td>
             <td><a href="/admin/faculty/s_nc_staffduty_edit.html?id=~(id;t)&usersdcid=~(usersdcid;t)">~(code;t)</a></td>
             <td>~(time;t)</td>
-            <td>~(m;t) / ~(mp;t)</td>
-            <td>~(t;t) / ~(tp;t)</td>
-            <td>~(w;t) / ~(wp;t)</td>
-            <td>~(h;t) / ~(hp;t)</td>
-            <td>~(f;t) / ~(fp;t)</td>
-            <td>~(sa;t) / ~(sap;t)</td>
-            <td>~(su;t) / ~(sup;t)</td>
+            <td>~(m;t)</td><td>~(mp;t)</td>
+            <td>~(t;t)</td><td>~(tp;t)</td>
+            <td>~(w;t)</td><td>~(wp;t)</td>
+            <td>~(h;t)</td><td>~(hp;t)</td>
+            <td>~(f;t)</td><td>~(fp;t)</td>
+            <td>~(sa;t)</td><td>~(sap;t)</td>
+            <td>~(su;t)</td><td>~(sup;t)</td>
         </tr>
     [/tlist_sql]
    </tbody>
