@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html>
+<!-- start right frame -->
+<head>
+<title>Staff Extended Data Details</title>
+~[wc:commonscripts]
+<link href="/images/css/screen.css" rel="stylesheet" media="screen">
+<link href="/images/css/print.css" rel="stylesheet" media="print">
+</head>
+
+<body>
+<form action="/admin/changesrecorded.white.html" method="POST">
+~[wc:admin_header_frame_css]
+<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_teacherschedules.sched.start_page]</a>
+&gt; Staff Extended Data Details
+<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
+
+~[if.~[gpv:dispic]=1]<span class="account-photo">~[facultytitlephoto]</span>[/if]
+<h1>Staff Extended Data Details - ~([users]lastfirst)</h1>
+
+<!-- start of content and bounding box -->
+<div class="box-round">
 <table id="extendedData" class="linkDescList">
 <thead>
 <tr class="headerRow">
@@ -17,3 +39,15 @@
 <tr><td><label>EMERG_CONTACT_HOME_PHONE</label></td><td><input type="text" name="[USERS.S_NC_STAFFINFO]EMERG_CONTACT_HOME_PHONE" value="" size="15" maxlength="10" class="VARCHAR2"></td></tr>
 <tr><td><label>EMERG_CONTACT_WORK_PHONE</label></td><td><input type="text" name="[USERS.S_NC_STAFFINFO]EMERG_CONTACT_WORK_PHONE" value="" size="15" maxlength="10" class="VARCHAR2"></td></tr>
 <tr><td><label>UNLISTED</label></td><td><input type="checkbox" name="[USERS.S_NC_STAFFINFO]UNLISTED" value="1"></td></tr>
+
+</table>
+
+<div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+</div>
+<br>
+<!-- end of content of bounding box -->
+
+~[wc:admin_footer_frame_css]
+</form>
+</body>
+</html><!-- end right frame -->
