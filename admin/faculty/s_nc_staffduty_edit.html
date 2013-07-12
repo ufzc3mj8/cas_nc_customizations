@@ -7,6 +7,17 @@
 ~[wc:commonscripts]
 <link href="/images/css/screen.css" rel="stylesheet" media="screen">
 <link href="/images/css/print.css" rel="stylesheet" media="print">
+<script type="text/javascript">
+    $j(document).ready( function() {
+        var values = $j('.process').length;
+        if (values > 0) {
+            $j('.process').each( function() {
+                var elName = $j(this).attr('id');
+                $j('#'+elName+'_select').val($j(this).val());
+            });
+        }
+    });
+</script>
 </head>
 
 <body>
@@ -16,8 +27,7 @@
 &gt; Edit Staff Duty Details
 <!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
 
-~[if.~[gpv:dispic]=1]<span class="account-photo">~[facultytitlephoto]</span>[/if]
-<h1>Edit Staff Duty Details - ~([users]lastfirst)</h1>
+<h1>Edit Staff Duty Details</h1>
 
 <!-- start of content and bounding box -->
 <div class="box-round">
@@ -28,7 +38,7 @@
       <td colspan="3"><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]DIRECT_STUDENT_CONTACT_IND" value="1"></td>
    </tr>
    <tr>
-      <td><label>SCHOOL_ID</label></td>
+      <td><label>School</label></td>
       <td>
          <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]SCHOOL_ID">
             <option value=""> Select School</option>
@@ -43,7 +53,7 @@
       </td>
    </tr>
    <tr>
-      <td><label>STAFF_DUTY_CODE</label></td>
+      <td><label>Duty Name</label></td>
       <td colspan="3">
         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_CODE">
             <option value=""> Select School</option>
@@ -287,37 +297,60 @@
       <td colspan="3"><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]DIRECT_STUDENT_CONTACT_IND" value="1"></td>
    </tr>
    <tr>
-      <td><label>SCHOOL_ID</label></td>
+      <td><label>School</label></td>
       <td>
          <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]SCHOOL_ID">
             <option value=""> Select School</option>
             ~[tlist_sql;
-            SELECT school_number, name
+            SELECT school_number, CASE WHEN school_number = (SELECT SCHOOL_ID FROM S_NC_STAFFDUTY WHERE ID=~[gpv:id]) THEN 'SELECTED' ELSE '' END, name
             FROM schools
             WHERE school_number != 999999
             ORDER BY name]
-            <option value="~(school_number)">~(name)</option>
+            <option value="~(school_number)" ~(isselected;t)>~(name)</option>
             [/tlist_sql]
          </select>
       </td>
    </tr>
    <tr>
-      <td><label>STAFF_DUTY_CODE</label></td>
-      <td colspan="3"><input type="text" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_CODE" value="" size="11" maxlength="6" class="VARCHAR2"></td>
+      <td><label>Duty Name</label></td>
+      <td colspan="3">
+        <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_CODE">
+            <option value=""> Select Duty</option>
+            ~[tlist_sql;
+            SELECT G.NAME, CASE WHEN g.name = (SELECT STAFF_DUTY_CODE FROM S_NC_STAFFDUTY WHERE ID=~[gpv:id]) THEN 'SELECTED' ELSE '' END, g.value
+            FROM gen g
+            WHERE g.cat = 'staff_duty' ORDER BY G.SORTORDER]
+            <option value="~(CODE)" ~(isselected;t)>~(VALUE)</option>
+            [/tlist_sql]
+         </select>  
+      </td>
    </tr>
+   ~[tlist_sql;
+   SELECT STAFF_DUTY_DURATION_PERCENT, STAFF_DUTY_DURATION_TIME,
+   STAFF_DUTY_MON, MON_PERIOD,
+   STAFF_DUTY_TUE, TUE_PERIOD,
+   STAFF_DUTY_WED, WED_PERIOD,
+   STAFF_DUTY_THU, THU_PERIOD,
+   STAFF_DUTY_FRI, FRI_PERIOD,
+   STAFF_DUTY_SAT, SAT_PERIOD,
+   STAFF_DUTY_SUN, SUN_PERIOD,
+   NUMBER_OF_STUDENTS
+   FROM S_NC_STAFFDUTY WHERE ID = ~[gpv:id]
+   ]
    <tr>
       <td><label>STAFF_DUTY_DURATION_PERCENT</label></td>
-      <td colspan="3"><input type="integer" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_DURATION_PERCENT" value="" size="5" maxlength="3" class="VARCHAR2"></td>
+      <td colspan="3"><input type="integer" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_DURATION_PERCENT" value="~(STAFF_DUTY_DURATION_PERCENT;t)" size="5" maxlength="3" class="VARCHAR2"></td>
    </tr>
    <tr>
       <td><label>STAFF_DURATION_TIME</label></td>
-      <td colspan="3"><input type="text" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_DURATION_TIME" value="" size="8" maxlength="6" class="VARCHAR2"></td>
+      <td colspan="3"><input type="text" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_DURATION_TIME" value="~(STAFF_DUTY_DURATION_TIME;t)" size="8" maxlength="6" class="VARCHAR2"></td>
    </tr>
    <td><label>STAFF_DUTY_MON</label></td>
-   <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_MON" value="1"></td>
+   <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_MON" value="1" ~(staff_duty_mon;t;if.test=1;then=checked="checked";else=)></td>
    <td><label>MON_PERIOD</label></td>
    <td>
-      <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]MON_PERIOD">
+        <input type="hidden" id="mon_period" class="process" value="~(mon_period;t)">
+      <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]MON_PERIOD" id="mon_period_select">
          <option value="">0
          <option value="1">1
          <option value="2">2
@@ -344,10 +377,11 @@
    </tr>
    <tr>
       <td><label>STAFF_DUTY_TUE</label></td>
-      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_TUE" value="1"></td>
+      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_TUE" value="1" ~(staff_duty_tue;t;if.test=1;then=checked="checked";else=)></td>
       <td><label>TUE_PERIOD</label></td>
       <td>
-         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]TUE_PERIOD">
+        <input type="hidden" id="tue_period" class="process" value="~(tue_period;t)">
+         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]TUE_PERIOD" id="tue_period_select">
             <option value="">0
             <option value="1">1
             <option value="2">2
@@ -374,10 +408,11 @@
    </tr>
    <tr>
       <td><label>STAFF_DUTY_WED</label></td>
-      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_WED" value="1"></td>
+      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_WED" value="1" ~(staff_duty_wed;t;if.test=1;then=checked="checked";else=)></td>
       <td><label>WED_PERIOD</label></td>
       <td>
-         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]WED_PERIOD">
+        <input type="hidden" id="wed_period" class="process" value="~(wed_period;t)">
+         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]WED_PERIOD" id="wed_period_select">
             <option value="">0
             <option value="1">1
             <option value="2">2
@@ -404,10 +439,11 @@
    </tr>
    <tr>
       <td><label>STAFF_DUTY_THU</label></td>
-      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_THU" value="1"></td>
+      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_THU" value="1" ~(staff_duty_thu;t;if.test=1;then=checked="checked";else=)></td>
       <td><label>THU_PERIOD</label></td>
       <td>
-         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]THU_PERIOD">
+        <input type="hidden" id="thu_period" class="process" value="~(thu_period;t)">
+         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]THU_PERIOD" id="thu_period_select">
             <option value="">0
             <option value="1">1
             <option value="2">2
@@ -436,10 +472,11 @@
    </select></td></tr>
    <tr>
       <td><label>STAFF_DUTY_FRI</label></td>
-      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_FRI" value="1"></td>
+      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_FRI" value="1" ~(staff_duty_fri;t;if.test=1;then=checked="checked";else=)></td>
       <td><label>FRI_PERIOD</label></td>
       <td>
-         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]FRI_PERIOD">
+        <input type="hidden" id="fri_period" class="process" value="~(fri_period;t)">
+         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]FRI_PERIOD" id="fri_period_select">
             <option value="">0
             <option value="1">1
             <option value="2">2
@@ -466,10 +503,11 @@
    </tr>
    <tr>
       <td><label>STAFF_DUTY_SAT</label></td>
-      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_SAT" value="1"></td>
+      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_SAT" value="1" ~(staff_duty_sat;t;if.test=1;then=checked="checked";else=)></td>
       <td><label>SAT_PERIOD</label></td>
       <td>
-         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]SAT_PERIOD">
+        <input type="hidden" id="sat_period" class="process" value="~(sat_period;t)">
+         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]SAT_PERIOD" id="sat_period_select">
             <option value="">0
             <option value="1">1
             <option value="2">2
@@ -496,10 +534,11 @@
    </tr>
    <tr>
       <td><label>STAFF_DUTY_SUN</label></td>
-      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_SUN" value="1"></td>
+      <td><input type="checkbox" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]STAFF_DUTY_SUN" value="1" ~(staff_duty_sun;t;if.test=1;then=checked="checked";else=)></td>
       <td><label>SUN_PERIOD</label></td>
       <td>
-         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]SUN_PERIOD">
+        <input type="hidden" id="sun_period" class="process" value="~(sun_period;t)">
+         <select name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]SUN_PERIOD" id="sun_period_select">
             <option value="">0
             <option value="1">1
             <option value="2">2
@@ -526,7 +565,7 @@
    </tr>
    <tr>
       <td><label>NUMBER_OF_STUDENTS</label></td>
-      <td><input type="text" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]NUMBER_OF_STUDENTS" value="" size="6" maxlength="4" class="VARCHAR2"></td>
+      <td><input type="text" name="CF-[USERS:~[GPV:USERSDCID].S_NC_STAFFDUTY.S_NC_STAFFDUTY:~[GPV:ID]]NUMBER_OF_STUDENTS" value="~(number_of_students;t)" size="6" maxlength="4" class="VARCHAR2"></td>
    </tr>
    </td>
    </tr>
@@ -543,4 +582,3 @@
 </form>
 </body>
 </html><!-- end right frame -->
-
