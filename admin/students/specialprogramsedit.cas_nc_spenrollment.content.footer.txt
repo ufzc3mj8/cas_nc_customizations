@@ -1,0 +1,30 @@
+<table id="extendedData" class="linkDescList">
+<thead>
+<tr class="headerRow">
+    <td colspan="2" class="bold">
+        Extended Data
+    </td>
+</tr>
+</thead>
+<tbody>
+<tr><td><label>Actual Contact</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]ACTUAL_CONTACT" value="" size="20" maxlength="12" class="psNumWidget"></td></tr>
+<tr><td><label>Assessment</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]ASSESSMENT_CODE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Assessment Date</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]ASSESSMENT_DATE" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>Assessment Result</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]ASSESSMENT_RESULT_CODE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Enter Code</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]ENTERCODE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Parental Permission</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]PARENTAL_PERMISSION_CODE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Prescribed Length</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]PRESCRIBED_LENGTH" value="" size="20" maxlength="12" class="psNumWidget"></td></tr>
+<tr><td><label>Program Part Status</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]PROG_PART_STATUS" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Reference Notes</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]REFERENCE_NOTES" value="" size="25" maxlength="25" class="VARCHAR2"></td></tr>
+<tr><td><label>Scheduled Contact Frequency</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]SCHEDULED_CONTACT_FREQUENCY" value="" size="10" maxlength="6" class="VARCHAR2"></td></tr>
+<tr><td><label>Scheduled Contact Minutes</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]SCHEDULED_CONTACT_MINUTES" value="" size="20" maxlength="12" class="psNumWidget"></td></tr>
+<tr><td><label>Tag Currently Served</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]TAG_CURRENTLY_SERVED" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Tag Served During Year</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]TAG_SERVED_DURING_YEAR" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>School Year</label></td><td><input type="text" name="[SPENROLLMENTS.S_NC_SPENROLLMENT]SCHOOL_YEAR" value="" size="4" maxlength="4" class="psNumWidget"></td></tr>
+</tbody>
+</table>
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table').first().after($j('#extendedData'));
+});
+</script>
