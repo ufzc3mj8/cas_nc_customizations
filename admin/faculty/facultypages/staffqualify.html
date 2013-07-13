@@ -15,7 +15,7 @@
 
 <body>
 
-<form action="/admin/faculty/facultypages/staffvehicles.html?frn=005~(rn)" method="POST" id="mainForm">
+<form action="/admin/faculty/facultypages/staffqualify.html?frn=005~(rn)" method="POST" id="mainForm">
 ~[wc:admin_header_frame_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.start_page]</a> &gt; <a href="/admin/faculty/search.html" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.staff]</a> &gt; <a href="/admin/faculty/home.html?selectteacher=nosearch" target="_top">~[text:psx.html.admin_faculty.customscreentemplate.select_a_staff_member]</a> &gt; Staff Qualifications - ~(lastfirst) &nbsp; ~(teachernumber)<!-- breadcrumb end -->~[wc:admin_navigation_frame_css]
 
 
@@ -51,7 +51,7 @@ LICENSE_NUMBER,
 SUBJECT_AREA_OF_DEGREE
 FROM S_NC_STAFFQUALIFY
 WHERE USERSDCID = ~(RN)
-ORDER BY VEHICLE_MAKE]
+ORDER BY date_issued]
 		<tr>
 			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFQUALIFY.S_NC_STAFFQUALIFY:~(id)]CERTIFICATE_CODE" value="~(CERTIFICATE_CODE;t)" width="7" maxlength="6"></td>
 			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFQUALIFY.S_NC_STAFFQUALIFY:~(id)]DATE_ISSUED" value="~(DATE_ISSUED;d)" width="9" maxlength="8" class="psDateWidget"></td>

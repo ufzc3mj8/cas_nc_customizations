@@ -20,7 +20,7 @@
 
 
 <span class="account-photo">~[facultytitlephoto]</span>
-<h1>Staff Qualifications - ~(lastfirst) &nbsp; ~(teachernumber)</h1>
+<h1>Staff Roles - ~(lastfirst) &nbsp; ~(teachernumber)</h1>
 
 <div id="id_form_save_alert_message" class="feedback-alert" style="display: none"> Your changes have not yet been saved.  Click the Submit button.</div>
 
@@ -47,15 +47,15 @@ START_DATE,
 END_DATE,
 STAFF_ROLE_DURATION_TIME,
 STAFF_ROLE_PERCENT_OF_TIME
-FROM S_NC_STAFFROLES
+FROM S_NC_STAFFROLE
 WHERE USERSDCID = ~(RN)
 ORDER BY START_DATE DESC]
 		<tr>
-			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]OCCUPATION_CODE" value="~(OCCUPATION_CODE;t)" width="6" maxlength="5"></td>
-			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]START_DATE" value="~(START_DATE;d)" width="9" maxlength="8" class="psDateWidget"></td>
-			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]END_DATE" value="~(END_DATE;d)" width="9" maxlength="8" class="psDateWidget"></td>
-			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]STAFF_ROLE_DURATION_TIME" value="~(STAFF_ROLE_DURATION_TIME;t)" width="7" maxlength="6"></td>
-			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLES.S_NC_STAFFROLES:~(id)]STAFF_ROLE_PERCENT_OF_TIME" value="~(STAFF_ROLE_PERCENT_OF_TIME;t)" width="4" maxlength="3"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLE.S_NC_STAFFROLE:~(id)]OCCUPATION_CODE" value="~(OCCUPATION_CODE;t)" width="6" maxlength="5"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLE.S_NC_STAFFROLE:~(id)]START_DATE" value="~(START_DATE;d)" width="9" maxlength="8" class="psDateWidget"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLE.S_NC_STAFFROLE:~(id)]END_DATE" value="~(END_DATE;d)" width="9" maxlength="8" class="psDateWidget"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLE.S_NC_STAFFROLE:~(id)]STAFF_ROLE_DURATION_TIME" value="~(STAFF_ROLE_DURATION_TIME;t)" width="7" maxlength="6"></td>
+			<td><input type="text" name="CF-[USERS:~(usersdcid;t).S_NC_STAFFROLE.S_NC_STAFFROLE:~(id)]STAFF_ROLE_PERCENT_OF_TIME" value="~(STAFF_ROLE_PERCENT_OF_TIME;t)" width="4" maxlength="3"></td>
 			<td id="~(id)">
 				<a name="deleteRecord" class="button">Delete Record</a>
 				<a name="deleteRecordCancel" class="button" style="display: none">Cancel Delete</a>
@@ -78,11 +78,11 @@ ORDER BY START_DATE DESC]
 <table id="clonedata" style="display: none" class="alternateTable">
 	<tbody id="tbodyCloneData">
 		<tr>
-			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]OCCUPATION_CODE" value="" width="6" maxlength="5"></td>
-			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]START_DATE" value="" width="9" maxlength="8"></td>
-			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]END_DATE" value="" width="9" maxlength="8"></td>
-			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]STAFF_ROLE_DURATION_TIME" value="" width="37" maxlength="6"></td>
-			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:!!!]STAFF_ROLE_PERCENT_OF_TIME" value="" width="4" maxlength="3"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLE.S_NC_STAFFROLE:!!!]OCCUPATION_CODE" value="" width="6" maxlength="5"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLE.S_NC_STAFFROLE:!!!]START_DATE" value="" width="9" maxlength="8"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLE.S_NC_STAFFROLE:!!!]END_DATE" value="" width="9" maxlength="8"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLE.S_NC_STAFFROLE:!!!]STAFF_ROLE_DURATION_TIME" value="" width="37" maxlength="6"></td>
+			<td><input type="text" name="CF-[USERS:~(rn).S_NC_STAFFROLE.S_NC_STAFFROLE:!!!]STAFF_ROLE_PERCENT_OF_TIME" value="" width="4" maxlength="3"></td>
 			<td id="~(id)">
 				<a name="undoNewRecord" class="button">Undo</a>
 			</td>
@@ -117,7 +117,7 @@ ORDER BY START_DATE DESC]
 		$j('[name="deleteRecordConfirm"]').click( function() {
 			var idToDelete = $j(this).parent().attr('id');
 			var formAction = $j('form').attr('action');
-			$j('.button-row').append('<input type="hidden" name="DC-USERS:~(rn).S_NC_STAFFROLES.S_NC_STAFFROLES:'+idToDelete+'" value="on">');
+			$j('.button-row').append('<input type="hidden" name="DC-USERS:~(rn).S_NC_STAFFROLE.S_NC_STAFFROLE:'+idToDelete+'" value="on">');
 			$j(this).parent().parent().remove();
 		});
 
