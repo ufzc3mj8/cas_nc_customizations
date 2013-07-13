@@ -1,0 +1,217 @@
+<!-- CAS ADD CONTENT -->
+<script type="text/javascript">
+	$j(document).ready(function() {
+		//Insert data at the end of the table
+		$j('table.linkDescList > tbody:last').append($j('#appendTable>tbody').children());
+		$j('#lastName').closest('tr').replaceWith($j('#replaceName>tbody').children());
+		$j('#pstreet').closest('tr').before($j('#beforeAddress>tbody').children());
+		$j('input[name="~(JSFieldParam;[01]dob)"]').closest('tr').after($j('#afterDob>tbody').children());
+		$j('input[name="~(JSFieldParam;[01]mother_home_phone)"]').closest('tr').after($j('#afterMother>tbody').children());
+		$j('input[name="~(JSFieldParam;[01]father_home_phone)"]').closest('tr').after($j('#afterFather>tbody').children());
+		$j('input[name="~(JSFieldParam;[01]home_phone)"]').closest('tr').after($j('#afterPhone>tbody').children());
+
+		//Delete hidden inserted content
+		$j('#inserted_content').empty();
+
+		$j('#previous_district_number').change(function() {
+			$j('#previous_school_number').val('');
+			$j('#previous_school').val('');
+			$j('#previous_school').attr('readonly', true);
+			if($j('#previous_district_number').val()==99999999) {
+				$j('#previous_district').val('');
+				$j('#previous_district').attr('readonly', false);
+				$j('#previous_school_number').empty();
+				$j('#previous_school_number').append('<option value=""></option><option value="99999999">School Outside of North Carolina</option>');
+			} else {
+				$j('#previous_district').attr('readonly', true);
+				$j('#previous_district').val($j('#previous_district_number option:selected').text());			
+				$j('#previous_school_number').empty();
+				$j.ajax({
+					url: 'schoolOpt.html',
+					data: 'distid=' + $j('#previous_district_number').val(),  
+					success: function(data){
+						$j('#previous_school_number').append(data);
+					}
+				});	
+			}
+		});
+		
+		$j('#previous_school_number').change(function() {
+			if($j('#previous_school_number').val()==99999999) {
+				$j('#previous_school').val('');
+				$j('#previous_school').attr('readonly', false);
+			} else {
+				$j('#previous_school').attr('readonly', true);
+				$j('#previous_school').val($j('#previous_school_number option:selected').text());
+			}
+			
+		});
+		
+	});
+	
+	
+</script>
+
+<!--Content to be inserted into page-->
+<div id="inserted_content" style="display: none">
+	<!--content to be appended to table-->
+	<table id="appendTable">
+		<tbody>
+			<tr>	
+				<td class="bold">Previous District</td>				
+				<td>
+					<select name="[students.S_NC_STUDENTDEMO]PREVIOUS_DISTRICT_NUMBER" id="previous_district_number">
+						<option value=""></option>
+						<option value="99999999">District Outside of North Carolina</option>
+						~[tlist_sql; 
+						SELECT district_id, to_char(value)
+						FROM psods.prefs@NC_PS_ODS
+						WHERE name='districtname']
+						<option value="~(district_id)">~(name)</option>
+						[/tlist_sql]
+					</select>
+				</td>
+			</tr>
+			<tr>	
+				<td class="bold">Previous District Name</td>
+				<td>				
+					<input type="text" name="[students.S_NC_STUDENTDEMO]PREVIOUS_DISTRICT" value="" size="60" id="previous_district" readonly="readonly">
+				</td>
+			</tr>
+			<tr>	
+				<td class="bold">Previous School</td>
+				<td>
+					<select name="[students.S_NC_STUDENTDEMO]PREVIOUS_SCHOOL_NUMBER" id="previous_school_number">
+						<option value=""></option>
+						<option value="99999999">School Outside of North Carolina</option>
+					</select>
+				</td>
+			</tr>
+			<tr>	
+				<td class="bold">Previous School Name</td>
+				<td><input type="text" name="[students.S_NC_STUDENTDEMO]PREVIOUS_SCHOOL" value="" size="60" id="previous_school" readonly="readonly"></td>
+			</tr>
+			<tr>	
+				<td class="bold">Previous State</td>
+				<td><input type="text" name="[students.S_NC_STUDENTDEMO]PREVIOUS_STATE" value="" size="20" id="previous_state"></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<!--content to appear before address-->
+	<table id="beforeAddress">
+		<tbody>
+			<tr>	
+				<td>Proof of Address</td>
+				<td><input type="text" name="[students.S_NC_STUDENTDEMO]PROOF_OF_ADDRES_CODE" value="" size="30" maxlength="30" id="complex_name"></td>
+			</tr>
+
+			<tr>	
+				<td>Complex Name</td>
+				<td><input type="text" name="[students.S_NC_STUDENTDEMO]COMPLEX_NAME" value="" size="30" maxlength="30" id="complex_name"></td>
+			</tr>
+			<tr>	
+				<td>Rural Route</td>
+				<td><input type="text" name="[students.S_NC_STUDENTDEMO]RURAL_ROUTE" value="" size="2" maxlength="2" id="rural_route"></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<!--content to appear after dob-->
+	<table id="afterDob">
+		<tbody>
+			<tr>	
+				<td class="bold">Proof of Age</td>
+				<td><input type="text" name="[students.S_NC_STUDENTDEMO]PROOF_OF_AGE_CODE" value="" size="5" maxlength="5" id="proof_of_age"></td>
+			</tr>
+			<tr>	
+				<td class="bold">Country of Birth</td>
+				<td>
+					<select name="[students.S_NC_STUDENTDEMO]COUNTRY_OF_BIRTH_CODE" id="country_of_birth_code">
+						<option value=""></option>
+						~[tlist_sql; 
+						SELECT name, value
+						FROM gen@dbl_entcon
+						WHERE cat='country_code'
+						ORDER BY value]
+						<option value="~(name)">~(value)</option>
+						[/tlist_sql]
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<!--content to appear after mother-->
+	<table id="afterMother">
+		<tbody>
+			<tr>	
+				<td class="bold">Mother Deceased</td>
+				<td>
+					<select name="[students.S_NC_STUDENTDEMO]MOTHER_DECEASED" id="mother_deceased">
+						<option value=0>No</option>
+						<option value=1>Yes</option>
+					</select>
+				</td>			
+			</tr>
+		</tbody>
+	</table>
+	
+	<!--content to appear after father-->
+	<table id="afterFather">
+		<tbody>
+			<tr>	
+				<td class="bold">Father Deceased</td>
+				<td>
+					<select name="[students.S_NC_STUDENTDEMO]FATHER_DECEASED" id="father_deceased">
+						<option value=0>No</option>
+						<option value=1>Yes</option>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<!--content to appear after student number-->
+	<table id="afterStudNum">
+		<tbody>
+			<tr>	
+				<td class="bold">Old Student Number</td>
+				<td><input type="text" name="[students.S_NC_STUDENTDEMO]OLD_STUDENT_NUMBER" value="" size="12"  maxlength="12" id="old_student_number"></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<!--content to appear after phone-->
+	<table id="afterPhone">
+		<tbody>
+			<tr>	
+				<td class="bold">Unlisted Phone Numer</td>
+				<td>
+					<select name="[students.S_NC_STUDENTDEMO]PHONE_UNLISTED" id="phone_unlisted">
+						<option value=0>No</option>
+						<option value=1>Yes</option>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<!--content to appear after name-->
+	<table id="replaceName">
+		<tbody>
+			<tr>
+			    <td class="bold">~[text:psx.html.admin_students.generaldemographics.name]&nbsp;(Last, First Middle, Suffix)</td>
+			    <td>
+			        <input type="text" name="[01]last_name" value="" size="25" maxlength="50" id="lastName">,
+			        <input type="text" name="[01]first_name" value="" size="25" maxlength="50" id="firstName">
+			        <input type="text" name="[01]middle_name" value="" size="15" maxlength="30" id="middleName">
+			        <input type="text" name="[students.S_NC_STUDENTDEMO]LAST_NAME_SUFFIX" value="" size="6" maxlength="4" id="middleName">
+			    </td>
+			</tr>
+		</tbody>
+	</table>
+	
+<!--End of inserted content-->
+</div>
+
