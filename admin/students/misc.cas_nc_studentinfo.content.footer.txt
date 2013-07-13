@@ -1,0 +1,63 @@
+<table id="extendedData" class="linkDescList">
+<thead>
+<tr class="headerRow">
+    <td colspan="2" class="bold">
+        Extended Data
+    </td>
+</tr>
+</thead>
+<tbody>
+<tr><td><label>Admission Status</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]ADMISSION_STATUS_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Court Access</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]COURT_ACCESS_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Custody</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]CUSTODY_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Date Release Signed</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]DATE_RELEASE_SIGNED" value="" size="10" maxlength="10" class="psDateWidget"></td></tr>
+<tr><td><label>Dept. of Ind. Affairs Number</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]DEPT_OF_IND_AFFAIRS_NUMBER" value="" size="30" maxlength="30" class="VARCHAR2"></td></tr>
+<tr><td><label>Driver's License Number</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]DRIVER_LICENSE_NUMBER" value="" size="30" maxlength="20" class="VARCHAR2"></td></tr>
+<tr><td><label>Dropout Reason</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]DROPOUT_REASON" value="" size="4" maxlength="4" class="VARCHAR2"></td></tr>
+<tr><td><label>Emergency Closure</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]EMERGENCY_CLOSURE_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Ext Ref Library System</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]EXT_REF_LIBRARY_SYS" value="" size="10" maxlength="9" class="VARCHAR2"></td></tr>
+<tr><td><label>Ext Ref Point of Sale System</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]EXT_REF_POINT_SALE_SYS" value="" size="10" maxlength="9" class="VARCHAR2"></td></tr>
+<tr><td><label>Ext Ref Textbook System</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]EXT_REF_TEXTBOOK_SYS" value="" size="10" maxlength="9" class="VARCHAR2"></td></tr>
+<tr><td><label>Field Trip Permission</label></td><td><select name="[students.S_NC_STUDENTINFO]FIELD_TRIP_PERMISSION"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>First Language</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]FIRST_LANGUAGE_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Home Language</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]HOME_LANGUAGE_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Internet Access</label></td><td><select name="[students.S_NC_STUDENTINFO]INTERNET_ACCESS"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Internet No Access Description</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]INTERNET_NO_ACCESS_DESC" value="" size="50" maxlength="50" class="VARCHAR2"></td></tr>
+<tr><td><label>Internet Permission Description</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]INTERNET_PERMISSION_DESC" value="" size="50" maxlength="40" class="VARCHAR2"></td></tr>
+<tr><td><label>Language Most Used</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]LANGUAGE_CODE_MOST_USED" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>License Revoked</label></td><td><select name="[students.S_NC_STUDENTINFO]LICENSE_REVOKED"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Lift Required</label></td><td><select name="[students.S_NC_STUDENTINFO]LIFT_REQUIRED"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Locker School</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]LOCKER_SCHOOL" value="" size="6" maxlength="2" class="psNumWidget"></td></tr>
+<tr><td><label>Locker Serial Number</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]LOCKER_SERIAL_NUMBER" value="" size="10" maxlength="10" class="VARCHAR2"></td></tr>
+<tr><td><label>Lot Number</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]LOT_NUMBER" value="" size="10" maxlength="6" class="VARCHAR2"></td></tr>
+<tr><td><label>Miscellaneous 1</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]MISCELLANEOUS_1" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Miscellaneous 2</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]MISCELLANEOUS_2" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Miscellaneous 3</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]MISCELLANEOUS_3" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Miscellaneous 4</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]MISCELLANEOUS_4" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Monitor Required</label></td><td><select name="[students.S_NC_STUDENTINFO]MONITOR_REQUIRED"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>No College Recruitment</label></td><td><select name="[students.S_NC_STUDENTINFO]NO_COLLEGE_RECRUITMENT"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>No Military Recruitment</label></td><td><select name="[students.S_NC_STUDENTINFO]NO_MILITARY_RECRUITMENT"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Parking Space Number</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]PARKING_SPACE_NUMBER" value="" size="4" maxlength="4" class="VARCHAR2"></td></tr>
+<tr><td><label>Permission to Ride Bike</label></td><td><select name="[students.S_NC_STUDENTINFO]PERMISSION_RIDE_BIKE"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Permission to Transport</label></td><td><select name="[students.S_NC_STUDENTINFO]PERMISSION_TO_TRANSPORT"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Permission to Walk Home</label></td><td><select name="[students.S_NC_STUDENTINFO]PERMISSION_WALK_HOME"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Release of Information</label></td><td><select name="[students.S_NC_STUDENTINFO]RELEASE_OF_INFO"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Release of Information Description</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]RELEASE_OF_INFO_DESC" value="" size="50" maxlength="50" class="VARCHAR2"></td></tr>
+<tr><td><label>Restraint Required</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]RESTRAINT_REQUIRED_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Signed Code of Conduct</label></td><td><select name="[students.S_NC_STUDENTINFO]SIGN_CODE_OF_CONDUCT"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Tribal</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]TRIBAL_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Vehicle Color</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]VEHICLE_COLOR" value="" size="30" maxlength="15" class="VARCHAR2"></td></tr>
+<tr><td><label>Vehicle License Number</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]VEHICLE_LICENSE_NUMBER" value="" size="10" maxlength="8" class="VARCHAR2"></td></tr>
+<tr><td><label>Vehicle Make</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]VEHICLE_MAKE" value="" size="30" maxlength="25" class="VARCHAR2"></td></tr>
+<tr><td><label>Vehicle Model</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]VEHICLE_MODEL" value="" size="30" maxlength="25" class="VARCHAR2"></td></tr>
+<tr><td><label>Vehicle Year</label></td><td><input type="text" name="[students.S_NC_STUDENTINFO]VEHICLE_YEAR" value="" size="6" maxlength="4" class="psNumWidget"></td></tr>
+<tr><td><label>Verified Dropout</label></td><td><select name="[students.S_NC_STUDENTINFO]VERIFIED_DROPOUT"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Additional Information</label></td><td><textarea name="[students.S_NC_STUDENTINFO]ADDITION_INFO" cols="80" rows="3"></textarea></td></tr>
+<tr><td><label>Secondary Enrollment</label></td><td><select name="[students.S_NC_STUDENTINFO]IsSecondaryEnrollment"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+</tbody>
+</table>
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table').first().after($j('#extendedData'));
+});
+</script>
