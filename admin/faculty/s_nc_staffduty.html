@@ -23,7 +23,7 @@
 
 <table class="linkDescList">
    <thead>
-      <tr>
+      <tr class="headerRow">
          <td align="center" colspan="100%"><a href="s_nc_staffduty_edit.html?id=-1&usersdcid=~(rn)" id="btnNew" name="btnNew" class="button">New Record</a></td>
       </tr>
       <tr>
@@ -51,13 +51,13 @@
     ID, '~(rn)',
     (SELECT g.value FROM gen g WHERE g.cat = 'staff_duty' AND g.name = STAFF_DUTY_CODE),
     STAFF_DUTY_DURATION_TIME,
-    STAFF_DUTY_MON, MON_PERIOD,
-    STAFF_DUTY_TUE, TUE_PERIOD,
-    STAFF_DUTY_WED, WED_PERIOD,
-    STAFF_DUTY_THU, THU_PERIOD,
-    STAFF_DUTY_FRI, FRI_PERIOD,
-    STAFF_DUTY_SAT, SAT_PERIOD,
-    STAFF_DUTY_SUN, SUN_PERIOD
+    CASE STAFF_DUTY_MON WHEN '1' THEN 'X' ELSE NULL END, MON_PERIOD,
+    CASE STAFF_DUTY_TUE WHEN '1' THEN 'X' ELSE NULL END, TUE_PERIOD,
+    CASE STAFF_DUTY_WED WHEN '1' THEN 'X' ELSE NULL END, WED_PERIOD,
+    CASE STAFF_DUTY_THU WHEN '1' THEN 'X' ELSE NULL END, THU_PERIOD,
+    CASE STAFF_DUTY_FRI WHEN '1' THEN 'X' ELSE NULL END, FRI_PERIOD,
+    CASE STAFF_DUTY_SAT WHEN '1' THEN 'X' ELSE NULL END, SAT_PERIOD,
+    CASE STAFF_DUTY_SUN WHEN '1' THEN 'X' ELSE NULL END, SUN_PERIOD
     FROM S_NC_STAFFDUTY
     WHERE USERSDCID = ~(RN)]
         <tr>
