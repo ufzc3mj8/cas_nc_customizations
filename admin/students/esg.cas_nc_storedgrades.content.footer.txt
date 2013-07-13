@@ -1,0 +1,23 @@
+<table id="extendedData" class="linkDescList">
+<thead>
+<tr class="headerRow">
+    <td colspan="2" class="bold">
+        Extended Data
+    </td>
+</tr>
+</thead>
+<tbody>
+<tr><td><label>Academic Level</label></td><td><input type="text" name="[STOREDGRADES.S_NC_STOREDGRADES]ACADEMIC_LEVEL_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Absences</label></td><td><input type="text" name="[STOREDGRADES.S_NC_STOREDGRADES]ATTENDANCE_ABSENCES" value="" size="6" maxlength="3" class="psNumWidget"></td></tr>
+<tr><td><label>Course Length</label></td><td><input type="text" name="[STOREDGRADES.S_NC_STOREDGRADES]COURSE_LENGTH_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>High School Credit</label></td><td><input type="text" name="[STOREDGRADES.S_NC_STOREDGRADES]HIGH_SCHOOL_CREDIT" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>High School Credit Apply</label></td><td><input type="text" name="[STOREDGRADES.S_NC_STOREDGRADES]HIGH_SCHOOL_CREDIT_APPLY" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>How Taken</label></td><td><input type="text" name="[STOREDGRADES.S_NC_STOREDGRADES]HOW_TAKEN_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>State</label></td><td><input type="text" name="[STOREDGRADES.S_NC_STOREDGRADES]STATE_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+</tbody>
+</table>
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table').first().after($j('#extendedData'));
+});
+</script>
