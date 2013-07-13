@@ -1,0 +1,23 @@
+<table id="extendedData" class="linkDescList">
+<thead>
+<tr class="headerRow">
+    <td colspan="2" class="bold">
+        Extended Data
+    </td>
+</tr>
+</thead>
+<tbody>
+<tr><td><label>Admission Status</label></td><td><input type="text" name="[REENROLLMENTS.S_NC_REENROLLMENTS]ADMISSION_STATUS_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Days Present</label></td><td><input type="text" name="[REENROLLMENTS.S_NC_REENROLLMENTS]TOTAL_DAYS_PRESENT" value="" size="10" maxlength="9" class="psNumWidget"></td></tr>
+<tr><td><label>Days Absent</label></td><td><input type="text" name="[REENROLLMENTS.S_NC_REENROLLMENTS]TOTAL_DAYS_ABSENT" value="" size="10" maxlength="9" class="psNumWidget"></td></tr>
+<tr><td><label>Unexcused Absences</label></td><td><input type="text" name="[REENROLLMENTS.S_NC_REENROLLMENTS]UNEXCUSED_ABS" value="" size="10" maxlength="9" class="psNumWidget"></td></tr>
+<tr><td><label>Promotion Status</label></td><td><input type="text" name="[REENROLLMENTS.S_NC_REENROLLMENTS]PROMOTION_STATUS" value="" size="10" maxlength="6" class="VARCHAR2"></td></tr>
+<tr><td><label>Promotion Status Summer</label></td><td><input type="text" name="[REENROLLMENTS.S_NC_REENROLLMENTS]PROMOTION_STATUS_SUMMER" value="" size="10" maxlength="6" class="VARCHAR2"></td></tr>
+<tr><td><label>Secondary Enrollment</label></td><td><select name="[REENROLLMENTS.S_NC_REENROLLMENTS]IsSecondaryEnrollment"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+</tbody>
+</table>
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table').first().after($j('#extendedData'));
+});
+</script>
