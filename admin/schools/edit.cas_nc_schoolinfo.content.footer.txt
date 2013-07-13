@@ -1,0 +1,87 @@
+<table id="extendedData" class="linkDescList">
+<thead>
+<tr class="headerRow">
+    <td colspan="2" class="bold">
+        Extended Data
+    </td>
+</tr>
+</thead>
+<tbody>
+<tr><td><label>Accreditation Description</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]ACCREDITATION_DESC" value="" size="50" maxlength="50" class="VARCHAR2"></td></tr>
+<tr><td><label>Allow After School Programs</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]ALLOW_AFTER_SCHOOL_PROGRAMS"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Allow Community Programs</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]ALLOW_COMMUNITY_PROGRAMS"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Associated Extended Day School</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]ASSOCIATED_EXT_DAY_SCHOOL" value="" size="10" maxlength="9" class="psNumWidget"></td></tr>
+<tr><td><label>Associated Night School</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]ASSOCIATED_NIGHT_SCHOOL" value="" size="10" maxlength="9" class="psNumWidget"></td></tr>
+<tr><td><label>Attendance Phone Number</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]ATTENDANCE_PHONE_NUMBER" value="" size="10" maxlength="10" class="VARCHAR2"></td></tr>
+<tr><td><label>College Board ID</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]COLLEGE_BOARD_ID" value="" size="20" maxlength="12" class="VARCHAR2"></td></tr>
+<tr><td><label>Does Home Visits</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]DOES_HOME_VISITS"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Expired Date</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]EXPIRED_DATE" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>Federal ID</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]FEDERAL_ID" value="" size="20" maxlength="12" class="VARCHAR2"></td></tr>
+<tr><td><label>Granted Date</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]GRANTED_DATE" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>Parental Conferences Required</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]PARENTAL_CONFERENCES_REQUIRED"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Phone 2</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]PHONE_2" value="" size="10" maxlength="10" class="VARCHAR2"></td></tr>
+<tr><td><label>Print Intervention Letters</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]PRINT_INTERVENTION_LETTERS"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>School SubType Description</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_SUB_TYPE_DESC" value="" size="30" maxlength="30" class="VARCHAR2"></td></tr>
+<tr><td><label>School Type</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_TYPE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Student Uniforms Required</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]STUDENT_UNIFORMS_REQUIRED"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>VP Name 2</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]VP_NAME_2" value="" size="30" maxlength="30" class="VARCHAR2"></td></tr>
+<tr><td><label>VP Name 3</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]VP_NAME_3" value="" size="30" maxlength="30" class="VARCHAR2"></td></tr>
+<tr><td><label>Year Round School</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]YEAR_ROUND_SCHOOL"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Fiscal Year</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]FISCAL_YEAR" value="" size="4" maxlength="4" class="psNumWidget"></td></tr>
+<tr><td><label>School Operational Status</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCH_OPERATIONAL_STATUS" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Courier</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]COURIER_NUMBER" value="" size="10" maxlength="6" class="VARCHAR2"></td></tr>
+<tr><td><label>Mailing Address Line 1</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]MAILING_ADDRESS_LINE1" value="" size="35" maxlength="35" class="VARCHAR2"></td></tr>
+<tr><td><label>Mailing Address Line 2</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]MAILING_ADDRESS_LINE2" value="" size="35" maxlength="35" class="VARCHAR2"></td></tr>
+<tr><td><label>Mailing City</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]MAILING_CITY" value="" size="20" maxlength="20" class="VARCHAR2"></td></tr>
+<tr><td><label>Mailing Zip Code (5 digit)</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]MAILING_ZIP_CODE_5" value="" size="5" maxlength="5" class="VARCHAR2"></td></tr>
+<tr><td><label>Mailing Zip Code (4 digit)</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]MAILING_ZIP_CODE_4" value="" size="5" maxlength="4" class="VARCHAR2"></td></tr>
+<tr><td><label>Opening Effective Date</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]OPENING_EFFECTIVE_DATE" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>Closing Date</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]CLOSING_DATE" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>Grade Level Approved</label></td><td><textarea name="[SCHOOLS.S_NC_SCHOOLINFO]GRADE_LEVEL_APPROVED" cols="80" rows="3" maxlength="100"></textarea></td></tr>
+<tr><td><label>Grade Level First Year</label></td><td><textarea name="[SCHOOLS.S_NC_SCHOOLINFO]GRADE_LEVEL_FIRST_YEAR" cols="80" rows="3" maxlength="100"></textarea></td></tr>
+<tr><td><label>School Type Eddie</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_TYPE_EDDIE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>School Program Type</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_PROGRAM_TYPE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>School Membership</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_MEMBERSHIP" value="" size="10" maxlength="6" class="psNumWidget"></td></tr>
+<tr><td><label>School Teacher Count</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_TEACHER_COUNT" value="" size="10" maxlength="5" class="psNumWidget"></td></tr>
+<tr><td><label>Accreditation Status</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]ACCREDITATION_STATUS" value="" size="5" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Locale Type</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]LOCALE_TYPE" value="" size="5" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>New Schools Project</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]NEW_SCHOOLS_PROJECT" value="" size="5" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Cohort Number</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]COHORT_NUMBER" value="" size="5" maxlength="3" class="VARCHAR2"></td></tr>
+<tr><td><label>Cooperative Innovative HS</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]COOPERATIVE_INNOVATIVE_HS"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Cooperative MMYYYY SBE Approved</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]COOPERATIVE_MMYYYY_SBEAPPROVED" value="" size="10" maxlength="6" class="VARCHAR2"></td></tr>
+<tr><td><label>First Year Estimated ADM</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]FIRST_YR_EST_ADM" value="" size="10" maxlength="6" class="psNumWidget"></td></tr>
+<tr><td><label>First Year Estimated Paid Teacher FTE</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]FIRST_YR_EST_PAID_TEACHER_FTE" value="" size="5" maxlength="3" class="psNumWidget"></td></tr>
+<tr><td><label>Newly Constructed Facility</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]NEWLY_CONSTRUCTED_FACILITY"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Occupancy Date</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]OCCUPANCY_DATE" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>What Facility Will School Occupy?</label></td><td><textarea name="[SCHOOLS.S_NC_SCHOOLINFO]WHAT_FACILITY_WILL_SCH_OCCUPY" cols="80" rows="3" maxlength="100"></textarea></td></tr>
+<tr><td><label>Share Space</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]SHARE_SPACE"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>Share Space Description</label></td><td><textarea name="[SCHOOLS.S_NC_SCHOOLINFO]SHARE_SPACE_DESCRIBE" cols="80" rows="3" maxlength="150"></textarea></td></tr>
+<tr><td><label>New School Population From</label></td><td><textarea name="[SCHOOLS.S_NC_SCHOOLINFO]NEW_SCH_POPULATION_FROM" cols="100" rows="5" maxlength="4000"></textarea></td></tr>
+<tr><td><label>School Closings Due To Opening</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_CLOSINGS_DUE_TO_OPENING" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>List of Closing Schools</label></td><td><textarea name="[SCHOOLS.S_NC_SCHOOLINFO]LIST_OF_CLOSING_SCHOOLS" cols="100" rows="5" maxlength="4000"></textarea></td></tr>
+<tr><td><label>Title I</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]TITLE_I"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>School Calendar Type</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_CALENDAR_TYPE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>School Schedule Type</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_SCHEDULE_TYPE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>SBE Region</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SBE_REGION" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>URL School Address</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]URL_SCHOOL_ADDRESS" value="" size="100" maxlength="150" class="VARCHAR2"></td></tr>
+<tr><td><label>RECORD_CREATED_TIMESTAMP</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]RECORD_CREATED_TIMESTAMP" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>RECORD_CREATED_BY</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]RECORD_CREATED_BY" value="" size="50" maxlength="40" class="VARCHAR2"></td></tr>
+<tr><td><label>LAST_CHANGED_TIMESTAMP</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]LAST_CHANGED_TIMESTAMP" value="" size="10" class="psDateWidget"></td></tr>
+<tr><td><label>LAST_CHANGED_BY</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]LAST_CHANGED_BY" value="" size="50" maxlength="40" class="VARCHAR2"></td></tr>
+<tr><td><label>Extended Hours</label></td><td><select name="[SCHOOLS.S_NC_SCHOOLINFO]EXTENDED_HOURS"><option value=""><option value="1">Yes<option value="0">No</select></td></tr>
+<tr><td><label>School Designation Type</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_DESIGNATION_TYPE" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+<tr><td><label>Fiscal Year For Teachers</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]FISCAL_YEAR_FOR_TEACHERS" value="" size="4" maxlength="4" class="psNumWidget"></td></tr>
+<tr><td><label>Fiscal Year For School Membership</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]FISCAL_YEAR_FOR_SCH_MEMBERSHIP" value="" size="4" maxlength="4" class="psNumWidget"></td></tr>
+<tr><td><label>County</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]COUNTY_CODE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>Official School Name</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]OFFICIAL_SCHOOL_NAME" value="" size="60" maxlength="60" class="VARCHAR2"></td></tr>
+<tr><td><label>Opening in School Year</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]OPENING_IN_SCHOOL_YEAR" value="" size="4" maxlength="4" class="psNumWidget"></td></tr>
+<tr><td><label>Grade Level Current</label></td><td><textarea name="[SCHOOLS.S_NC_SCHOOLINFO]GRADE_LEVEL_CURRENT" cols="80" rows="3" maxlength="100"></textarea></td></tr>
+<tr><td><label>Mailing State</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]MAILING_STATE" value="" size="4" maxlength="2" class="VARCHAR2"></td></tr>
+<tr><td><label>School System Start Status</label></td><td><input type="text" name="[SCHOOLS.S_NC_SCHOOLINFO]SCHOOL_SYSTARTSTATUS" value="" size="4" maxlength="1" class="VARCHAR2"></td></tr>
+</tbody>
+</table>
+<script type="text/javascript">
+$j(document).ready( function() {
+    $j('.box-round table').last().after($j('#extendedData'));
+});
+</script>
