@@ -1,6 +1,6 @@
 <script type="text/javascript">
 $j(document).ready( function() {
 $j('div.box-round table:first tr:last').after('<tr class="headerRow"><th>Transportation</th><th>Description</th></tr>'
-    +'<tr><td><a href="/admin/cas/reports/tims/newstu.txt">TIMS Extract</a></td><td>NC TIMS Extract. Right Clink link and choose Save As...</td></tr>');
+    +'<tr><td><a href="/admin/cas/reports/tims/newstu.txt">TIMS Extract</a></td><td>NC TIMS Extract. Right Click link and choose Save As...</td></tr>');
 });
 </script>

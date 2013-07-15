@@ -12,10 +12,10 @@ SELECT
     RPAD(NVL(SubStr(STU.STREET,1,InStr(STU.STREET,' ')),' '),6)||  -- House Number
     RPAD(NVL(Substr(TRIM(SubStr(upper(STU.STREET),InStr(upper(STU.STREET),' '))), 1,instr(TRIM(SubStr(upper(STU.STREET),InStr(upper(STU.STREET),' '))),'APT') - 1),' '),30)|| -- Street Name
     RPAD(NVL(CASE
-  WHEN InStr(trim(UPPER(STU.STREET)),'APT') <> 0 THEN
-  NVL(TRIM(SubStr(trim(UPPER(STU.STREET)),InStr(trim(UPPER(STU.STREET)),'APT'))),' ')
-  ELSE ' '
-  END,' '),10)|| -- Apt Number
+            WHEN InStr(trim(UPPER(STU.STREET)),'APT') <> 0 THEN
+            NVL(TRIM(SubStr(trim(UPPER(STU.STREET)),InStr(trim(UPPER(STU.STREET)),'APT'))),' ')
+            ELSE ' '
+           END,' '),10)|| -- Apt Number
     RPAD(' ',150)|| -- Mailing Address
     RPAD(NVL(STU.CITY,' '),30)|| -- City
     RPAD(' ',4)||  -- City Code
@@ -43,7 +43,11 @@ SELECT
     RPAD(' ',1)|| -- BLANK
     RPAD(' ',9)|| -- Home School
     RPAD(NVL(to_char(STU.NEXT_SCHOOL),' '),9)|| -- Next School
-    LPAD(NVL(to_char(STU.GRADE_LEVEL,'FM00'),'0'),2)|| -- Current Grade Level
+    LPAD(NVL(CASE
+              WHEN STU.GRADE_LEVEL < 0 THEN 'PK' 
+              WHEN STU.GRADE_LEVEL = 0 THEN 'K'
+              ELSE to_char(STU.GRADE_LEVEL,'FM00')
+            END,' '),2)|| -- Current Grade Level
     RPAD(NVL(CASE 
           WHEN EC.EC_PRIMARY_DIS = '1' THEN 'Y'
           ELSE 'N'
@@ -63,7 +67,7 @@ SELECT
     RPAD(NVL(STU.GENDER,' '),1)||  -- Gender
     RPAD(NVL(TO_CHAR(STU.DOB,'MMDDYYYY'),' '),8)|| -- DOB
     RPAD(NVL(STU.HOME_ROOM,' '),6)|| -- Homeroom
-    RPAD(NVL(to_char(SI.HOME_LANGUAGE_CODE),' '),30)||  -- Language Spoken
+    RPAD(NVL(to_char(G.VALUE),' '),30)||  -- Language Spoken
     RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(STU.HOME_PHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Home Phone
     RPAD(NVL(DAD.PARENT_LASTNAME||CASE WHEN DAD.PARENT_LASTNAME IS NOT NULL THEN ', ' END||DAD.PARENT_FIRSTNAME,' '),41)|| -- Father Name
     RPAD(NVL(REPLACE(DAD.PARENT_DAYPHONE,'-',''),' '),10)||  -- Father Work Phone
@@ -116,6 +120,10 @@ LEFT JOIN
       ON MOM.STUDENTSDCID = STU.DCID
       AND MOM.PARENT_TYPE_CODE = 'P'
       AND MOM.EMERG_RELATION_CODE = 'MO'
+LEFT JOIN
+    PS.GEN G
+      ON to_number(G.NAME) = SI.HOME_LANGUAGE_CODE
+  AND g.cat = 'language_codes'
 WHERE
     STU.ENTRYDATE BETWEEN (SELECT FIRSTDAY FROM PS.TERMS WHERE SYSDATE BETWEEN FIRSTDAY AND LASTDAY AND PORTION = 1 AND SCHOOLID = STU.SCHOOLID)
                   AND (SELECT LASTDAY FROM PS.TERMS WHERE SYSDATE BETWEEN FIRSTDAY AND LASTDAY AND PORTION = 1 AND SCHOOLID = STU.SCHOOLID)
