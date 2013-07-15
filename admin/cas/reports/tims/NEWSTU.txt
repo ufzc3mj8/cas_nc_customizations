@@ -5,7 +5,7 @@ SELECT
           WHEN STU.ENROLL_STATUS = '-1' THEN 'C'
           ELSE 'D'
         END,1)||  -- Active Status
-    RPAD(NVL(to_char(STU.STUDENT_NUMBER),' '),10)||  -- Student Number
+    RPAD(NVL(to_char(STU. STUDENT_NUMBER),' '),10)||  -- Student Number
     RPAD(' ',8)||  -- SSN(Leave Blank)
     RPAD(NVL(STU.LAST_NAME,' '),30)||  -- Last Name
     RPAD(NVL(STU.FIRST_NAME,' '),30)|| -- First Name
@@ -70,15 +70,15 @@ SELECT
     RPAD(NVL(to_char(G.VALUE),' '),30)||  -- Language Spoken
     RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(STU.HOME_PHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Home Phone
     RPAD(NVL(DAD.PARENT_LASTNAME||CASE WHEN DAD.PARENT_LASTNAME IS NOT NULL THEN ', ' END||DAD.PARENT_FIRSTNAME,' '),41)|| -- Father Name
-    RPAD(NVL(REPLACE(DAD.PARENT_DAYPHONE,'-',''),' '),10)||  -- Father Work Phone
-    RPAD(NVL(REPLACE(DAD.PARENT_HOMEPHONE,'-',''),' '),10)|| -- Father Home Phone
+    RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(DAD.PARENT_DAYPHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Father Work Phone
+    RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(DAD.PARENT_HOMEPHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Father Home Phone
     RPAD(NVL(MOM.PARENT_LASTNAME||CASE WHEN MOM.PARENT_LASTNAME IS NOT NULL THEN ', ' END||MOM.PARENT_FIRSTNAME,' '),41)|| -- Mother Name
-    RPAD(NVL(REPLACE(MOM.PARENT_DAYPHONE,'-',''),' '),10)||  -- Mother Work Phone
-    RPAD(NVL(REPLACE(MOM.PARENT_HOMEPHONE,'-',''),' '),10)|| -- Mother Home Phone
-    RPAD(NVL(PS_CUSTOMFIELDS.GETCF('STUDENTS',STU.ID,'Emerg_Contact_1'),' '),41)|| -- Emergency Contact 1
-    RPAD(NVL(PS_CUSTOMFIELDS.GETCF('STUDENTS',STU.ID,'Emerg_Phone_1'),' '),10)|| -- Emergency Contact 1 Phone
-    RPAD(NVL(PS_CUSTOMFIELDS.GETCF('STUDENTS',STU.ID,'Emerg_Contact_2'),' '),41)|| -- Emergency Contact 2
-    RPAD(NVL(PS_CUSTOMFIELDS.GETCF('STUDENTS',STU.ID,'Emerg_Phone_2'),' '),10)|| -- Emergency Contact 2 Phone
+    RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(MOM.PARENT_DAYPHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Mother Work Phone
+    RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(MOM.PARENT_HOMEPHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Mother Home Phone
+    RPAD(NVL(EMER1.PARENT_LASTNAME||CASE WHEN EMER1.PARENT_LASTNAME IS NOT NULL THEN ', ' END||EMER1.PARENT_FIRSTNAME,' '),41)|| -- Emergency Contact 1
+    RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(EMER1.PARENT_DAYPHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Emergency Contact 1 Phone
+    RPAD(NVL(EMER2.PARENT_LASTNAME||CASE WHEN EMER2.PARENT_LASTNAME IS NOT NULL THEN ', ' END||EMER2.PARENT_FIRSTNAME,' '),41)|| -- Emergency Contact 2
+    RPAD(NVL(REPLACE(REPLACE(REPLACE(REPLACE(EMER2.PARENT_DAYPHONE,'-',''),' ',''),'(',''),')',''),' '),10)|| -- Emergency Contact 2 Phone
     RPAD(' ',6)|| -- AM Ridership
     RPAD(' ',10)||  -- AM Bus Number
     RPAD(' ',6)|| -- PM Ridership
@@ -121,9 +121,19 @@ LEFT JOIN
       AND MOM.PARENT_TYPE_CODE = 'P'
       AND MOM.EMERG_RELATION_CODE = 'MO'
 LEFT JOIN
+    PS.S_NC_GUARDIAN EMER1        -- table for Emergency 1 contact information
+      ON EMER1.STUDENTSDCID = STU.DCID
+      AND EMER1.PARENT_TYPE_CODE = 'E'
+      AND EMER1.EMERG_CALLSEQ = '1'
+LEFT JOIN
+    PS.S_NC_GUARDIAN EMER2        -- table for Emergency 2 contact information
+      ON EMER2.STUDENTSDCID = STU.DCID
+      AND EMER2.PARENT_TYPE_CODE = 'E'
+      AND EMER2.EMERG_CALLSEQ = '2'
+LEFT JOIN
     PS.GEN G
       ON to_number(G.NAME) = SI.HOME_LANGUAGE_CODE
-  AND g.cat = 'language_codes'
+      AND g.cat = 'language_codes'
 WHERE
     STU.ENTRYDATE BETWEEN (SELECT FIRSTDAY FROM PS.TERMS WHERE SYSDATE BETWEEN FIRSTDAY AND LASTDAY AND PORTION = 1 AND SCHOOLID = STU.SCHOOLID)
                   AND (SELECT LASTDAY FROM PS.TERMS WHERE SYSDATE BETWEEN FIRSTDAY AND LASTDAY AND PORTION = 1 AND SCHOOLID = STU.SCHOOLID)
