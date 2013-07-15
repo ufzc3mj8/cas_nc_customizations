@@ -1,0 +1,53 @@
+  <table class="linkDescList" id="SectionInfoTables">
+    <tr class="headerRow">
+      <td colspan="2" class="bold">Post Secondary Information</td>
+    </tr>
+    <tr>
+      <td><label>Course Name</label></td>
+      <td colspan="3"><input type="text" name="[SECTIONS.S_NC_SECTIONINFO]COURSE_NAME_POSTSECONDARY" value="" size="44" maxlength="160" class="VARCHAR2"></td>
+    </tr>
+    <tr>
+      <td><label>Course Number</label></td>
+      <td><input type="text" name="[SECTIONS.S_NC_SECTIONINFO]COURSE_NAME_POSTSECONDARY" value="" size="46" maxlength="44" class="VARCHAR2"></td>
+    </tr>
+    <tr>
+      <td><label>Institution Code</label></td>
+      <td><input type="text" name="[SECTIONS.S_NC_SECTIONINFO]POST_SEC_INSTITUITION_CODE" value="" size="7"  maxlength="5" class="VARCHAR2"></td>
+    </tr>
+    <tr>
+      <td><label>Credit Hours</label></td>
+      <td><input type="text" name="[SECTIONS.S_NC_SECTIONINFO]CREDIT_HOURS_POSTSECONDARY" value="" size="35" maxlength="40" class="VARCHAR2"></td>
+    </tr>
+    <tr class="headerRow">
+      <td colspan="2" class="bold">Extended Information</td>
+    </tr>
+    <tr>
+      <td><label>External Provider</label></td>
+      <td><input type="checkbox" name="[SECTIONS.S_NC_SECTIONINFO]COURSE_EXTERNAL_PROVIDER" value="1"></td>
+    </tr>
+    <tr>
+      <td><label>Third Party Provider</label></td>
+      <td><input type="text" name="[SECTIONS.S_NC_SECTIONINFO]COURSE_THRIDPARTY_PROVIDER" value="" size="32" maxlength="30" class="VARCHAR2"></td>
+    </tr>
+    <tr>
+      <td><label>Delivery Mode</label></td>
+      <td>
+        <select name="[SECTIONS.S_NC_SECTIONINFO]DELIVERY_MODE" id="delivery_mode">
+          <option value="">
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td><label>Credit Recovery</label></td>
+      <td><input type="checkbox" name="[SECTIONS.S_NC_SECTIONINFO]SELECT_CREDIT_RECOVERY" value="1"></td>
+    </tr>
+  </table>
+<script type="text/javascript">
+    $j(document).ready( function() {
+        $j('div.box-round table:first').addClass('linkDescList');
+        $j('div.box-round table:first tr').removeClass('evenRow');
+        $j('div.box-round table:first tr').removeClass('oddRow');
+        $j('div.box-round table:first tr:last').before($j('#SectionInfoTables tr'));
+	$j('#SectionInfoTables').remove();
+    });
+</script>
