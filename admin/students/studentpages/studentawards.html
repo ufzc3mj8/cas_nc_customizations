@@ -92,13 +92,13 @@ ORDER BY RECEIVED_DATE, AWARD_NAME]
 			<td><select name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]AWARD_CATEGORY_CODE" class="AWARD_CATEGORY_CODE" id="AWARD_CATEGORY_CODE!!!">
 				<option value="">Select</option></select></td>
 			<td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]AWARD_NAME" value="" width="10" maxlength="60"></td>
-			<td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]RECEIVED_DATE" value="" width="20" class="psDateWidget"></td>
+			<td><input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]RECEIVED_DATE" value="" width="20" class="psDateWidgetChange"></td>
 			<td>
 				<select name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]SCHOLARSHIP" class="SCHOLARSHIP">
 					<option value="N">No</option>
 					<option value="Y">Yes</option>
 				</select>
-				<input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]SCHOLARSHIP_AMOUNT" value="" width="10" maxlength="25">
+				$<input type="text" name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]SCHOLARSHIP_AMOUNT" value="" width="10" maxlength="25">
 			</td>
 			<td>
 				<select name="CF-[STUDENTS:~(rn).S_NC_STUDENTAWARDS.S_NC_STUDENTAWARDS:!!!]ON_TRANSCRIPT" class="ON_TRANSCRIPT">
@@ -130,9 +130,26 @@ ORDER BY RECEIVED_DATE, AWARD_NAME]
 				//console.log(name);
 				$j(this).attr("name",name);
 			});
+			tdata.find('.psDateWidgetChange').each( function() {
+				$j(this).attr("class","psDateWidget");
+			});
 			//console.log(tdata);
 			//tdata.show();
 			$j('#tableData tbody').append(tdata);
+			require(['psDateWidget'], function(dw, dv){
+				psDateWidget = dw;
+				//Populating global wrappers
+				i18nStringToDate = psDateWidget.i18nStringToDate;
+				require(['psDateValidate'], function(dv){
+					psDateValidate = dv;
+					//Populating global wrappers
+					validateDate = psDateValidate.validateDate;
+					validateDateAfterMin = psDateValidate.validateDateAfterMin;
+					validateDateBeforeMax = psDateValidate.validateDateBeforeMax;
+					
+					psDateValidate.initializeDateValidate();
+				});
+			});
 			//$j('.button-row').before(tdata);
 			//$j('#tbodyData').append(tdata);
 		});

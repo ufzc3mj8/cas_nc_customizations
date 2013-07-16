@@ -1,15 +1,16 @@
 <script type="text/javascript">
 	     $j(document).ready( function() {
 			  $j('.box-round').hide();
-			  
+			  console.log()
 			  // Hide all Delete elements
 			  setTimeout( function() {
 				       $j('.yui-dt0-col-del').each(function() {
 						    $j(this).hide();
 				       });
 				       $j('.box-round').show();
-				       $j('.edititem').click( function() {
-						    $j('#update_oral_button').hide();
+				       $j('.editItem').click( function() {
+						    $j('[id^="update_"][id$="_button"]').hide();
+						    //$j('#update_oral_button').remove();
 					});
 			  },1000);
 	     });
