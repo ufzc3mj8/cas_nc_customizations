@@ -1,0 +1,19 @@
+</table>
+		<h2>North Carolina State Information</h2>
+<!--Must keep the extension of file as .javascript or something other than .JS because it has 4d Tlist_sql tag.-->			
+<script language="JavaScript" src="/admin/districtinfo/state/usa_nc/scripts/EntryExitDropDown.javascript"></script>
+<table class="linkDescList">
+<tr>
+	<td class="bold"><label for="fieldMapCode">Map Code To DPI Code</label></td>
+	<td>~[if.ModAccess]
+		<select name="[Gen]Value2" id="fieldMapCode">
+			<option value=""> </option>
+			<script language="JavaScript">ExitMapCode("\'~([Gen]Value2)\'");</script>
+		</select>
+	[else]
+		<script language="JavaScript">ExitMapCodeRE("\'~([Gen]Value2)\'");</script>
+	[/if]
+	</td>
+</tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="4">
